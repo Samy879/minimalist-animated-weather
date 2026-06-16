@@ -1,28 +1,38 @@
 {
     "KPlugin": {
         "Authors": [
-            {
-                "Email": "samy.rk800@gmail.com",
-                "Name": "Samy879"
-            },
-            {
-                "Email": "adolfo@librepixels.com",
-                "Name": "zayronxio (Original Author)"
-            }
+            { "Email": "samy.rk800@gmail.com", "Name": "Samy879" },
+            { "Email": "adolfo@librepixels.com", "Name": "zayronxio (Original Author)" }
         ],
-        "Name": "Modern Weather Enhanced",
+        "Name": "Minimalist Weather Animated",
+        "Name[es]": "Minimalist Weather Animated",
+        "Name[fr]": "Minimalist Weather Animated",
+        "Name[ja]": "Minimalist Weather Animated",
+        "Name[nl]": "Minimalist Weather Animated",
+        "Name[pt]": "Minimalist Weather Animated",
+        "Name[ru]": "Minimalist Weather Animated",
+        "Name[tr]": "Minimalist Weather Animated",
+        "Name[vi]": "Minimalist Weather Animated",
+        "Name[zh_CN]": "Minimalist Weather Animated",
         "Id": "com.github.samy879.modernweather",
-        "Description": "A modern, minimalist weather widget for KDE Plasma 6. Features a clean UI, customizable refresh rates, font weights, and advanced display options.",
+        "Description": "A clean, animated weather widget for KDE Plasma 6.",
+        "Description[es]": "Un widget de clima limpio y animado para KDE Plasma 6.",
+        "Description[fr]": "Un widget météo propre et animé pour KDE Plasma 6.",
+        "Description[ja]": "KDE Plasma 6 用のクリーンでアニメーション化された天気ウィジェット。",
+        "Description[nl]": "Een schone, geanimeerde weerwidget voor KDE Plasma 6.",
+        "Description[pt]": "Um widget de clima limpo e animado para o KDE Plasma 6.",
+        "Description[ru]": "Чистый анимированный виджет погоды для KDE Plasma 6.",
+        "Description[tr]": "KDE Plasma 6 için temiz, animasyonlu bir hava durumu widget'ı.",
+        "Description[vi]": "Một widget thời tiết sạch sẽ và sinh động cho KDE Plasma 6.",
+        "Description[zh_CN]": "一个适用于 KDE Plasma 6 的简洁、动画化的天气小组件。",
         "Category": "Environment and Weather",
-        "Keywords": "Weather;Météo;Forecast;Modern;Minimalist;",
+        "Keywords": "Weather;Météo;Forecast;Animated;Minimalist;",
         "Icon": "weather-clouds",
         "EnabledByDefault": true,
         "License": "GPL-3.0+",
-        "ServiceTypes": [
-            "Plasma/Applet"
-        ],
-        "Version": "1.0.3",
-        "Website": "https://github.com/samy879/modern-weather-enhanced"
+        "ServiceTypes": ["Plasma/Applet"],
+        "Version": "1.1.0",
+        "Website": "https://github.com/samy879/minimalist-weather-animated"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-MainScript": "ui/main.qml"
