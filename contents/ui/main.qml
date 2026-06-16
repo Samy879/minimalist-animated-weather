@@ -15,6 +15,7 @@ PlasmoidItem {
   }
 
   // Propriétés de configuration (Lien avec main.xml)
+  property int borderRadius: Plasmoid.configuration.borderRadius
   property bool showAnimations: Plasmoid.configuration.showAnimations
   property bool boldTempPanel: Plasmoid.configuration.boldTempPanel
   property bool boldCondPanel: Plasmoid.configuration.boldCondPanel
@@ -22,7 +23,9 @@ PlasmoidItem {
   property string temperatureUnit: Plasmoid.configuration.temperatureUnit
   property real sizeFontTemp: Plasmoid.configuration.sizeFontTemp
   property real sizeFontCond: Plasmoid.configuration.sizeFontCond
+
   property bool preciseTemp: Plasmoid.configuration.preciseTemp
+  property bool preciseTempChart: Plasmoid.configuration.preciseTempChart
 
   property bool showApparentTemp: Plasmoid.configuration.showApparentTemp
   property bool showHumidity: Plasmoid.configuration.showHumidity
@@ -35,14 +38,12 @@ PlasmoidItem {
   property bool textweather: Plasmoid.configuration.textweather
   property int forecastStartDay: Plasmoid.configuration.forecastStartDay
 
-  property var days: []
-  Plasmoid.backgroundHints: (PlasmaCore.Types.NoBackground | PlasmaCore.Types.ConfigurableBackground)
-  preferredRepresentation: compactRepresentation
+  // Référence vers la FullRepresentation pour pouvoir appeler resetScroll()
+  property var fullRepRef: null
 
-  function sumarDia(offset) {
-    let date = new Date();
-    return (date.getDay() + offset) % 7;
-  }
+  property var days: []
+  Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
+  preferredRepresentation: Plasmoid.formFactor === PlasmaCore.Types.Planar ? fullRepresentation : compactRepresentation
 
   Component.onCompleted: {
     let locale = Qt.locale();
@@ -58,7 +59,16 @@ PlasmoidItem {
   }
 
   fullRepresentation: FullRepresentation {
-    // CORRECTION : On passe l'objet weatherSource à la représentation
     weatherData: weatherSource
+    Component.onCompleted: root.fullRepRef = this
+  }
+
+  Connections {
+    target: root
+    function onExpandedChanged() {
+      if (root.expanded && root.fullRepRef) {
+        root.fullRepRef.resetScroll();
+      }
+    }
   }
 }

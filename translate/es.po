@@ -1,50 +1,38 @@
-# Translation of smallweather in Spanish
-# Copyright (C) 2023
-# This file is distributed under the same license as the Nori.Weather package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
+# Translation of Modern Weather Enhanced in Spanish
+# Copyright (C) 2026
 msgid ""
 msgstr ""
-"Project-Id-Version: Nori.Weather\n"
-"Report-Msgid-Bugs-To: https://store.kde.org/p/2179833/\n"
-"POT-Creation-Date: 2023-05-01 16:59-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: Modern Weather Enhanced\n"
+"Report-Msgid-Bugs-To: https://github.com/samy879/modern-weather-enhanced/issues\n"
+"POT-Creation-Date: 2026-05-12 00:00+0300\n"
+"PO-Revision-Date: 2026-06-16 17:49+0200\n"
 "Language-Team: Spanish <LL@li.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Clear"
 msgstr "Despejado"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Cloudy"
 msgstr "Nublado"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Drizzle"
 msgstr "Llovizna"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Rain"
 msgstr "Lluvia"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Snow"
 msgstr "Nieve"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Hail"
 msgstr "Granizo"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Showers"
 msgstr "Chubascos"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Storm"
 msgstr "Tormenta"
 
@@ -72,8 +60,14 @@ msgstr "Latitud:"
 msgid "Longitude:"
 msgstr "Longitud:"
 
-msgid "Temperature Unit:"
-msgstr "Unidad de temperatura:"
+msgid "Temperature & Speed Unit:"
+msgstr "Unidad de temperatura y velocidad:"
+
+msgid "(°C) / (km/h)"
+msgstr "(°C) / (km/h)"
+
+msgid "(°F) / (mph)"
+msgstr "(°F) / (mph)"
 
 msgid "Update Interval (min):"
 msgstr "Intervalo de actualización (min):"
@@ -84,11 +78,23 @@ msgstr "Mostrar temperatura:"
 msgid "Show condition text:"
 msgstr "Mostrar texto de condición:"
 
+msgid "Show condition text (panel):"
+msgstr "Mostrar texto de condición (panel):"
+
+msgid "Show condition text (Full view):"
+msgstr "Mostrar texto de condición (Vista completa):"
+
 msgid "Show decimals (only panel):"
 msgstr "Mostrar decimales (solo panel):"
 
+msgid "Show decimals on charts:"
+msgstr "Mostrar decimales en gráficos:"
+
 msgid "Reverse Temp/Condition order:"
 msgstr "Invertir orden Temp/Condición:"
+
+msgid "Border radius (desktop view):"
+msgstr "Radio de borde (vista de escritorio):"
 
 msgid "Temperature font size:"
 msgstr "Tamaño de fuente de temperatura:"
@@ -102,9 +108,6 @@ msgstr "Tamaño de fuente de condición:"
 msgid "Bold condition text:"
 msgstr "Texto de condición en negrita:"
 
-msgid "Use bold fonts everywhere:"
-msgstr "Usar fuentes en negrita en todas partes:"
-
 msgid "Details to show:"
 msgstr "Detalles a mostrar:"
 
@@ -117,20 +120,20 @@ msgstr "Velocidad del viento"
 msgid "Forecast start day offset:"
 msgstr "Desplazamiento del día de inicio del pronóstico:"
 
-msgid "Show condition text (Full view):"
-msgstr "Mostrar texto de condición (Vista completa):"
-
 msgid "Feels"
-msgstr "Sensación"
+msgstr "Sens."
 
-msgid "Hum"
+msgid "Hum."
 msgstr "Hum."
 
 msgid "UV"
 msgstr "UV"
 
+msgid "Temp."
+msgstr "Temp."
+
 msgid "Enable weather animations:"
-msgstr "Activar animations meteorológicas:"
+msgstr "Activar animaciones meteorológicas:"
 
 msgid "Refresh Weather Data"
 msgstr "Actualizar datos meteorológicos"

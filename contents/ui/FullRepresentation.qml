@@ -9,9 +9,6 @@ import org.kde.kirigami 2.20 as Kirigami
 Item {
     id: rootItem
 
-    Plasmoid.backgroundHints: "NoBackground"
-
-    // La propriété qui reçoit MAGIQUEMENT les données depuis main.qml !
     property var weatherData
 
     property string temperatureUnit: root.temperatureUnit
@@ -21,7 +18,52 @@ Item {
     readonly property bool anyDetailEnabled: !!(root.showApparentTemp || root.showHumidity || root.showUVIndex || root.showWind)
     readonly property bool showBottomDetails: !!(anyDetailEnabled && root.showConditionFull)
 
-    // --- DIMENSIONS D'ORIGINE ---
+    // --- VUE DÉTAIL JOURNALIÈRE (courbes) ---
+    // -1 = vue classique. >= 0 = index du jour sélectionné.
+    property int selectedDayIndex: -1
+
+    // Courbe active dans la vue détail : 0=temp, 1=humidity, 2=wind, 3=uv
+    property int activeChart: 0
+
+    readonly property var hourlyData: (weatherData && weatherData.weatherData && weatherData.weatherData.hourly) ? weatherData.weatherData.hourly : null
+    readonly property bool hasHourlyData: !!hourlyData
+
+    // Index du jour courant dans le tableau daily
+    readonly property int currentDayIndex: {
+        if (!weatherData || !weatherData.weatherData || !weatherData.weatherData.daily) return 0;
+        let today = new Date();
+        let todayStr = today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+        let times = weatherData.weatherData.daily.time;
+        for (let i = 0; i < times.length; i++) {
+            if (times[i] === todayStr) return i;
+        }
+        return 0;
+    }
+
+    function hourlySlice(fieldName) {
+        if (!hourlyData || !hourlyData[fieldName] || selectedDayIndex < 0) return [];
+        let start = selectedDayIndex * 24;
+        return hourlyData[fieldName].slice(start, start + 24);
+    }
+
+    function openDayDetail(dayIndex) {
+        if (hasHourlyData) {
+            activeChart = 0; // reset à température à chaque ouverture
+            selectedDayIndex = dayIndex;
+        }
+    }
+
+    function closeDayDetail() {
+        selectedDayIndex = -1;
+    }
+
+    function resetScroll() {
+        forecastSection.positionViewAtBeginning();
+        closeDayDetail();
+    }
+
     readonly property int fixedWidth: Kirigami.Units.gridUnit * 15
     readonly property int calculatedHeight: {
         let base = Kirigami.Units.gridUnit * 12.5;
@@ -40,9 +82,9 @@ Item {
     // --- 1. LE FOND ANIMÉ ---
     Rectangle {
         id: backgroundContainer
-        anchors { fill: parent; margins: -10 }
-        color: "transparent"
-        radius: 12
+        anchors { fill: parent; margins: -8 }
+        color: Kirigami.Theme.backgroundColor
+        radius: root.borderRadius
         clip: true
 
         layer.enabled: !!plasmoid.configuration.showAnimations
@@ -59,7 +101,7 @@ Item {
             weatherData.temperaturaActual !== "--")
 
             readonly property int weatherCode: weatherData && weatherData.codeweather ? parseInt(weatherData.codeweather) : 0
-            readonly property real windValue: weatherData && weatherData.windSpeed ? parseFloat(weatherData.windSpeed) : 0
+            readonly property real windValue: weatherData && weatherData.windSpeed && weatherData.windSpeed !== "--" ? parseFloat(weatherData.windSpeed) : 0
 
             readonly property bool isDay: {
                 if (weatherData && weatherData.weatherData && weatherData.weatherData.current) {
@@ -105,112 +147,137 @@ Item {
     }
 
     // --- 2. LAYOUT PRINCIPAL ---
-    ColumnLayout {
+    Item {
         id: infoLayout
         anchors.fill: parent
-        spacing: 0
 
-        RowLayout {
-            id: headerSection
-            Layout.fillWidth: true
-            Layout.topMargin: -Kirigami.Units.smallSpacing
-            Layout.leftMargin: Kirigami.Units.gridUnit
-            Layout.rightMargin: Kirigami.Units.gridUnit
+        // ============================================================
+        // === VUE CLASSIQUE ===
+        // ============================================================
+        ColumnLayout {
+            id: classicContent
+            anchors.fill: parent
             spacing: 0
+            visible: rootItem.selectedDayIndex === -1
 
-            Item { Layout.fillWidth: true; visible: !rightSideContainer.visible }
-
-            Row {
-                id: tempContainer
-                spacing: 0
-                Layout.alignment: Qt.AlignVCenter
-
-                PlasmaComponents3.Label {
-                    text: currentTempText
-                    font.pixelSize: Kirigami.Units.gridUnit * 2.5
-                    font.bold: true
-                    leftPadding: currentTempText.length === 1 ? Kirigami.Units.gridUnit * 0.4 : 0
-                }
-                PlasmaComponents3.Label {
-                    text: unitStr
-                    font.pixelSize: Kirigami.Units.gridUnit * 1.5
-                    font.bold: true
-                    topPadding: Kirigami.Units.gridUnit * 0.2
-                }
-            }
-
-            Item { Layout.fillWidth: true }
-
-            ColumnLayout {
-                id: rightSideContainer
+            RowLayout {
+                id: headerSection
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignVCenter
+                Layout.topMargin: -Kirigami.Units.smallSpacing
+                Layout.leftMargin: Kirigami.Units.gridUnit
+                Layout.rightMargin: Kirigami.Units.gridUnit
                 spacing: 0
-                visible: !!(root.showConditionFull || anyDetailEnabled)
 
-                PlasmaComponents3.Label {
-                    visible: !!root.showConditionFull
-                    Layout.fillWidth: true
-                    text: weatherData ? weatherData.weatherLongtext : ""
-                    font.pixelSize: text.length <= 10 ? Kirigami.Units.gridUnit * 1.3 : Kirigami.Units.gridUnit * 1.0
-                    wrapMode: Text.WordWrap
-                    maximumLineCount: 2
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    leftPadding: Kirigami.Units.gridUnit * 0.55
+                Item { Layout.fillWidth: true; visible: !rightSideContainer.visible }
+
+                Row {
+                    id: tempContainer
+                    spacing: 0
+                    Layout.alignment: Qt.AlignVCenter
+
+                    PlasmaComponents3.Label {
+                        text: currentTempText
+                        font.pixelSize: Kirigami.Units.gridUnit * 2.5
+                        font.bold: true
+                        leftPadding: currentTempText.length === 1 ? Kirigami.Units.gridUnit * 0.4 : 0
+                    }
+                    PlasmaComponents3.Label {
+                        text: unitStr
+                        font.pixelSize: Kirigami.Units.gridUnit * 1.5
+                        font.bold: true
+                        topPadding: Kirigami.Units.gridUnit * 0.2
+                    }
                 }
 
-                GridLayout {
-                    id: detailsGrid
-                    visible: !!(!root.showConditionFull && anyDetailEnabled)
-                    columns: 2
-                    rowSpacing: Kirigami.Units.gridUnit * 0.3
-                    columnSpacing: Kirigami.Units.smallSpacing
-                    layoutDirection: Qt.RightToLeft
-                    Layout.alignment: Qt.AlignRight
-                    Layout.rightMargin: -7.5
+                Item { Layout.fillWidth: true }
 
-                    CompactGridItem {
-                        visible: !!root.showWind
-                        label: i18n("Wind")
-                        value: weatherData ? Math.round(weatherData.windSpeed) + (unitStr === "°C" ? " km/h" : " mph") : "--"
+                ColumnLayout {
+                    id: rightSideContainer
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
+                    spacing: 0
+                    visible: !!(root.showConditionFull || anyDetailEnabled)
+
+                    PlasmaComponents3.Label {
+                        visible: !!root.showConditionFull
+                        Layout.fillWidth: true
+                        text: weatherData ? weatherData.weatherLongtext : ""
+                        font.pixelSize: text.length <= 10 ? Kirigami.Units.gridUnit * 1.3 : Kirigami.Units.gridUnit * 1.0
+                        wrapMode: Text.WordWrap
+                        maximumLineCount: 2
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: Kirigami.Units.gridUnit * 0.55
                     }
-                    CompactGridItem {
-                        visible: !!root.showUVIndex
-                        label: i18n("UV")
-                        value: weatherData ? weatherData.uvIndex : "--"
-                    }
-                    CompactGridItem {
-                        visible: !!root.showHumidity
-                        label: i18n("Hum")
-                        value: weatherData ? weatherData.humidity + "%" : "--"
-                    }
-                    CompactGridItem {
-                        visible: !!root.showApparentTemp
-                        label: i18n("Feels")
-                        value: weatherData ? Math.round(weatherData.apparentTemp) + unitStr : "--"
+
+                    GridLayout {
+                        id: detailsGrid
+                        visible: !!(!root.showConditionFull && anyDetailEnabled)
+                        columns: 2
+                        rowSpacing: Kirigami.Units.gridUnit * 0.3
+                        columnSpacing: Kirigami.Units.smallSpacing
+                        layoutDirection: Qt.RightToLeft
+                        Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                        Layout.rightMargin: -7.5
+                        Layout.topMargin: root.showConditionFull ? 0 : Kirigami.Units.gridUnit * 0.4
+
+                        CompactGridItem {
+                            visible: !!root.showWind
+                            label: i18n("Wind")
+                            value: (weatherData && weatherData.windSpeed !== "--") ? (weatherData.windSpeed + (unitStr === "°C" ? " km/h" : " mph")) : "--"
+                        }
+                        CompactGridItem {
+                            visible: !!root.showUVIndex
+                            label: i18n("UV")
+                            value: (weatherData && weatherData.uvIndex !== "--") ? weatherData.uvIndex : "--"
+                        }
+                        CompactGridItem {
+                            visible: !!root.showHumidity
+                            label: i18n("Hum.")
+                            value: (weatherData && weatherData.humidity !== "--") ? (weatherData.humidity + "%") : "--"
+                        }
+                        CompactGridItem {
+                            visible: !!root.showApparentTemp
+                            label: i18n("Feels")
+                            value: (weatherData && weatherData.apparentTemp !== "--") ? (weatherData.apparentTemp + unitStr) : "--"
+                        }
                     }
                 }
             }
-        }
 
-        RowLayout {
-            id: forecastSection
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.topMargin: -Kirigami.Units.gridUnit * 0.5
-            spacing: 0
+            // --- SECTION PRÉVISIONS ---
+            ListView {
+                id: forecastSection
+                Layout.fillWidth: true
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 5
+                Layout.topMargin: -Kirigami.Units.gridUnit * 0.5
+                spacing: 0
+                orientation: ListView.Horizontal
 
-            Repeater {
-                model: (weatherData && weatherData.weatherData && weatherData.weatherData.daily) ? 3 : 0
+                snapMode: ListView.SnapToItem
+                boundsBehavior: Flickable.OvershootBounds
+                maximumFlickVelocity: 500
+                flickDeceleration: 1000
+                interactive: true
+                clip: true
+
+                model: (weatherData && weatherData.weatherData && weatherData.weatherData.daily && weatherData.weatherData.daily.time)
+                ? (weatherData.weatherData.daily.time.length - root.forecastStartDay) : 0
+
                 delegate: ColumnLayout {
-                    Layout.fillWidth: true
+                    width: forecastSection.width / 3
                     spacing: 0
-                    readonly property int dayIndex: modelData + root.forecastStartDay
+                    readonly property int dayIndex: index + root.forecastStartDay
 
                     PlasmaComponents3.Label {
                         Layout.fillWidth: true
-                        text: (weatherData && root.days) ? root.days[root.sumarDia(dayIndex)] : ""
+                        text: {
+                            if (weatherData && weatherData.weatherData && weatherData.weatherData.daily && weatherData.weatherData.daily.time) {
+                                let d = new Date(weatherData.weatherData.daily.time[dayIndex]);
+                                return root.days ? root.days[d.getDay()] : "";
+                            }
+                            return "";
+                        }
                         horizontalAlignment: Text.AlignHCenter
                         font.capitalization: Font.Capitalize
                         font.pixelSize: Kirigami.Units.gridUnit * 0.65
@@ -222,6 +289,11 @@ Item {
                         Layout.preferredHeight: Kirigami.Units.gridUnit * 2.7
                         Layout.alignment: Qt.AlignHCenter
                         source: (weatherData && weatherData.weatherData.daily) ? weatherData.asingicon(weatherData.weatherData.daily.weather_code[dayIndex]) : ""
+
+                        TapHandler {
+                            enabled: rootItem.hasHourlyData
+                            onTapped: rootItem.openDayDetail(dayIndex)
+                        }
                     }
 
                     RowLayout {
@@ -240,57 +312,250 @@ Item {
                     }
                 }
             }
+
+            RowLayout {
+                id: detailsRow
+                visible: !!showBottomDetails
+                Layout.fillWidth: true
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 2.2
+                Layout.leftMargin: Kirigami.Units.gridUnit * 0.5
+                Layout.rightMargin: Kirigami.Units.gridUnit * 0.5
+                spacing: 0
+
+                DetailColumn {
+                    visible: !!root.showApparentTemp
+                    label: i18n("Apparent Temp")
+                    value: (weatherData && weatherData.apparentTemp !== "--") ? (weatherData.apparentTemp + unitStr) : "--"
+                }
+
+                Rectangle {
+                    visible: !!(root.showApparentTemp && (root.showHumidity || root.showUVIndex || root.showWind))
+                    Layout.preferredWidth: 1; Layout.preferredHeight: Kirigami.Units.gridUnit * 1.2;
+                    color: Kirigami.Theme.textColor; opacity: 0.15; Layout.alignment: Qt.AlignVCenter
+                }
+
+                DetailColumn {
+                    visible: !!root.showHumidity
+                    label: i18n("Humidity")
+                    value: (weatherData && weatherData.humidity !== "--") ? (weatherData.humidity + "%") : "--"
+                }
+
+                Rectangle {
+                    visible: !!(root.showHumidity && (root.showUVIndex || root.showWind))
+                    Layout.preferredWidth: 1; Layout.preferredHeight: Kirigami.Units.gridUnit * 1.2;
+                    color: Kirigami.Theme.textColor; opacity: 0.15; Layout.alignment: Qt.AlignVCenter
+                }
+
+                DetailColumn {
+                    visible: !!root.showUVIndex
+                    label: i18n("UV Index")
+                    value: (weatherData && weatherData.uvIndex !== "--") ? weatherData.uvIndex : "--"
+                }
+
+                Rectangle {
+                    visible: !!(root.showUVIndex && root.showWind)
+                    Layout.preferredWidth: 1; Layout.preferredHeight: Kirigami.Units.gridUnit * 1.2;
+                    color: Kirigami.Theme.textColor; opacity: 0.15; Layout.alignment: Qt.AlignVCenter
+                }
+
+                DetailColumn {
+                    visible: !!root.showWind
+                    label: i18n("Wind")
+                    value: (weatherData && weatherData.windSpeed !== "--") ? (weatherData.windSpeed + (unitStr === "°C" ? " km/h" : " mph")) : "--"
+                }
+            }
         }
 
-        RowLayout {
-            id: detailsRow
-            visible: !!showBottomDetails
-            Layout.fillWidth: true
-            Layout.preferredHeight: Kirigami.Units.gridUnit * 2.2
-            Layout.leftMargin: Kirigami.Units.gridUnit * 0.5
-            Layout.rightMargin: Kirigami.Units.gridUnit * 0.5
+        // ============================================================
+        // === VUE DÉTAIL ===
+        // ============================================================
+        ColumnLayout {
+            id: dayDetailView
+            anchors.fill: parent
             spacing: 0
+            visible: rootItem.selectedDayIndex !== -1
 
-            DetailColumn {
-                visible: !!root.showApparentTemp
-                label: i18n("Apparent Temp")
-                value: (weatherData ? Math.round(weatherData.apparentTemp) : "--") + unitStr
+            readonly property string dayLabelFull: {
+                if (!weatherData || !weatherData.weatherData || !weatherData.weatherData.daily || rootItem.selectedDayIndex < 0) return "";
+                let d = new Date(weatherData.weatherData.daily.time[rootItem.selectedDayIndex]);
+                let locale = Qt.locale();
+                return d.toLocaleString(locale, "dddd");
             }
 
-            Rectangle {
-                visible: !!(root.showApparentTemp && (root.showHumidity || root.showUVIndex || root.showWind))
-                Layout.preferredWidth: 1; Layout.preferredHeight: Kirigami.Units.gridUnit * 1.2;
-                color: Kirigami.Theme.textColor; opacity: 0.15; Layout.alignment: Qt.AlignVCenter
+            readonly property var activeValues: {
+                switch (rootItem.activeChart) {
+                    case 0: return rootItem.hourlySlice("temperature_2m");
+                    case 1: return rootItem.hourlySlice("relative_humidity_2m");
+                    case 2: return rootItem.hourlySlice("wind_speed_10m");
+                    case 3: return rootItem.hourlySlice("uv_index");
+                    default: return rootItem.hourlySlice("temperature_2m");
+                }
+            }
+            readonly property string activeUnit: {
+                switch (rootItem.activeChart) {
+                    case 0: return unitStr;
+                    case 1: return "%";
+                    case 2: return (unitStr === "°C" ? " km/h" : " mph");
+                    case 3: return "";
+                    default: return unitStr;
+                }
+            }
+            readonly property string activeLabel: {
+                switch (rootItem.activeChart) {
+                    case 0: return i18n("Temp.");
+                    case 1: return i18n("Hum.");
+                    case 2: return i18n("Wind");
+                    case 3: return i18n("UV Index");
+                    default: return i18n("Temp.");
+                }
+            }
+            readonly property color activeColor: {
+                switch (rootItem.activeChart) {
+                    case 0: return Qt.rgba(0.92, 0.62, 0.15, 1.0);
+                    case 1: return Qt.rgba(0.29, 0.56, 0.88, 1.0); // Nouveau bleu doux (#4A90E2) pour l'Humidité
+                    case 2: return Qt.rgba(0.13, 0.57, 0.64, 1.0); // Bleu Sarcelle / Teal pour le vent
+                    case 3: return Qt.rgba(0.55, 0.25, 0.90, 1.0);
+                    default: return Qt.rgba(1.0, 0.38, 0.18, 1.0);
+                }
             }
 
-            DetailColumn {
-                visible: !!root.showHumidity
-                label: i18n("Humidity")
-                value: (weatherData ? weatherData.humidity : "--") + "%"
+            RowLayout {
+                id: navigationHeader
+                Layout.fillWidth: true
+                Layout.topMargin: Kirigami.Units.smallSpacing
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                spacing: 0
+
+                Item {
+                    Layout.preferredWidth: Kirigami.Units.gridUnit * 1.6
+                    Layout.preferredHeight: Kirigami.Units.gridUnit * 1.6
+
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: parent.width
+                        height: parent.height
+                        radius: width / 2
+                        color: Kirigami.Theme.textColor
+                        opacity: backMouse.pressed ? 0.15 : (backMouse.containsMouse ? 0.08 : 0.0)
+                        Behavior on opacity { NumberAnimation { duration: 150 } }
+                    }
+
+                    Kirigami.Icon {
+                        anchors.centerIn: parent
+                        width: Kirigami.Units.gridUnit * 1.0
+                        height: Kirigami.Units.gridUnit * 1.0
+                        source: "go-previous"
+                        opacity: backMouse.pressed ? 0.6 : (backMouse.containsMouse ? 1.0 : 0.75)
+                        Behavior on opacity { NumberAnimation { duration: 150 } }
+                    }
+
+                    MouseArea {
+                        id: backMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: rootItem.closeDayDetail()
+                    }
+                }
+
+                PlasmaComponents3.Label {
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignHCenter
+                    font.bold: true
+                    font.capitalization: Font.Capitalize
+                    text: dayDetailView.dayLabelFull
+                }
+
+                Item {
+                    Layout.preferredWidth: Kirigami.Units.gridUnit * 1.6
+                    Layout.preferredHeight: Kirigami.Units.gridUnit * 1.6
+                }
             }
 
-            Rectangle {
-                visible: !!(root.showHumidity && (root.showUVIndex || root.showWind))
-                Layout.preferredWidth: 1; Layout.preferredHeight: Kirigami.Units.gridUnit * 1.2;
-                color: Kirigami.Theme.textColor; opacity: 0.15; Layout.alignment: Qt.AlignVCenter
+            Components.LineChart {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                Layout.bottomMargin: Kirigami.Units.smallSpacing
+
+                label:       dayDetailView.activeLabel
+                unit:        dayDetailView.activeUnit
+                values:      dayDetailView.activeValues
+                lineColor:   dayDetailView.activeColor
+                currentHour: new Date().getHours()
+
+                preciseTemp: root.preciseTempChart
+                chartType:   rootItem.activeChart
             }
 
-            DetailColumn {
-                visible: !!root.showUVIndex
-                label: i18n("UV Index")
-                value: weatherData ? weatherData.uvIndex : "--"
-            }
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                Layout.bottomMargin: Kirigami.Units.smallSpacing
+                spacing: Kirigami.Units.smallSpacing
 
-            Rectangle {
-                visible: !!(root.showUVIndex && root.showWind)
-                Layout.preferredWidth: 1; Layout.preferredHeight: Kirigami.Units.gridUnit * 1.2;
-                color: Kirigami.Theme.textColor; opacity: 0.15; Layout.alignment: Qt.AlignVCenter
-            }
+                component ChartTab : Rectangle {
+                    property string tabLabel: ""
+                    property int tabIndex: 0
+                    property color tabColor: Kirigami.Theme.highlightColor
 
-            DetailColumn {
-                visible: !!root.showWind
-                label: i18n("Wind")
-                value: weatherData ? Math.round(weatherData.windSpeed) + (unitStr === "°C" ? " km/h" : " mph") : "--"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: Kirigami.Units.gridUnit * 1.4
+                    radius: Kirigami.Units.smallSpacing
+
+                    readonly property bool isActive: rootItem.activeChart === tabIndex
+                    color: isActive
+                    ? Qt.rgba(tabColor.r, tabColor.g, tabColor.b, 0.20)
+                    : Qt.rgba(Kirigami.Theme.textColor.r, Kirigami.Theme.textColor.g, Kirigami.Theme.textColor.b, 0.06)
+
+                    Rectangle {
+                        visible: parent.isActive
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: 3
+                        height: 2
+                        radius: 1
+                        color: parent.tabColor
+                    }
+
+                    PlasmaComponents3.Label {
+                        anchors.centerIn: parent
+                        text: parent.tabLabel
+                        font.pixelSize: Kirigami.Units.gridUnit * 0.52
+                        font.bold: parent.isActive
+                        color: parent.isActive ? parent.tabColor : Kirigami.Theme.textColor
+                        opacity: parent.isActive ? 1.0 : 0.55
+                    }
+
+                    TapHandler {
+                        onTapped: rootItem.activeChart = parent.tabIndex
+                    }
+                }
+
+                ChartTab {
+                    tabLabel: i18n("Temp.")
+                    tabIndex: 0
+                    tabColor: Qt.rgba(0.92, 0.62, 0.15, 1.0)
+                }
+                ChartTab {
+                    tabLabel: i18n("Hum.")
+                    tabIndex: 1
+                    tabColor: Qt.rgba(0.29, 0.56, 0.88, 1.0) // Nouveau bleu doux (#4A90E2)
+                }
+                ChartTab {
+                    tabLabel: i18n("Wind")
+                    tabIndex: 2
+                    tabColor: Qt.rgba(0.13, 0.57, 0.64, 1.0) // Bleu Sarcelle / Teal
+                }
+                ChartTab {
+                    tabLabel: i18n("UV")
+                    tabIndex: 3
+                    tabColor: Qt.rgba(0.55, 0.25, 0.90, 1.0) // Violet
+                }
             }
         }
     }

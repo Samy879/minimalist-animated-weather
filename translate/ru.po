@@ -6,22 +6,13 @@ msgstr ""
 "Project-Id-Version: Modern Weather Enhanced\n"
 "Report-Msgid-Bugs-To: https://github.com/samy879/modern-weather-enhanced/issues\n"
 "POT-Creation-Date: 2026-05-12 00:00+0300\n"
-"PO-Revision-Date: 2026-05-12 00:00+0300\n"
+"PO-Revision-Date: 2026-06-16 17:49+0200\n"
 "Last-Translator: Kotoko\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "Modern Weather Enhanced"
-msgstr "Modern Weather Enhanced"
-
-msgid "Minimalist weather widget with advanced customization options."
-msgstr "Минималистичный виджет погоды с расширенными настройками."
-
-msgid "Weather;Météo;Forecast;"
-msgstr "Погода;Прогноз;"
 
 msgid "Clear"
 msgstr "Ясно"
@@ -47,6 +38,18 @@ msgstr "Ливни"
 msgid "Storm"
 msgstr "Гроза"
 
+msgid "Apparent Temp"
+msgstr "Ощущается как"
+
+msgid "Humidity"
+msgstr "Влажность"
+
+msgid "UV Index"
+msgstr "УФ-индекс"
+
+msgid "Wind"
+msgstr "Ветер"
+
 msgid "General"
 msgstr "Общие"
 
@@ -59,17 +62,14 @@ msgstr "Широта:"
 msgid "Longitude:"
 msgstr "Долгота:"
 
-msgid "Enable weather animations:"
-msgstr "Включить анимации погоды:"
+msgid "Temperature & Speed Unit:"
+msgstr "Единицы температуры и скорости:"
 
-msgid "Temperature Unit:"
-msgstr "Единицы температуры:"
+msgid "(°C) / (km/h)"
+msgstr "(°C) / (км/ч)"
 
-msgid "Celsius (°C)"
-msgstr "Цельсий (°C)"
-
-msgid "Fahrenheit (°F)"
-msgstr "Фаренгейт (°F)"
+msgid "(°F) / (mph)"
+msgstr "(°F) / (миль/ч)"
 
 msgid "Update Interval (min):"
 msgstr "Интервал обновления (мин):"
@@ -89,8 +89,14 @@ msgstr "Показывать описание погоды (полный вид)
 msgid "Show decimals (only panel):"
 msgstr "Показывать десятые доли (только панель):"
 
+msgid "Show decimals on charts:"
+msgstr "Показывать десятые доли на графиках:"
+
 msgid "Reverse Temp/Condition order:"
 msgstr "Обратный порядок температуры и описания:"
+
+msgid "Border radius (desktop view):"
+msgstr "Радиус рамок (на рабочем столе):"
 
 msgid "Temperature font size:"
 msgstr "Размер шрифта температуры:"
@@ -110,42 +116,29 @@ msgstr "Показывать детали:"
 msgid "Apparent Temperature"
 msgstr "Ощущается как"
 
-msgid "Apparent Temp"
-msgstr "Ощущается"
-
-msgid "Humidity"
-msgstr "Влажность"
-
-msgid "UV Index"
-msgstr "УФ-индекс"
-
 msgid "Wind Speed"
 msgstr "Скорость ветра"
-
-msgid "Wind"
-msgstr "Ветер"
 
 msgid "Forecast start day offset:"
 msgstr "Смещение начала прогноза:"
 
-msgid "Manual Actions:"
-msgstr "Ручные действия:"
-
-msgid "Refresh Weather Data"
-msgstr "Обновить данные погоды"
-
-msgctxt "@action:button set keyboard shortcut for"
-msgid "Activate widget as if clicked:"
-msgstr "Активировать виджет как по щелчку:"
-
-msgid "Activate widget as if clicked:"
-msgstr "Активировать виджет как по щелчку:"
-
 msgid "Feels"
 msgstr "Ощущ."
 
-msgid "Hum"
+msgid "Hum."
 msgstr "Влажн."
 
 msgid "UV"
 msgstr "УФ"
+
+msgid "Temp."
+msgstr "Темп."
+
+msgid "Enable weather animations:"
+msgstr "Включить анимации погоды:"
+
+msgid "Refresh Weather Data"
+msgstr "Обновить данные погоды"
+
+msgid "Manual Actions:"
+msgstr "Ручные действия:"

@@ -1,50 +1,38 @@
-# Translation of Minimal.Chaac in Portuguese
-# Copyright (C) 2023
-# This file is distributed under the same license as the  Nori.Weather package.
-# Adolfo Silerio <adolfo@example.com>, 2025.
-#
+# Translation of Modern Weather Enhanced in Portuguese
+# Copyright (C) 2026
 msgid ""
 msgstr ""
-"Project-Id-Version: Nori.Weather\n"
-"Report-Msgid-Bugs-To: https://store.kde.org/p/2179833/\n"
-"POT-Creation-Date: 2023-05-01 16:59-0300\n"
-"PO-Revision-Date: 2025-06-24 10:00-0600\n"
-"Last-Translator: Adolfo Silerio <adolfo@example.com>\n"
+"Project-Id-Version: Modern Weather Enhanced\n"
+"Report-Msgid-Bugs-To: https://github.com/samy879/modern-weather-enhanced/issues\n"
+"POT-Creation-Date: 2026-05-12 00:00+0300\n"
+"PO-Revision-Date: 2026-06-16 17:49+0200\n"
 "Language-Team: Portuguese <LL@li.org>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Clear"
 msgstr "Limpo"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Cloudy"
 msgstr "Nublado"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Drizzle"
 msgstr "Garoa"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Rain"
 msgstr "Chuva"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Snow"
 msgstr "Neve"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Hail"
 msgstr "Granizo"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Showers"
 msgstr "Aguaceiros"
 
-#: ../contents/ui/components/WeatherData.qml
 msgid "Storm"
 msgstr "Tempestade"
 
@@ -72,8 +60,14 @@ msgstr "Latitude:"
 msgid "Longitude:"
 msgstr "Longitude:"
 
-msgid "Temperature Unit:"
-msgstr "Unidade de temperatura:"
+msgid "Temperature & Speed Unit:"
+msgstr "Unidade de temperatura e velocidade:"
+
+msgid "(°C) / (km/h)"
+msgstr "(°C) / (km/h)"
+
+msgid "(°F) / (mph)"
+msgstr "(°F) / (mph)"
 
 msgid "Update Interval (min):"
 msgstr "Intervalo de atualização (min):"
@@ -84,11 +78,23 @@ msgstr "Mostrar temperatura:"
 msgid "Show condition text:"
 msgstr "Mostrar texto de condição:"
 
+msgid "Show condition text (panel):"
+msgstr "Mostrar texto de condição (painel):"
+
+msgid "Show condition text (Full view):"
+msgstr "Mostrar texto de condição (Vista detalhada):"
+
 msgid "Show decimals (only panel):"
 msgstr "Mostrar decimais (apenas painel):"
 
+msgid "Show decimals on charts:"
+msgstr "Mostrar decimais nos gráficos:"
+
 msgid "Reverse Temp/Condition order:"
 msgstr "Inverter ordem Temp/Condição:"
+
+msgid "Border radius (desktop view):"
+msgstr "Raio da borda (vista desktop):"
 
 msgid "Temperature font size:"
 msgstr "Tamanho da fonte da temperatura:"
@@ -102,9 +108,6 @@ msgstr "Tamanho da fonte da condição:"
 msgid "Bold condition text:"
 msgstr "Texto de condição em negrito:"
 
-msgid "Use bold fonts everywhere:"
-msgstr "Usar fontes em negrito em todos os lugares:"
-
 msgid "Details to show:"
 msgstr "Detalhes a mostrar:"
 
@@ -117,17 +120,17 @@ msgstr "Velocidade do vento"
 msgid "Forecast start day offset:"
 msgstr "Deslocamento do dia de início da previsão:"
 
-msgid "Show condition text (Full view):"
-msgstr "Mostrar texto de condição (Vista detalhada):"
-
 msgid "Feels"
-msgstr "Sensação"
+msgstr "Sens."
 
-msgid "Hum"
+msgid "Hum."
 msgstr "Hum."
 
 msgid "UV"
 msgstr "UV"
+
+msgid "Temp."
+msgstr "Temp."
 
 msgid "Enable weather animations:"
 msgstr "Ativar animações meteorológicas:"

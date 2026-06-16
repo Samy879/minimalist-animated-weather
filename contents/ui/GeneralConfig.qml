@@ -8,6 +8,8 @@ Kirigami.ScrollablePage {
     title: i18n("General")
 
     // --- ALIAS DE CONFIGURATION ---
+    property alias cfg_borderRadius: borderRadiusSpin.value
+
     property alias cfg_showAnimations: showAnimationsCheck.checked
     property alias cfg_showConditionFull: conditionFullCheck.checked
     property alias cfg_useCoordinatesIp: autoCoorde.checked
@@ -17,7 +19,10 @@ Kirigami.ScrollablePage {
     property alias cfg_updateInterval: intervalSpin.value
     property alias cfg_textweather: textWeatherCheck.checked
     property alias cfg_showConditionOnPanel: conditionOnPanelCheck.checked
+
     property alias cfg_preciseTemp: preciseTempCheck.checked
+    property alias cfg_preciseTempChart: preciseTempChartCheck.checked
+
     property alias cfg_reverseOrder: reverseCheck.checked
     property alias cfg_sizeFontTemp: fontSizeTempSpin.realValue
     property alias cfg_boldTempPanel: boldTempCheck.checked
@@ -32,36 +37,13 @@ Kirigami.ScrollablePage {
     // Alias obligatoire pour le déclencheur de rafraîchissement
     property alias cfg_refreshTrigger: refreshTriggerHidden.value
 
-    // --- VALEURS PAR DÉFAUT ---
-    readonly property bool cfg_showAnimationsDefault: true
-    readonly property bool cfg_showConditionFullDefault: true
-    readonly property bool cfg_useCoordinatesIpDefault: true
-    readonly property string cfg_latitudeCDefault: "0"
-    readonly property string cfg_longitudeCDefault: "0"
-    readonly property bool cfg_showConditionOnPanelDefault: true
-    readonly property bool cfg_reverseOrderDefault: false
-    readonly property int cfg_temperatureUnitDefault: 0
-    readonly property double cfg_sizeFontTempDefault: 11.0
-    readonly property double cfg_sizeFontCondDefault: 10.0
-    readonly property bool cfg_textweatherDefault: true
-    readonly property bool cfg_preciseTempDefault: false
-    readonly property int cfg_updateIntervalDefault: 15
-    readonly property int cfg_forecastStartDayDefault: 0
-    readonly property bool cfg_boldTempPanelDefault: false
-    readonly property bool cfg_boldCondPanelDefault: false
-    readonly property bool cfg_showApparentTempDefault: true
-    readonly property bool cfg_showHumidityDefault: true
-    readonly property bool cfg_showUVIndexDefault: true
-    readonly property bool cfg_showWindDefault: true
-    readonly property int cfg_refreshTriggerDefault: 0
-
-    // Composant invisible servant de pont pour synchroniser la config
-    SpinBox {
-        id: refreshTriggerHidden
-        visible: false
-    }
-
     Kirigami.FormLayout {
+
+        SpinBox {
+            id: refreshTriggerHidden
+            visible: false
+        }
+
         // --- LOCALISATION ---
         CheckBox {
             id: autoCoorde
@@ -91,8 +73,8 @@ Kirigami.ScrollablePage {
         // --- SYSTÈME & UNITÉS ---
         ComboBox {
             id: temperatureCombo
-            Kirigami.FormData.label: i18n("Temperature Unit:")
-            model: [i18n("Celsius (°C)"), i18n("Fahrenheit (°F)")]
+            Kirigami.FormData.label: i18n("Temperature & Speed Unit:")
+            model: [i18n("(°C) / (km/h)"), i18n("(°F) / (mph)")]
         }
         SpinBox {
             id: intervalSpin
@@ -107,11 +89,18 @@ Kirigami.ScrollablePage {
         CheckBox { id: conditionOnPanelCheck; Kirigami.FormData.label: i18n("Show condition text (panel):") }
         CheckBox { id: conditionFullCheck; Kirigami.FormData.label: i18n("Show condition text (Full view):") }
         CheckBox { id: preciseTempCheck; Kirigami.FormData.label: i18n("Show decimals (only panel):") }
+        CheckBox { id: preciseTempChartCheck; Kirigami.FormData.label: i18n("Show decimals on charts:") }
         CheckBox { id: reverseCheck; Kirigami.FormData.label: i18n("Reverse Temp/Condition order:") }
 
         Kirigami.Separator { }
 
         // --- STYLE & POLICES ---
+        SpinBox {
+            id: borderRadiusSpin
+            Kirigami.FormData.label: i18n("Border radius (desktop view):")
+            from: 0; to: 40; stepSize: 1
+        }
+
         SpinBox {
             id: fontSizeTempSpin
             Kirigami.FormData.label: i18n("Temperature font size:")
@@ -164,7 +153,6 @@ Kirigami.ScrollablePage {
             Kirigami.FormData.label: i18n("Manual Actions:")
             text: i18n("Refresh Weather Data")
             icon.name: "view-refresh"
-            // On incrémente via le SpinBox lié à l'alias cfg_
             onClicked: refreshTriggerHidden.value++
             Layout.fillWidth: true
         }
