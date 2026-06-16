@@ -1,9 +1,9 @@
-# Translation of Modern Weather Enhanced in French
+# Translation of Minimalist Weather Animated in French
 # Copyright (C) 2026
 msgid ""
 msgstr ""
-"Project-Id-Version: Modern Weather Enhanced\n"
-"Report-Msgid-Bugs-To: https://github.com/samy879/modern-weather-enhanced/issues\n"
+"Project-Id-Version: Minimalist Weather Animated\n"
+"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-weather-animated/issues\n"
 "POT-Creation-Date: 2026-05-12 00:00+0300\n"
 "PO-Revision-Date: 2026-06-16 17:49+0200\n"
 "Last-Translator: Samy879\n"

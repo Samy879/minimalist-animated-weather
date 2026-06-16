@@ -1,12 +1,12 @@
-# Translation of Modern Weather Enhanced in LANGUAGE
+# Translation of Minimalist Weather Animated in LANGUAGE
 # Copyright (C) 2026
-# This file is distributed under the same license as the Modern Weather Enhanced package.
+# This file is distributed under the same license as the Minimalist Weather Animated package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Modern Weather Enhanced\n"
-"Report-Msgid-Bugs-To: https://github.com/samy879/modern-weather-enhanced/issues\n"
+"Project-Id-Version: Minimalist Weather Animated\n"
+"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-weather-animated/issues\n"
 "POT-Creation-Date: 2026-05-12 00:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
