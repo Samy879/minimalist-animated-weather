@@ -13,8 +13,26 @@ Item {
     property bool preciseTemp: false
     property int chartType: 0 // 0=Temp, 1=Hum, 2=Vent, 3=UV
 
+    // BUG FIX : currentHour est maintenu à jour par un Timer interne.
+    // La valeur passée depuis FullRepresentation (new Date().getHours()) était
+    // figée à l'heure de chargement du composant. Le Timer corrige ce problème.
     property int currentHour: new Date().getHours()
-    property int hoverIndex: -1 // Pour le survol de la souris
+
+    Timer {
+        interval: 60000   // Vérifie toutes les minutes
+        running: chartRoot.visible // Optimisation : le timer s'arrête si le widget n'est pas affiché
+        repeat: true
+        onTriggered: {
+            let actualHour = new Date().getHours();
+
+            // On ne met à jour (et on ne redessine) QUE si l'heure a tourné
+            if (chartRoot.currentHour !== actualHour) {
+                chartRoot.currentHour = actualHour;
+            }
+        }
+    }
+
+    property int hoverIndex: -1
 
     function arrMin(a) {
         if (!a || a.length === 0) return 0;
@@ -32,10 +50,10 @@ Item {
     readonly property real minV: arrMin(values)
     readonly property real maxV: arrMax(values)
 
-    // Ajustement Optique Asymétrique
+    // Marges asymétriques (identiques à l'original)
     readonly property real padLeft:   Kirigami.Units.gridUnit * 1.5
     readonly property real padRight:  Kirigami.Units.gridUnit * 0.7
-    readonly property real padTop:    Kirigami.Units.gridUnit * 0.5
+    readonly property real padTop:    Kirigami.Units.gridUnit * 0.6
     readonly property real padBottom: Kirigami.Units.gridUnit * 1.2
 
     ColumnLayout {
@@ -118,11 +136,33 @@ Item {
                 function xAt(i) { return pL + (w - pL - pR) * (i / (n - 1)); }
                 function yAt(v) { return pT + (h - pT - pB) * (1 - (v - chartRoot.minV) / range); }
 
+                // --- AMÉLIORATION : Courbes Catmull-Rom → Bézier cubiques ---
+                // Produit une courbe lisse qui passe exactement par chaque donnée,
+                // sans les angles droits visibles des lineTo précédents.
+                function buildSmoothPath() {
+                    ctx.moveTo(xAt(0), yAt(pts[0]));
+                    for (let i = 0; i < n - 1; i++) {
+                        let i0 = Math.max(0, i - 1);
+                        let i3 = Math.min(n - 1, i + 2);
+                        let x0 = xAt(i0), y0 = yAt(pts[i0]);
+                        let x1 = xAt(i),   y1 = yAt(pts[i]);
+                        let x2 = xAt(i+1), y2 = yAt(pts[i+1]);
+                        let x3 = xAt(i3), y3 = yAt(pts[i3]);
+                        // Formule standard Catmull-Rom (tension = 1/6)
+                        let cp1x = x1 + (x2 - x0) / 6;
+                        let cp1y = y1 + (y2 - y0) / 6;
+                        let cp2x = x2 - (x3 - x1) / 6;
+                        let cp2y = y2 - (y3 - y1) / 6;
+                        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
+                    }
+                }
+
                 let textColor = Kirigami.Theme.textColor;
                 let bgColor   = Kirigami.Theme.backgroundColor;
-                let axisOpacity  = 0.50;
-                let labelOpacity = 1.0;
+                let axisOpacity  = 0.30;
+                let labelOpacity = 0.80;
 
+                // --- Lignes de grille Y (plus fines et discrètes) ---
                 let ySteps = 3;
                 for (let s = 0; s <= ySteps; s++) {
                     let v  = chartRoot.minV + (range * s / ySteps);
@@ -130,9 +170,9 @@ Item {
 
                     if (s > 0) {
                         ctx.strokeStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, axisOpacity);
-                        ctx.lineWidth = 1;
+                        ctx.lineWidth = 0.5;
                         ctx.beginPath();
-                        ctx.setLineDash([3, 4]);
+                        ctx.setLineDash([2, 6]);
                         ctx.moveTo(pL, yy);
                         ctx.lineTo(w - pR, yy);
                         ctx.stroke();
@@ -141,117 +181,117 @@ Item {
 
                     let labelText = chartRoot.preciseTemp ?
                     parseFloat(v.toFixed(1)).toString() : Math.round(v).toString();
-                    let fontSize  = Math.round(Kirigami.Units.gridUnit * 0.50);
-                    ctx.font = "bold " + fontSize + "px sans-serif";
+                    let fontSize = Math.round(Kirigami.Units.gridUnit * 0.48);
+                    ctx.font = fontSize + "px sans-serif";
                     ctx.fillStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, labelOpacity);
                     ctx.textAlign = "right";
                     ctx.textBaseline = "middle";
-
-                    ctx.shadowColor = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 0.9);
-                    ctx.shadowBlur = 4;
-                    ctx.fillText(labelText, pL - 5, yy);
+                    ctx.shadowColor = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 0.85);
+                    ctx.shadowBlur = 3;
+                    ctx.fillText(labelText, pL - 4, yy);
                     ctx.shadowBlur = 0;
                 }
 
-                // Axe X : 24h inclus
-                let xLabels = [0, 6, 12, 18, 24];
-                let xFontSize = Math.round(Kirigami.Units.gridUnit * 0.47);
-                ctx.font = "bold " + xFontSize + "px sans-serif";
+                // --- BUG FIX : Axe X corrigé ---
+                // Avant : [0, 6, 12, 18, 24] où "24h" était placé à l'index 23 (= 23h réels),
+                // ce qui décalait visuellement tous les repères et induisait en erreur.
+                // Maintenant : [0, 6, 12, 18] — propre, exact, sans ambiguïté.
+                let xLabels = [0, 6, 12, 18];
+                let xFontSize = Math.round(Kirigami.Units.gridUnit * 0.45);
+                ctx.font = xFontSize + "px sans-serif";
                 for (let k = 0; k < xLabels.length; k++) {
-                    let xi  = xLabels[k];
-                    let idx = (xi === 24) ? 23 : xi;
-                    let xx  = xAt(idx);
+                    let xi = xLabels[k];
+                    let xx = xAt(xi);
                     let lbl = xi + "h";
 
-                    ctx.textAlign = "center";
+                    ctx.textAlign = xi === 0 ? "left" : "center";
                     ctx.textBaseline = "top";
                     ctx.fillStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, labelOpacity);
-                    ctx.shadowColor = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 0.9);
-                    ctx.shadowBlur = 4;
-                    ctx.fillText(lbl, xx, h - pB + 5);
+                    ctx.shadowColor = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 0.85);
+                    ctx.shadowBlur = 3;
+                    ctx.fillText(lbl, xx, h - pB + 4);
                     ctx.shadowBlur = 0;
+
                     ctx.strokeStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, axisOpacity);
-                    ctx.lineWidth = 1;
+                    ctx.lineWidth = 0.5;
                     ctx.beginPath();
                     ctx.moveTo(xx, h - pB);
-                    ctx.lineTo(xx, h - pB + 4);
+                    ctx.lineTo(xx, h - pB + 3);
                     ctx.stroke();
                 }
 
+                // Ligne de base X
                 ctx.strokeStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, axisOpacity);
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 0.5;
                 ctx.setLineDash([]);
                 ctx.beginPath();
                 ctx.moveTo(pL, h - pB);
                 ctx.lineTo(w - pR, h - pB);
                 ctx.stroke();
 
-                // Dégradé de Remplissage
+                // --- Couleurs par type et valeur ---
                 function getFillColor(type, v) {
                     if (type === 0) {
                         let isF = chartRoot.unit.indexOf("F") !== -1;
                         let valC = isF ? (v - 32) * 5/9 : v;
-
-                        // Échelle synchronisée et logique
-                        if(valC >= 35) return "220, 20, 60";   // Cramoisi (Extrême)
-                        if(valC >= 30) return "255, 69, 0";    // Rouge-orangé (Très chaud)
-                        if(valC >= 25) return "255, 140, 0";   // Orange (Chaud)
-                        if(valC >= 20) return "255, 215, 0";   // Jaune doré (Agréable - englobe 22°C)
-                        if(valC >= 15) return "50, 205, 50";   // Vert (Doux)
-                        if(valC >= 10) return "0, 191, 255";   // Bleu ciel (Frais)
-                        if(valC >= 0)  return "30, 144, 255";  // Bleu vif (Froid)
-                        return "0, 0, 139";                    // Bleu nuit (Gel)
+                        if(valC >= 35) return "220, 20, 60";
+                        if(valC >= 30) return "255, 69, 0";
+                        if(valC >= 25) return "255, 140, 0";
+                        if(valC >= 20) return "255, 215, 0";
+                        if(valC >= 15) return "50, 205, 50";
+                        if(valC >= 10) return "0, 191, 255";
+                        if(valC >= 0)  return "30, 144, 255";
+                        return "0, 0, 139";
                     }
-                    if (type === 1) return "74, 144, 226"; // Bleu doux / UI moderne pour l'humidité
-                    if (type === 2) return "34, 146, 164"; // Bleu Sarcelle (Vent)
+                    if (type === 1) return "74, 144, 226";
+                    if (type === 2) return "34, 146, 164";
                     if (type === 3) {
                         if(v >= 8) return "255, 0, 0";
                         if(v >= 6) return "255, 140, 0";
                         if(v >= 3) return "255, 215, 0";
                         return "50, 205, 50";
                     }
-
-                    return Math.round(chartRoot.lineColor.r*255) + "," + Math.round(chartRoot.lineColor.g*255) + "," + Math.round(chartRoot.lineColor.b*255);
+                    return Math.round(chartRoot.lineColor.r*255) + "," +
+                    Math.round(chartRoot.lineColor.g*255) + "," +
+                    Math.round(chartRoot.lineColor.b*255);
                 }
 
+                // --- Gradient de remplissage (3 stops pour une transition plus douce) ---
                 let baseColorStr = getFillColor(chartRoot.chartType, chartRoot.maxV);
                 let gradFill = ctx.createLinearGradient(0, pT, 0, h - pB);
-                gradFill.addColorStop(0, "rgba(" + baseColorStr + ", 0.32)");
-                gradFill.addColorStop(1, "rgba(" + baseColorStr + ", 0.0)");
+                gradFill.addColorStop(0.0, "rgba(" + baseColorStr + ", 0.26)");
+                gradFill.addColorStop(0.6, "rgba(" + baseColorStr + ", 0.07)");
+                gradFill.addColorStop(1.0, "rgba(" + baseColorStr + ", 0.00)");
 
                 ctx.beginPath();
-                ctx.moveTo(xAt(0), yAt(pts[0]));
-                for (let i = 1; i < n; i++) { ctx.lineTo(xAt(i), yAt(pts[i])); }
+                buildSmoothPath();
                 ctx.lineTo(xAt(n - 1), h - pB);
                 ctx.lineTo(xAt(0), h - pB);
                 ctx.closePath();
                 ctx.fillStyle = gradFill;
                 ctx.fill();
 
-                // Dégradé de la Ligne
+                // --- Gradient de la ligne ---
                 let strokeGrad;
                 if (chartRoot.chartType === 0) {
                     let isF = chartRoot.unit.indexOf("F") !== -1;
                     let maxT = isF ? 113 : 45;
                     let minT = isF ? 14 : -10;
                     strokeGrad = ctx.createLinearGradient(0, yAt(maxT), 0, yAt(minT));
-
-                    // Paliers parfaitement synchronisés avec les couleurs du texte
-                    strokeGrad.addColorStop(0.000, "#8B0000"); // 45°C
-                    strokeGrad.addColorStop(0.181, "#DC143C"); // 35°C
-                    strokeGrad.addColorStop(0.272, "#FF4500"); // 30°C
-                    strokeGrad.addColorStop(0.363, "#FF8C00"); // 25°C
-                    strokeGrad.addColorStop(0.454, "#FFD700"); // 20°C (Désormais 22°C sera un beau jaune pur)
-                    strokeGrad.addColorStop(0.545, "#32CD32"); // 15°C
-                    strokeGrad.addColorStop(0.636, "#00BFFF"); // 10°C
-                    strokeGrad.addColorStop(0.818, "#1E90FF"); // 0°C
-                    strokeGrad.addColorStop(1.000, "#00008B"); // -10°C
+                    strokeGrad.addColorStop(0.000, "#8B0000");
+                    strokeGrad.addColorStop(0.181, "#DC143C");
+                    strokeGrad.addColorStop(0.272, "#FF4500");
+                    strokeGrad.addColorStop(0.363, "#FF8C00");
+                    strokeGrad.addColorStop(0.454, "#FFD700");
+                    strokeGrad.addColorStop(0.545, "#32CD32");
+                    strokeGrad.addColorStop(0.636, "#00BFFF");
+                    strokeGrad.addColorStop(0.818, "#1E90FF");
+                    strokeGrad.addColorStop(1.000, "#00008B");
                 } else if (chartRoot.chartType === 1) {
-                    // Nouveau dégradé esthétique et minimaliste pour l'humidité
                     strokeGrad = ctx.createLinearGradient(0, yAt(100), 0, yAt(0));
-                    strokeGrad.addColorStop(0.0, "#2C3E50"); // Ardoise sombre
-                    strokeGrad.addColorStop(0.5, "#4A90E2"); // Bleu doux
-                    strokeGrad.addColorStop(1.0, "#AED6F1"); // Bleu pastel clair
+                    strokeGrad.addColorStop(0.0, "#2C3E50");
+                    strokeGrad.addColorStop(0.5, "#4A90E2");
+                    strokeGrad.addColorStop(1.0, "#AED6F1");
                 } else if (chartRoot.chartType === 2) {
                     let isMph = chartRoot.unit.indexOf("mph") !== -1;
                     let maxW = isMph ? 62 : 100;
@@ -270,68 +310,71 @@ Item {
                     strokeGrad = chartRoot.lineColor;
                 }
 
+                // AMÉLIORATION : trait plus épais (2 → 2.5px) + courbe lisse Bézier
                 ctx.beginPath();
-                ctx.moveTo(xAt(0), yAt(pts[0]));
-                for (let i = 1; i < n; i++) { ctx.lineTo(xAt(i), yAt(pts[i])); }
+                buildSmoothPath();
                 ctx.strokeStyle = strokeGrad;
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 2.5;
                 ctx.lineJoin = "round";
                 ctx.lineCap = "round";
                 ctx.setLineDash([]);
                 ctx.stroke();
 
-                // --- GESTION DU SURVOL (Points et Texte Minimaliste Pro) ---
-                let curIdx = chartRoot.hoverIndex !== -1 ? chartRoot.hoverIndex : Math.max(0, Math.min(chartRoot.currentHour, n - 1));
+                // --- Marqueur heure courante / survol ---
+                let curIdx = chartRoot.hoverIndex !== -1
+                ? chartRoot.hoverIndex
+                : Math.max(0, Math.min(chartRoot.currentHour, n - 1));
                 let cx = xAt(curIdx);
                 let cy = yAt(pts[curIdx]);
 
-                ctx.fillStyle = strokeGrad;
-
-                ctx.globalAlpha = 0.25;
+                // AMÉLIORATION : ligne verticale guide à l'heure courante
+                ctx.strokeStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, 0.12);
+                ctx.lineWidth = 1;
+                ctx.setLineDash([2, 4]);
                 ctx.beginPath();
-                ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+                ctx.moveTo(cx, pT);
+                ctx.lineTo(cx, h - pB);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Halo du point
+                ctx.fillStyle = strokeGrad;
+                ctx.globalAlpha = 0.20;
+                ctx.beginPath();
+                ctx.arc(cx, cy, 6, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.globalAlpha = 1.0;
 
+                // Point central
                 ctx.beginPath();
                 ctx.arc(cx, cy, 3, 0, Math.PI * 2);
                 ctx.fill();
 
-                ctx.lineWidth = 1;
+                // Bordure blanche/fond
+                ctx.lineWidth = 1.5;
                 ctx.strokeStyle = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 1.0);
                 ctx.stroke();
 
-                let curVal = chartRoot.preciseTemp ? parseFloat(pts[curIdx].toFixed(1)) : Math.round(pts[curIdx]);
+                // Valeur textuelle
+                let curVal = chartRoot.preciseTemp
+                ? parseFloat(pts[curIdx].toFixed(1))
+                : Math.round(pts[curIdx]);
                 let textToDraw = curVal.toString();
                 let fontSize = Math.round(Kirigami.Units.gridUnit * 0.55);
-
                 ctx.font = "bold " + fontSize + "px sans-serif";
 
-                let alignText = "center";
-                let xOff = cx;
-
-                if (curIdx === 0) {
-                    alignText = "left";
-                } else if (curIdx === n - 1) {
-                    alignText = "right";
-                }
-
+                let alignText = curIdx === 0 ? "left" : (curIdx === n - 1 ? "right" : "center");
                 let isNearTop = cy < pT + 25;
                 ctx.textBaseline = isNearTop ? "top" : "bottom";
-                let yOff = isNearTop ? cy + 12 : cy - 12;
+                let yOff = isNearTop ? cy + 12 : cy - 10;
 
-                // --- Le chiffre coloré uniformément (sans capsule) ---
                 let pointColorStr = getFillColor(chartRoot.chartType, pts[curIdx]);
                 ctx.fillStyle = "rgb(" + pointColorStr + ")";
                 ctx.textAlign = alignText;
-
-                // Légère ombre pour qu'il reste lisible même s'il chevauche une ligne d'axe
-                ctx.shadowColor = Qt.rgba(0, 0, 0, 0.4);
-                ctx.shadowBlur = 3;
+                ctx.shadowColor = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 0.6);
+                ctx.shadowBlur = 4;
                 ctx.shadowOffsetY = 1;
-
-                ctx.fillText(textToDraw, xOff, yOff);
-
+                ctx.fillText(textToDraw, cx, yOff);
                 ctx.shadowColor = "transparent";
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetY = 0;

@@ -484,7 +484,8 @@ Item {
                 unit:        dayDetailView.activeUnit
                 values:      dayDetailView.activeValues
                 lineColor:   dayDetailView.activeColor
-                currentHour: new Date().getHours()
+                // currentHour est désormais géré en interne par LineChart.qml
+                // via un Timer qui se rafraîchit chaque minute. Ne pas surcharger ici.
 
                 preciseTemp: root.preciseTempChart
                 chartType:   rootItem.activeChart
