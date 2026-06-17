@@ -32,7 +32,7 @@ https://github.com/user-attachments/assets/9bf4881e-68da-4c3b-9591-92e3b6b0d43a
   * **Data Precision**: Toggle decimal display independently for the panel and interactive charts.
   * **Timing**: Set your preferred weather update interval.
   * **...and much more!**
-* **Multilingual Support**: Available in 🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French, 🇯🇵 Japanese, 🇳🇱 Dutch, 🇵🇹 Portuguese, 🇷🇺 Russian, 🇹🇷 Turkish, 🇻🇳 Vietnamese, and 🇨🇳 Simplified Chinese.
+* **Multilingual Support**: Available in 🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French, 🇯🇵 Japanese, 🇳🇱 Dutch, 🇵🇹 Portuguese, 🇷🇺 Russian, 🇹🇷 Turkish, 🇻🇳 Vietnamese, 🇨🇳 Simplified Chinese, German 🇩🇪, and Arabic 🇸🇦
 
 ---
 
@@ -92,9 +92,7 @@ Your support helps keep the project alive and motivates future improvements.
 
 Planned improvements for future releases:
 
-* Fix hour axis alignment issues (22h and 23h labels slightly misaligned when interacting with the curve).
 * Improve scrolling behavior for better usability when only a few weather icons remain.
-* Add new translations (German 🇩🇪 and Arabic 🇸🇦).
 * Improve and refine weather animations (fix visual issues such as moon overlapping text).
 * Additional ideas and community suggestions are always welcome.
 
