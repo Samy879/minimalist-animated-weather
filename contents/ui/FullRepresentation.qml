@@ -848,7 +848,7 @@ Item {
                 font.bold: true
                 leftPadding: -0.5
                 anchors.top: compactNumLabel.top
-                anchors.topMargin: 1.8 // Descend la lettre de 3 pixels (Ajuste selon ton goût)
+                anchors.topMargin: 2.25 // Descend la lettre de 3 pixels (Ajuste selon ton goût)
                 color: Kirigami.Theme.textColor
             }
             // Percent → légèrement sous le centre, gap à gauche
@@ -921,7 +921,7 @@ Item {
                 text: parent._split.unit.charAt(0)
                 font.pixelSize: Kirigami.Units.gridUnit * 0.48
                 font.bold: true
-                leftPadding: 1
+                //leftPadding: 0
                 anchors.top: detailNumLabel.top
                 anchors.topMargin: 1
                 color: Kirigami.Theme.textColor
