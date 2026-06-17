@@ -92,9 +92,10 @@ Your support helps keep the project alive and motivates future improvements.
 
 Planned improvements for future releases:
 
-* Improve and refine weather animations (fix visual issues such as moon overlapping text).
+* Fix hour axis alignment issues (22h and 23h labels slightly misaligned when interacting with the curve).
 * Improve scrolling behavior for better usability when only a few weather icons remain.
 * Add new translations (German 🇩🇪 and Arabic 🇸🇦).
+* Improve and refine weather animations (fix visual issues such as moon overlapping text).
 * Additional ideas and community suggestions are always welcome.
 
 ---
