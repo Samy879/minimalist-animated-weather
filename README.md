@@ -106,7 +106,7 @@ Additional ideas and community suggestions are always welcome.
 
 ---
 
-## 🤝 Credits
+## 🎖️ Credits
 
 ### Original Project
 
