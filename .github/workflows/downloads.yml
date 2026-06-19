@@ -1,30 +1,38 @@
-name: Mettre à jour le compteur KDE Store
+name: Update KDE Store Downloads Badge
 
 on:
   schedule:
-    - cron: '0 * * * *' # S'exécute toutes les heures
-  workflow_dispatch: # Te permet aussi de le lancer manuellement via l'interface GitHub
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch:    # Allows manual trigger
 
 jobs:
   update-badge:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Récupérer le dépôt
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Calculer les téléchargements et générer le JSON
+      - name: Fetch downloads and generate JSON
         run: |
-          # Ta commande curl + jq
+          # Fetch total downloads from KDE Store
           TOTAL=$(curl -s 'https://store.kde.org/p/2356087/loadFiles' | jq '[.files[].downloaded_count_uk // 0] | add')
           
-          # Création du fichier au format attendu par Shields.io
-          echo "{\"schemaVersion\": 1, \"label\": \"Téléchargements\", \"message\": \"$TOTAL\", \"color\": \"blue\"}" > downloads-badge.json
+          # Ensure the target directory exists
+          mkdir -p .github/badges
+          
+          # Generate the JSON file for Shields.io
+          echo "{\"schemaVersion\": 1, \"label\": \"Downloads\", \"message\": \"$TOTAL\", \"color\": \"blue\"}" > .github/badges/downloads-badge.json
 
-      - name: Commit et Push des changements
+      - name: Commit and push changes
         run: |
+          # Setup Git bot user
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add downloads-badge.json
-          # Ne fait un commit que si le nombre a changé
-          git commit -m "Mise à jour automatique du compteur de téléchargements" || exit 0
+          
+          # Stage the badge file
+          git add .github/badges/downloads-badge.json
+          
+          # Commit only if the file has changed, then push
+          git commit -m "chore: update downloads badge" || exit 0
           git push
