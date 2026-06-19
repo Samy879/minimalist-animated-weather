@@ -12,7 +12,10 @@ This project is an enhanced version of the original [Minimal Chaac Weather](http
 
 ## 📸 Showcase
 
-https://github.com/user-attachments/assets/9bf4881e-68da-4c3b-9591-92e3b6b0d43a
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/39da75bd-efe7-4666-8f78-fb05b5ab04f0" width="600" controls></video>
+</div>
 
 |                  Dark Mode                |              Light Mode              |
 | :---------------------------------------: | :----------------------------------: |
