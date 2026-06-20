@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Verify version
+        env:
+          TAG_VERSION: ${{ github.ref_name }}
+        run: |
+          version="${TAG_VERSION#v}"
+          meta_version="$(jq -r '.KPlugin.Version' metadata.json)"
+          if [ "$meta_version" != "$version" ]; then
+            echo "ERROR: Tag version ($version) does not match metadata.json ($meta_version)"
+            exit 1
+          fi
+          echo "Version verified: $version"
+
+  build:
+    needs: verify
+    uses: ./.github/workflows/build-plasmoid.yml
+    with:
+      ref: ${{ github.ref }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download plasmoid artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: plasmoid
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          plasmoid_file="${{ needs.build.outputs.plasmoid_file }}"
+
+          gh release create "$tag" \
+            --title "${tag} - Minimalist Animated Weather" \
+            --notes-from-tag \
+            "$plasmoid_file"
