@@ -1,0 +1,49 @@
+name: Build Plasmoid
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Git ref to checkout
+        required: false
+        type: string
+    outputs:
+      plasmoid_file:
+        description: Plasmoid package filename
+        value: ${{ jobs.build.outputs.plasmoid_file }}
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Optional ref override (leave empty to use the selected branch)
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      plasmoid_file: ${{ steps.package.outputs.plasmoid_file }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
+
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext
+
+      - name: Build translations
+        run: bash ./translate/build.sh
+
+      - name: Package plasmoid
+        id: package
+        run: |
+          plasmoid_file="minimalist-animated-weather.plasmoid"
+          zip -r "$plasmoid_file" metadata.json metadata.desktop contents/
+          echo "plasmoid_file=$plasmoid_file" >> "$GITHUB_OUTPUT"
+
+      - name: Upload plasmoid artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plasmoid
+          path: ${{ steps.package.outputs.plasmoid_file }}
