@@ -1,0 +1,29 @@
+name: Build Plasmoid
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext
+
+      - name: Build translations
+        run: bash ./translate/build.sh
+
+      - name: Package plasmoid
+        run: |
+          file_name="minimalist-animated-weather.plasmoid"
+          zip -r "$file_name" metadata.json metadata.desktop contents/
+
+      - name: Upload plasmoid artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: plasmoid
+          path: '*.plasmoid'
