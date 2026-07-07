@@ -1,0 +1,40 @@
+name: Update Stargazers Data
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch API Data
+        run: |
+          mkdir -p data
+          
+          # Récupère la liste des derniers stargazers et la sauvegarde
+          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github+json" \
+               "https://api.github.com/repos/${{ github.repository }}/stargazers?per_page=16" > data/stargazers.json
+          
+          # Récupère les infos globales du dépôt (pour le compteur total)
+          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github+json" \
+               "https://api.github.com/repos/${{ github.repository }}" > data/repo.json
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/stargazers.json data/repo.json
+          
+          # Si aucune nouvelle étoile n'a été ajoutée, le script s'arrête ici proprement
+          git commit -m "chore: update stargazers data" || echo "No changes to commit"
+          git push
