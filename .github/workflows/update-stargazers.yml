@@ -16,27 +16,26 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Fetch API Data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Création du dossier caché data dans .github
           mkdir -p .github/data
           
-          # Récupère la liste des derniers stargazers et la sauvegarde
-          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-               -H "Accept: application/vnd.github+json" \
-               "https://api.github.com/repos/${{ github.repository }}/stargazers?per_page=16" > .github/data/stargazers.json
+          # Récupère 100% des stargazers (parcourt toutes les pages automatiquement via --paginate)
+          gh api --paginate "repos/${{ github.repository }}/stargazers" > .github/data/stargazers.json
           
-          # Récupère les infos globales du dépôt
-          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-               -H "Accept: application/vnd.github+json" \
-               "https://api.github.com/repos/${{ github.repository }}" > .github/data/repo.json
+          # Récupère les infos globales du dépôt (pour le compteur total)
+          gh api "repos/${{ github.repository }}" > .github/data/repo.json
 
       - name: Commit and Push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # Ajoute les fichiers depuis le nouveau chemin
+          # Ajoute les fichiers depuis le chemin .github/data/
           git add .github/data/stargazers.json .github/data/repo.json
           
+          # Commit les changements ou ignore si rien n'a changé depuis la dernière exécution
           git commit -m "chore: update stargazers data" || echo "No changes to commit"
           git push
