@@ -1,187 +1,925 @@
-# Translation of Minimalist Animated Weather in Japanese
-# Copyright (C) 2026
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the plasma_applet_com.github.samy879.minimalist-animated-weather package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Minimalist Animated Weather\n"
-"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather/issues\n"
-"POT-Creation-Date: 2026-05-12 00:00+0300\n"
-"PO-Revision-Date: 2026-06-16 17:49+0200\n"
-"Language-Team: Japanese <ja@li.org>\n"
+"Project-Id-Version: plasma_applet_com.github.samy879.minimalist-animated-weather\n"
+"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather\n"
+"POT-Creation-Date: 2026-07-08 09:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Clear"
-msgstr "晴れ"
+#: ../contents/ui/settings/ConfigData.qml:206
+msgid " / "
+msgstr " / "
 
-msgid "Cloudy"
-msgstr "曇り"
+#: ../contents/ui/settings/ConfigSupport.qml:988
+#: ../contents/ui/settings/ConfigSupport.qml:1591
+msgid "/10"
+msgstr "/10"
 
-msgid "Drizzle"
-msgstr "霧雨"
+#: ../contents/ui/settings/ConfigSource.qml:643
+msgid "API Key:"
+msgstr "APIキー:"
 
-msgid "Rain"
-msgstr "雨"
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "API key validated."
+msgstr "APIキーが検証されました。"
 
-msgid "Snow"
-msgstr "雪"
+#: ../contents/ui/settings/ConfigSupport.qml:1232
+msgid "Adds a rainbow to the animated theme when it's raining with the sun still out."
+msgstr "天気雨のとき、アニメーションテーマに虹を追加します。"
 
-msgid "Hail"
-msgstr "雹"
+#: ../contents/ui/settings/ConfigAppearance.qml:278
+msgid "Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers."
+msgstr "グラフにカーソルを合わせたときの数値を、整数ではなく小数点第1位まで表示します。"
 
-msgid "Showers"
-msgstr "にわか雨"
+#: ../contents/ui/settings/ConfigSupport.qml:1214
+msgid "Adds shooting stars to the animated theme's night sky."
+msgstr "アニメーションテーマの夜空に流れ星を追加します。"
 
-msgid "Storm"
-msgstr "嵐"
+#: ../contents/ui/settings/ConfigAppearance.qml:271
+msgid "Animations:"
+msgstr "アニメーション:"
 
-msgid "Apparent Temp"
-msgstr "体感"
+#: ../contents/ui/settings/ConfigSupport.qml:229
+msgid "Anonymous"
+msgstr "匿名"
 
-msgid "Humidity"
-msgstr "湿度"
+#: ../contents/config/config.qml:15
+msgid "Appearance"
+msgstr "外観"
 
-msgid "UV Index"
-msgstr "UV指数"
+#: ../contents/ui/settings/ConfigAppearance.qml:354
+msgid "Are you sure you want to reset all appearance settings to their default values? This action cannot be undone."
+msgstr "外観の設定をすべて初期値に戻しますか?この操作は取り消せません。"
 
-msgid "Wind"
-msgstr "風"
+#: ../contents/ui/settings/ConfigData.qml:434
+msgid "Are you sure you want to reset all data metrics and forecast ranges to their default values? This action cannot be undone."
+msgstr "データ項目と予報期間の設定をすべて初期値に戻しますか?この操作は取り消せません。"
 
-msgid "Feels"
-msgstr "体感"
+#: ../contents/ui/settings/ConfigSource.qml:743
+msgid "Are you sure you want to reset the location, source and update settings to their default values? This action cannot be undone."
+msgstr "位置情報、データソース、更新の設定を初期値に戻しますか?この操作は取り消せません。"
 
-msgid "Hum."
-msgstr "湿度"
+#: ../contents/ui/settings/ResetSection.qml:24
+msgid "Are you sure you want to restore this page's settings to their default values? This action cannot be undone."
+msgstr "このページの設定を初期値に戻しますか?この操作は取り消せません。"
 
-msgid "UV"
-msgstr "UV"
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Automatic"
+msgstr "自動"
 
-msgid "Temp."
-msgstr "温度"
+#: ../contents/ui/settings/ConfigSupport.qml:1826
+msgid "Awesome!"
+msgstr "素晴らしい!"
 
-msgid "Restore default settings?"
-msgstr "デフォルト設定を復元しますか？"
+#: ../contents/ui/settings/ConfigAppearance.qml:326
+msgid "Background opacity:"
+msgstr "背景の不透明度:"
 
-msgid "All settings on this page will be reset to their defaults. This cannot be undone."
-msgstr "このページのすべての設定はデフォルトにリセットされます。この操作は元に戻せません。"
-
-msgid "Location"
-msgstr "場所"
-
-msgid "Automatic location (IP):"
-msgstr "自動位置情報 (IP):"
-
-msgid "Coordinates:"
-msgstr "座標:"
-
-msgid "Latitude"
-msgstr "緯度"
-
-msgid "Longitude"
-msgstr "経度"
-
-msgid "Units & updates"
-msgstr "単位と更新"
-
-msgid "Units:"
-msgstr "単位:"
-
-msgid "Update interval:"
-msgstr "更新間隔:"
-
-msgid "Refresh now"
-msgstr "今すぐ更新"
-
-msgid "Style"
-msgstr "スタイル"
-
-msgid "Panel"
-msgstr "パネル"
-
-msgid "Show:"
-msgstr "表示:"
-
-msgid "Temperature"
-msgstr "温度"
-
-msgid "Condition"
-msgstr "状態"
-
-msgid "Reverse order"
-msgstr "順序を逆にする"
-
-msgid "Temperature font:"
-msgstr "温度のフォント:"
-
+#: ../contents/ui/settings/ConfigAppearance.qml:201
+#: ../contents/ui/settings/ConfigAppearance.qml:237
+#: ../contents/ui/settings/ConfigSupport.qml:1376
 msgid "Bold"
 msgstr "太字"
 
-msgid "Condition font:"
-msgstr "状態のフォント:"
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Bug"
+msgstr "バグ"
 
-msgid "Decimals:"
-msgstr "小数点:"
+#: ../contents/ui/settings/ConfigSupport.qml:1400
+msgid "Bulleted List"
+msgstr "箇条書きリスト"
 
-msgid "Full view"
-msgstr "詳細表示"
+#: ../contents/ui/settings/ConfigData.qml:428
+msgid "Chart Tabs"
+msgstr "グラフタブ"
 
+#: ../contents/ui/settings/ConfigData.qml:429
+msgid "Charts available to swipe through. If none are selected, charts are disabled."
+msgstr "スワイプで切り替えられるグラフです。何も選択されていない場合、グラフ表示は無効になります。"
+
+#: ../contents/ui/js/WeatherDescription.js:17
+#: ../contents/ui/js/WeatherDescription.js:18
+#: ../contents/ui/js/WeatherDescription.js:50
+msgid "Clear"
+msgstr "快晴"
+
+#: ../contents/ui/FullRepresentation.qml:663
+msgid "Click for hourly details"
+msgstr "クリックして時間ごとの詳細を表示"
+
+#: ../contents/ui/js/DetailsCatalog.js:131
+msgctxt "Compact widget bottom row label"
+msgid "Cloud Cover"
+msgstr "雲量"
+
+#: ../contents/ui/js/DetailsCatalog.js:130
+msgctxt "Settings label"
+msgid "Cloud Cover"
+msgstr "雲量"
+
+#: ../contents/ui/js/DetailsCatalog.js:129
+msgctxt "Chart Y axis label"
+msgid "Clouds"
+msgstr "雲量"
+
+#: ../contents/ui/js/DetailsCatalog.js:128
+msgctxt "Chart tab label"
+msgid "Clouds"
+msgstr "雲量"
+
+#: ../contents/ui/js/WeatherDescription.js:19
+#: ../contents/ui/js/WeatherDescription.js:20
+msgid "Cloudy"
+msgstr "曇り"
+
+#: ../contents/ui/settings/ConfigSupport.qml:834
+msgid "Community Love"
+msgstr "コミュニティからの応援"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:167
+msgid "Condition"
+msgstr "天気"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:214
+msgid "Condition size:"
+msgstr "天気表示のサイズ:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:253
 msgid "Condition:"
-msgstr "状態:"
+msgstr "天気:"
 
-msgid "Chart decimals:"
-msgstr "グラフの小数点:"
+#: ../contents/ui/settings/ConfigSource.qml:523
+msgid "Coordinates:"
+msgstr "座標:"
 
-msgid "Cursor decimals:"
-msgstr "カーソルの小数点:"
+#: ../contents/ui/settings/ConfigAppearance.qml:311
+msgid "Corner radius:"
+msgstr "角の丸み:"
 
-msgid "Shows one decimal while hovering the chart.\nWithout it, the value only updates at whole numbers and can appear stuck as you move along."
-msgstr "グラフにホバーすると小数第1位まで表示されます。\nこれがないと、値は整数でのみ更新され、移動中にフリーズしているように見えることがあります。"
+#: ../contents/config/config.qml:23
+msgid "Data & Charts"
+msgstr "データとグラフ"
 
-msgid "Y-axis reading:"
-msgstr "Y軸の読み取り:"
+#: ../contents/ui/settings/ConfigData.qml:303
+msgid "Days shown cannot go below the minimum forecast length of %1."
+msgstr "表示日数は最小予報期間の%1日を下回ることはできません。"
 
-msgid "Hover the left edge of the chart to read a value off the Y axis instead of following the curve."
-msgstr "曲線をたどる代わりに、グラフの左端にホバーしてY軸の値を読み取ります。"
+#: ../contents/ui/settings/ConfigData.qml:296
+msgid "Days shown reduced to %1 to fit the new start day."
+msgstr "新しい開始日に合わせて、表示日数が%1日に短縮されました。"
 
-msgid "Weather animations:"
-msgstr "気象アニメーション:"
+#: ../contents/ui/settings/ConfigData.qml:376
+msgid "Days to display:"
+msgstr "表示日数:"
 
-msgid "Details:"
-msgstr "詳細:"
+#: ../contents/ui/settings/ConfigAppearance.qml:204
+msgid "Decimals:"
+msgstr "小数点以下の桁数:"
 
-msgid "Apparent temp."
+#: ../contents/ui/settings/ConfigData.qml:370
+msgid "Delays the forecast start by a specific number of days."
+msgstr "予報の開始日を指定した日数だけ遅らせます。"
+
+#: ../contents/ui/js/WeatherDescription.js:55
+msgid "Depositing rime fog"
+msgstr "着氷性の霧"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1432
+msgid "Describe your idea or the bug in detail here..."
+msgstr "アイデアやバグの詳細をここに記入してください…"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:303
+msgid "Desktop Widget"
+msgstr "デスクトップウィジェット"
+
+#: ../contents/ui/settings/ConfigSource.qml:510
+#: ../contents/ui/settings/ConfigSource.qml:573
+msgid "Detection failed"
+msgstr "検出に失敗しました"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1215
+#: ../contents/ui/settings/ConfigSupport.qml:1233
+msgid "Disabled because animations are turned off in the Appearance settings."
+msgstr "外観設定でアニメーションが無効になっているため、この項目は使用できません。"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:287
+msgid "Displays minutes alongside hours when hovering (e.g. 11:04 instead of 11h) for a more precise time."
+msgstr "カーソルを合わせたときに、時だけでなく分も表示し、より正確な時刻を示します(例: 11時ではなく11:04)。"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:266
+msgid "Displays the current weather description (e.g., Sunny, Rainy)."
+msgstr "現在の天気の説明を表示します(例: 晴れ、雨)。"
+
+#: ../contents/ui/js/WeatherDescription.js:23
+#: ../contents/ui/js/WeatherDescription.js:24
+#: ../contents/ui/js/WeatherDescription.js:25
+#: ../contents/ui/js/WeatherDescription.js:26
+#: ../contents/ui/js/WeatherDescription.js:27
+msgid "Drizzle"
+msgstr "霧雨"
+
+#: ../contents/ui/js/WeatherDescription.js:58
+msgid "Drizzle dense intensity"
+msgstr "強い霧雨"
+
+#: ../contents/ui/js/WeatherDescription.js:56
+msgid "Drizzle light intensity"
+msgstr "弱い霧雨"
+
+#: ../contents/ui/js/WeatherDescription.js:57
+msgid "Drizzle moderate intensity"
+msgstr "並の霧雨"
+
+#: ../contents/ui/settings/ConfigSupport.qml:537
+msgid "Enjoying Minimalist Animated Weather?"
+msgstr "Minimalist Animated Weatherを気に入っていただけましたか?"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Every star and review helps the project grow."
+msgstr "スターやレビューの一つひとつが、プロジェクトの成長を後押しします。"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:243
+msgid "Expanded View"
+msgstr "拡張ビュー"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1300
+msgid "Feedback & Bug Reports"
+msgstr "フィードバックとバグ報告"
+
+#: ../contents/ui/js/DetailsCatalog.js:49
+msgctxt "Chart Y axis label"
+msgid "Feels"
+msgstr "体感"
+
+#: ../contents/ui/js/DetailsCatalog.js:48
+msgctxt "Chart tab label"
+msgid "Feels"
+msgstr "体感"
+
+#: ../contents/ui/js/DetailsCatalog.js:51
+msgctxt "Compact widget bottom row label"
+msgid "Feels Like"
+msgstr "体感"
+
+#: ../contents/ui/js/DetailsCatalog.js:50
+msgctxt "Settings label"
+msgid "Feels Like"
 msgstr "体感温度"
 
-msgid "UV index"
-msgstr "UV指数"
+#: ../contents/ui/js/WeatherDescription.js:21
+#: ../contents/ui/js/WeatherDescription.js:22
+#: ../contents/ui/js/WeatherDescription.js:54
+msgid "Fog"
+msgstr "霧"
 
-msgid "Wind speed"
-msgstr "風速"
+#: ../contents/ui/settings/ConfigSource.qml:735
+msgid "Force refresh"
+msgstr "強制更新"
 
-msgid "Desktop widget:"
-msgstr "デスクトップウィジェット:"
+#: ../contents/ui/settings/ConfigData.qml:336
+msgid "Forecast Range"
+msgstr "予報期間"
 
-msgid "Radius"
-msgstr "半径"
+#: ../contents/ui/settings/ConfigSupport.qml:1305
+msgid "Found a bug or have an idea? Fill out the form below to send it directly to the developer."
+msgstr "バグを見つけましたか、それともアイデアがありますか?以下のフォームに記入すると、開発者に直接送信されます。"
 
-msgid "Opacity"
-msgstr "不透明度"
+#: ../contents/ui/js/WeatherDescription.js:60
+msgid "Freezing Drizzle dense intensity"
+msgstr "強い着氷性の霧雨"
 
-msgid "Only applies when the widget sits directly on the desktop, not in a panel popup."
-msgstr "ウィジェットがパネルのポップアップではなく、デスクトップに直接配置されている場合にのみ適用されます。"
+#: ../contents/ui/js/WeatherDescription.js:59
+msgid "Freezing Drizzle light intensity"
+msgstr "弱い着氷性の霧雨"
 
-msgid "Forecast"
-msgstr "予報"
+#: ../contents/ui/js/WeatherDescription.js:65
+msgid "Freezing Rain heavy intensity"
+msgstr "強い着氷性の雨"
 
+#: ../contents/ui/js/WeatherDescription.js:64
+msgid "Freezing Rain light intensity"
+msgstr "弱い着氷性の雨"
+
+#: ../contents/ui/settings/ConfigSupport.qml:718
+#: ../contents/ui/settings/ConfigSupport.qml:1064
+msgid "GitHub"
+msgstr "GitHub"
+
+#: ../contents/ui/js/WeatherDescription.js:36
+msgid "Hail"
+msgstr "ひょう"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Hide API key"
+msgstr "APIキーを隠す"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:276
+msgid "Hover decimals:"
+msgstr "カーソル表示時の小数点以下の桁数:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:297
+msgid "Hovering over the Y-axis draws a horizontal guideline and highlights every matching point on the chart."
+msgstr "Y軸にカーソルを合わせると水平のガイド線が表示され、グラフ上の対応するすべての点が強調表示されます。"
+
+#: ../contents/ui/js/DetailsCatalog.js:65
+msgctxt "Chart Y axis label"
+msgid "Hum."
+msgstr "湿度"
+
+#: ../contents/ui/js/DetailsCatalog.js:64
+msgctxt "Chart tab label"
+msgid "Hum."
+msgstr "湿度"
+
+#: ../contents/ui/js/DetailsCatalog.js:67
+msgctxt "Compact widget bottom row label"
+msgid "Humidity"
+msgstr "湿度"
+
+#: ../contents/ui/js/DetailsCatalog.js:66
+msgctxt "Settings label"
+msgid "Humidity"
+msgstr "湿度"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Imperial  ·  °F, mph"
+msgstr "ヤードポンド法  ·  °F、mph"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Improvement"
+msgstr "改善提案"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1416
+#: ../contents/ui/settings/ConfigSupport.qml:1476
+msgid "Insert Link"
+msgstr "リンクを挿入"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:295
+msgid "Interactive Y-axis:"
+msgstr "インタラクティブなY軸:"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid"
+msgstr "無効"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid API key."
+msgstr "無効なAPIキーです。"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1384
+msgid "Italic"
+msgstr "斜体"
+
+#: ../contents/ui/settings/ConfigSupport.qml:595
+#: ../contents/ui/settings/ConfigSupport.qml:847
+msgid "KDE Store"
+msgstr "KDEストア"
+
+#: ../contents/ui/settings/ConfigSource.qml:539
+msgid "Latitude"
+msgstr "緯度"
+
+#: ../contents/ui/settings/ConfigSupport.qml:600
+msgid "Leave a rating and a comment to help promote the plasmoid and reach more users."
+msgstr "評価とコメントを残して、このプラズモイドをより多くのユーザーに広めましょう。"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Left"
+msgstr "左"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1512
+msgid "Link text"
+msgstr "リンクのテキスト"
+
+#: ../contents/ui/settings/ConfigSupport.qml:909
+msgid "Loading ratings…"
+msgstr "評価を読み込み中…"
+
+#: ../contents/ui/settings/ConfigSource.qml:440
+msgid "Location Settings"
+msgstr "位置情報の設定"
+
+#: ../contents/ui/settings/ConfigSource.qml:465
+msgid "Location:"
+msgstr "場所:"
+
+#: ../contents/ui/settings/ConfigSource.qml:545
+msgid "Longitude"
+msgstr "経度"
+
+#: ../contents/ui/js/WeatherDescription.js:51
+msgid "Mainly clear"
+msgstr "ほぼ快晴"
+
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Manual"
+msgstr "手動"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Metric  ·  °C, km/h"
+msgstr "メートル法  ·  °C、km/h"
+
+#: ../contents/ui/settings/ConfigData.qml:414
+msgid "Metrics"
+msgstr "表示項目"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Middle"
+msgstr "中央"
+
+#: ../contents/ui/settings/ConfigData.qml:187
+msgid "Move down"
+msgstr "下に移動"
+
+#: ../contents/ui/settings/ConfigData.qml:186
+msgid "Move up"
+msgstr "上に移動"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1825
+msgid "Much appreciated!"
+msgstr "感謝します!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:885
+#: ../contents/ui/settings/ConfigSupport.qml:1102
+msgid "N/A"
+msgstr "N/A"
+
+#: ../contents/ui/settings/ConfigData.qml:430
+msgid "No charts selected. The chart view is disabled."
+msgstr "グラフが選択されていません。グラフ表示は無効になっています。"
+
+#: ../contents/ui/settings/ConfigSupport.qml:923
+msgid "No ratings yet, be the first!"
+msgstr "まだ評価がありません。最初のレビューを投稿してみませんか?"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1598
+msgid "Not rated"
+msgstr "未評価"
+
+#: ../contents/ui/settings/ConfigData.qml:407
+msgid "Number of days to display in the forecast view."
+msgstr "予報表示に表示する日数です。"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1408
+msgid "Numbered List"
+msgstr "番号付きリスト"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1455
+msgid "Open GitHub Issue"
+msgstr "GitHubでIssueを開く"
+
+#: ../contents/ui/js/WeatherDescription.js:53
+msgid "Overcast"
+msgstr "曇天"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:153
+msgid "Panel Bar"
+msgstr "パネルバー"
+
+#: ../contents/ui/js/WeatherDescription.js:52
+msgid "Partly cloudy"
+msgstr "晴れ時々曇り"
+
+#: ../contents/ui/settings/ConfigSource.qml:653
+#: ../contents/ui/settings/ConfigSource.qml:654
+#: ../contents/ui/settings/ConfigSource.qml:655
+#: ../contents/ui/settings/ConfigSource.qml:656
+#: ../contents/ui/settings/ConfigSource.qml:657
+msgid "Paste key here..."
+msgstr "ここにキーを貼り付け…"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1315
+msgid "Please fill in both the object/title and the description."
+msgstr "件名と説明の両方を入力してください。"
+
+#: ../contents/ui/settings/ConfigSource.qml:594
+msgid "Provider:"
+msgstr "プロバイダー:"
+
+#: ../contents/ui/js/WeatherDescription.js:28
+#: ../contents/ui/js/WeatherDescription.js:29
+#: ../contents/ui/js/WeatherDescription.js:30
+#: ../contents/ui/js/WeatherDescription.js:31
+#: ../contents/ui/js/WeatherDescription.js:32
+msgid "Rain"
+msgstr "雨"
+
+#: ../contents/ui/js/DetailsCatalog.js:113
+msgctxt "Chart Y axis label"
+msgid "Rain"
+msgstr "雨"
+
+#: ../contents/ui/js/DetailsCatalog.js:112
+msgctxt "Chart tab label"
+msgid "Rain"
+msgstr "雨"
+
+#: ../contents/ui/js/DetailsCatalog.js:115
+msgctxt "Compact widget bottom row label"
+msgid "Rain Prob."
+msgstr "降水確率"
+
+#: ../contents/ui/js/DetailsCatalog.js:114
+msgctxt "Settings label"
+msgid "Rain Probability"
+msgstr "降水確率"
+
+#: ../contents/ui/js/WeatherDescription.js:63
+msgid "Rain heavy intensity"
+msgstr "強い雨"
+
+#: ../contents/ui/js/WeatherDescription.js:62
+msgid "Rain moderate intensity"
+msgstr "並の雨"
+
+#: ../contents/ui/components/WeatherData.qml:65
+msgid "Rain probability"
+msgstr "降水確率"
+
+#: ../contents/ui/js/WeatherDescription.js:71
+msgid "Rain showers moderate"
+msgstr "並のにわか雨"
+
+#: ../contents/ui/js/WeatherDescription.js:70
+msgid "Rain showers slight"
+msgstr "弱いにわか雨"
+
+#: ../contents/ui/js/WeatherDescription.js:72
+msgid "Rain showers violent"
+msgstr "非常に強いにわか雨"
+
+#: ../contents/ui/js/WeatherDescription.js:61
+msgid "Rain slight intensity"
+msgstr "弱い雨"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1225
+msgid "Rainbow Effect"
+msgstr "虹エフェクト"
+
+#: ../contents/ui/settings/ConfigSupport.qml:641
+msgid "Rate"
+msgstr "評価する"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1552
+msgid "Ratings on the KDE Store"
+msgstr "KDEストアでの評価"
+
+#: ../contents/ui/settings/ConfigSupport.qml:916
+msgid "Ratings unavailable right now."
+msgstr "現在、評価を取得できません。"
+
+#: ../contents/ui/settings/ConfigSupport.qml:898
+msgid "Read comments"
+msgstr "コメントを読む"
+
+#: ../contents/ui/settings/ConfigSource.qml:635
+msgid "Recommended"
+msgstr "推奨"
+
+#: ../contents/ui/settings/ConfigSource.qml:715
+msgid "Refresh every:"
+msgstr "更新間隔:"
+
+#: ../contents/ui/main.qml:16
+msgid "Refresh now"
+msgstr "今すぐ更新"
+
+#: ../contents/ui/settings/ConfigSource.qml:326
+msgid "Refreshing too often may exhaust your API limits. Minimum recommended is %1 min."
+msgstr "更新頻度が高すぎるとAPIの利用制限に達する可能性があります。推奨される最小間隔は%1分です。"
+
+#: ../contents/ui/settings/ResetSection.qml:28
+msgid "Reset"
+msgstr "リセット"
+
+#: ../contents/ui/settings/ResetSection.qml:48
+msgid "Resets every setting on this page to its factory default value."
+msgstr "このページのすべての設定を初期値に戻します。"
+
+#: ../contents/ui/settings/ResetSection.qml:42
+#: ../contents/ui/settings/ResetSection.qml:58
+msgid "Restore Defaults"
+msgstr "初期設定に戻す"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:168
+msgid "Reverse order"
+msgstr "順序を逆にする"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Right"
+msgstr "右"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:320
+msgid "Rounds the widget's corners."
+msgstr "ウィジェットの角を丸くします。"
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "Saved"
+msgstr "保存しました"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1462
+msgid "Send via Email"
+msgstr "メールで送信"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:348
+msgid "Sets the widget's background transparency. This also works in the panel, though the result is limited by your taskbar's own behavior."
+msgstr "ウィジェットの背景の透明度を設定します。パネル内でも機能しますが、結果はタスクバー自体の動作に左右されます。"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1207
+msgid "Shooting Star Effect"
+msgstr "流れ星エフェクト"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Show API key"
+msgstr "APIキーを表示"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:164
+msgid "Show:"
+msgstr "表示:"
+
+#: ../contents/ui/js/WeatherDescription.js:37
+#: ../contents/ui/js/WeatherDescription.js:38
+#: ../contents/ui/js/WeatherDescription.js:39
+#: ../contents/ui/js/WeatherDescription.js:40
+#: ../contents/ui/js/WeatherDescription.js:41
+msgid "Showers"
+msgstr "にわか雨"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:292
+msgid "Shows one decimal place on the Y-axis values."
+msgstr "Y軸の値を小数点第1位まで表示します。"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:207
+msgid "Shows temperature values with one decimal place."
+msgstr "気温を小数点第1位まで表示します。"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:273
+msgid "Shows weather animations (sun, clouds, rain, etc.) in the background."
+msgstr "背景に天気のアニメーション(太陽、雲、雨など)を表示します。"
+
+#: ../contents/ui/js/WeatherDescription.js:33
+#: ../contents/ui/js/WeatherDescription.js:34
+#: ../contents/ui/js/WeatherDescription.js:35
+msgid "Snow"
+msgstr "雪"
+
+#: ../contents/ui/js/WeatherDescription.js:69
+msgid "Snow grains"
+msgstr "霧雪"
+
+#: ../contents/ui/js/WeatherDescription.js:74
+msgid "Snow showers heavy"
+msgstr "非常に強いにわか雪"
+
+#: ../contents/ui/js/WeatherDescription.js:73
+msgid "Snow showers slight"
+msgstr "弱いにわか雪"
+
+#: ../contents/ui/js/WeatherDescription.js:68
+msgid "Snowfall heavy intensity"
+msgstr "強い雪"
+
+#: ../contents/ui/js/WeatherDescription.js:67
+msgid "Snowfall moderate intensity"
+msgstr "並の雪"
+
+#: ../contents/ui/js/WeatherDescription.js:66
+msgid "Snowfall slight intensity"
+msgstr "弱い雪"
+
+#: ../contents/ui/settings/ConfigData.qml:416
+msgid "Some previously selected metrics were not supported by the current provider and were adjusted automatically."
+msgstr "以前選択されていた一部の項目は、現在のプロバイダーでサポートされていないため自動的に調整されました。"
+
+#: ../contents/config/config.qml:10
+msgid "Source & Location"
+msgstr "ソースと位置情報"
+
+#: ../contents/ui/settings/ConfigSupport.qml:764
+msgid "Star"
+msgstr "スター"
+
+#: ../contents/ui/settings/ConfigSupport.qml:723
+msgid "Star the repository to support the project and follow its development."
+msgstr "リポジトリにスターを付けて、プロジェクトを応援し、開発の様子を見守りましょう。"
+
+#: ../contents/ui/settings/ConfigData.qml:345
 msgid "Start day offset:"
 msgstr "開始日のオフセット:"
 
-msgid "Data"
-msgstr "データ"
+#: ../contents/ui/js/WeatherDescription.js:42
+#: ../contents/ui/js/WeatherDescription.js:43
+#: ../contents/ui/js/WeatherDescription.js:44
+msgid "Storm"
+msgstr "嵐"
 
-msgid "Settings:"
-msgstr "設定:"
+#: ../contents/ui/settings/ConfigSupport.qml:1392
+msgid "Strikethrough"
+msgstr "取り消し線"
 
-msgid "Restore default settings"
-msgstr "デフォルト設定を復元"
+#: ../contents/ui/settings/ConfigSupport.qml:1348
+msgid "Subject"
+msgstr "件名"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Suggestion"
+msgstr "提案"
+
+#: ../contents/config/config.qml:28
+msgid "Support & Community"
+msgstr "サポートとコミュニティ"
+
+#: ../contents/ui/settings/ConfigSupport.qml:565
+msgid "Support the Project"
+msgstr "プロジェクトを応援する"
+
+#: ../contents/ui/settings/ConfigSource.qml:711
+msgid "System units:"
+msgstr "単位系:"
+
+#: ../contents/ui/js/DetailsCatalog.js:33
+msgctxt "Chart Y axis label"
+msgid "Temp."
+msgstr "気温"
+
+#: ../contents/ui/js/DetailsCatalog.js:32
+msgctxt "Chart tab label"
+msgid "Temp."
+msgstr "気温"
+
+#: ../contents/ui/js/DetailsCatalog.js:35
+msgctxt "Compact widget bottom row label"
+msgid "Temp."
+msgstr "気温"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:166
+msgid "Temperature"
+msgstr "気温"
+
+#: ../contents/ui/js/DetailsCatalog.js:34
+msgctxt "Settings label"
+msgid "Temperature"
+msgstr "気温"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:178
+msgid "Temperature size:"
+msgstr "気温表示のサイズ:"
+
+#: ../contents/ui/settings/ConfigData.qml:422
+msgid "Text Details"
+msgstr "テキスト詳細"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1508
+msgid "Text to display (optional, the URL is used if left empty)"
+msgstr "表示するテキスト(省略可。空欄の場合はURLが使用されます)"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for the star!"
+msgstr "スターをありがとうございます!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1323
+msgid "Thank you for your feedback! 🚀"
+msgstr "フィードバックをありがとうございます! 🚀"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for your rating!"
+msgstr "評価をありがとうございます!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Thank you for your support!"
+msgstr "サポートをありがとうございます!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1821
+msgid "Thank you!"
+msgstr "ありがとうございます!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:553
+msgid "This applet is open-source and developed with passion. Your support keeps the project active and helps it grow within the KDE ecosystem."
+msgstr "このアプレットはオープンソースであり、情熱を持って開発されています。皆さんの応援がプロジェクトの活動を支え、KDEエコシステムの中での成長につながります。"
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "This provider doesn't support key verification. The key has been saved as entered."
+msgstr "このプロバイダーはキーの検証に対応していません。入力されたキーはそのまま保存されました。"
+
+#: ../contents/ui/settings/ConfigSource.qml:637
+msgid "This provider requires a free API key from its website."
+msgstr "このプロバイダーを利用するには、公式サイトから無料のAPIキーを取得する必要があります。"
+
+#: ../contents/ui/js/WeatherDescription.js:75
+msgid "Thunderstorm"
+msgstr "雷雨"
+
+#: ../contents/ui/js/WeatherDescription.js:77
+msgid "Thunderstorm with heavy hail"
+msgstr "強いひょうを伴う雷雨"
+
+#: ../contents/ui/js/WeatherDescription.js:76
+msgid "Thunderstorm with slight hail"
+msgstr "弱いひょうを伴う雷雨"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1516
+msgid "URL"
+msgstr "URL"
+
+#: ../contents/ui/js/DetailsCatalog.js:96
+msgctxt "Chart tab label"
+msgid "UV"
+msgstr "UV"
+
+#: ../contents/ui/js/DetailsCatalog.js:97
+msgctxt "Chart Y axis label"
+msgid "UV Index"
+msgstr "UV指数"
+
+#: ../contents/ui/js/DetailsCatalog.js:99
+msgctxt "Compact widget bottom row label"
+msgid "UV Index"
+msgstr "UV指数"
+
+#: ../contents/ui/js/DetailsCatalog.js:98
+msgctxt "Settings label"
+msgid "UV Index"
+msgstr "UV指数"
+
+#: ../contents/ui/js/WeatherDescription.js:83
+#: ../contents/ui/js/WeatherDescription.js:88
+msgid "Unknown"
+msgstr "不明"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1195
+msgid "Unlocked as a Thank You"
+msgstr "感謝のしるしとして解放されました"
+
+#: ../contents/ui/settings/ConfigData.qml:179
+msgid "Unsupported"
+msgstr "非対応"
+
+#: ../contents/ui/settings/ConfigSource.qml:700
+msgid "Updates & Units"
+msgstr "更新と単位"
+
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "Valid"
+msgstr "有効"
+
+#: ../contents/ui/settings/ConfigSource.qml:583
+msgid "Weather Source"
+msgstr "気象データソース"
+
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order."
+msgstr "拡張ビューに表示される天気の詳細項目です(この順序で表示されます)。"
+
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order. Since Condition is disabled in Appearance, up to 4 details can be selected here."
+msgstr "拡張ビューに表示される天気の詳細項目です(この順序で表示されます)。外観設定で天気表示が無効になっているため、ここでは最大4項目まで選択できます。"
+
+#: ../contents/ui/js/DetailsCatalog.js:81
+msgctxt "Chart Y axis label"
+msgid "Wind"
+msgstr "風速"
+
+#: ../contents/ui/js/DetailsCatalog.js:80
+msgctxt "Chart tab label"
+msgid "Wind"
+msgstr "風速"
+
+#: ../contents/ui/js/DetailsCatalog.js:83
+msgctxt "Compact widget bottom row label"
+msgid "Wind"
+msgstr "風速"
+
+#: ../contents/ui/js/DetailsCatalog.js:82
+msgctxt "Settings label"
+msgid "Wind"
+msgstr "風速"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:285
+msgid "X-axis precision:"
+msgstr "X軸の精度:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:290
+msgid "Y-axis precision:"
+msgstr "Y軸の精度:"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1823
+msgid "You rock!"
+msgstr "さすがです!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1822
+msgid "You're amazing!"
+msgstr "あなたは素晴らしい!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1824
+msgid "You're the best!"
+msgstr "あなたが一番です!"

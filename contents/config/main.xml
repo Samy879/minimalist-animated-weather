@@ -15,11 +15,14 @@
     <entry name="longitudeC" type="string">
       <default>0</default>
     </entry>
-    <entry name="showConditionOnPanel" type="bool">
+    <entry name="showConditionPanel" type="bool">
       <default>true</default>
     </entry>
-    <entry name="showConditionFull" type="bool">
+    <entry name="showConditionExpanded" type="bool">
       <default>true</default>
+    </entry>
+    <entry name="conditionAlignment" type="int">
+      <default>1</default>
     </entry>
     <entry name="reverseOrder" type="bool">
       <default>false</default>
@@ -27,19 +30,19 @@
     <entry name="temperatureUnit" type="int">
       <default>0</default>
     </entry>
-    <entry name="sizeFontTemp" type="double">
+    <entry name="temperatureFontSize" type="double">
       <default>11.0</default>
     </entry>
-    <entry name="sizeFontCond" type="double">
+    <entry name="conditionFontSize" type="double">
       <default>10.0</default>
     </entry>
-    <entry name="textweather" type="bool">
+    <entry name="showTemperaturePanel" type="bool">
       <default>true</default>
     </entry>
     <entry name="preciseTemp" type="bool">
       <default>false</default>
     </entry>
-    <entry name="preciseTempChart" type="bool">
+    <entry name="yAxisDecimals" type="bool">
       <default>false</default>
     </entry>
     <entry name="updateInterval" type="int">
@@ -48,23 +51,11 @@
     <entry name="forecastStartDay" type="int">
       <default>0</default>
     </entry>
-    <entry name="boldTempPanel" type="bool">
+    <entry name="temperaturePanelBold" type="bool">
       <default>true</default>
     </entry>
-    <entry name="boldCondPanel" type="bool">
+    <entry name="conditionPanelBold" type="bool">
       <default>false</default>
-    </entry>
-    <entry name="showApparentTemp" type="bool">
-      <default>true</default>
-    </entry>
-    <entry name="showHumidity" type="bool">
-      <default>true</default>
-    </entry>
-    <entry name="showUVIndex" type="bool">
-      <default>true</default>
-    </entry>
-    <entry name="showWind" type="bool">
-      <default>true</default>
     </entry>
     <entry name="showAnimations" type="bool">
       <default>true</default>
@@ -78,11 +69,59 @@
     <entry name="backgroundOpacity" type="double">
       <default>1.0</default>
     </entry>
-    <entry name="enableYAxisReading" type="bool">
+    <entry name="interactiveYAxis" type="bool">
       <default>false</default>
     </entry>
-    <entry name="showCursorDecimals" type="bool">
+    <entry name="hoverDecimals" type="bool">
       <default>true</default>
+    </entry>
+    <entry name="xAxisPrecision" type="bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="weatherProvider" type="string">
+      <default>openmeteo</default>
+    </entry>
+    <entry name="apiKeyWeatherApi" type="string">
+      <default></default>
+    </entry>
+    <entry name="apiKeyTomorrow" type="string">
+      <default></default>
+    </entry>
+    <entry name="apiKeyOpenWeatherMap" type="string">
+      <default></default>
+    </entry>
+    <entry name="apiKeyVisualCrossing" type="string">
+      <default></default>
+    </entry>
+    <entry name="apiKeyPirateWeather" type="string">
+      <default></default>
+    </entry>
+
+    <entry name="providerMaxForecastDays" type="int">
+      <default>7</default>
+    </entry>
+
+    <entry name="detailsOrder" type="string">
+      <default>["apparentTemp","humidity","windSpeed","uvIndex"]</default>
+    </entry>
+    <entry name="chartsOrder" type="string">
+      <default>["temperature","humidity","windSpeed","uvIndex"]</default>
+    </entry>
+
+    <entry name="forecastDayCount" type="int"><default>7</default></entry>
+
+    <entry name="hasRated" type="bool">
+      <default>false</default>
+    </entry>
+    <entry name="hasStarred" type="bool">
+      <default>false</default>
+    </entry>
+    <entry name="shootingStarEffect" type="bool">
+      <default>false</default>
+    </entry>
+    <entry name="rainbowEffect" type="bool">
+      <default>false</default>
     </entry>
   </group>
 </kcfg>

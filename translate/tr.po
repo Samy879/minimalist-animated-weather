@@ -1,187 +1,925 @@
-# Translation of Minimalist Animated Weather in Turkish
-# Copyright (C) 2026
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the plasma_applet_com.github.samy879.minimalist-animated-weather package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Minimalist Animated Weather\n"
-"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather/issues\n"
-"POT-Creation-Date: 2026-05-12 00:00+0300\n"
-"PO-Revision-Date: 2026-06-16 17:49+0200\n"
-"Language-Team: Turkish <LL@li.org>\n"
+"Project-Id-Version: plasma_applet_com.github.samy879.minimalist-animated-weather\n"
+"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather\n"
+"POT-Creation-Date: 2026-07-08 09:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Clear"
-msgstr "Açık"
+#: ../contents/ui/settings/ConfigData.qml:206
+msgid " / "
+msgstr " / "
 
-msgid "Cloudy"
-msgstr "Bulutlu"
+#: ../contents/ui/settings/ConfigSupport.qml:988
+#: ../contents/ui/settings/ConfigSupport.qml:1591
+msgid "/10"
+msgstr "/10"
 
-msgid "Drizzle"
-msgstr "Çiseleme"
+#: ../contents/ui/settings/ConfigSource.qml:643
+msgid "API Key:"
+msgstr "API Anahtarı:"
 
-msgid "Rain"
-msgstr "Yağmur"
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "API key validated."
+msgstr "API anahtarı doğrulandı."
 
-msgid "Snow"
-msgstr "Kar"
+#: ../contents/ui/settings/ConfigSupport.qml:1232
+msgid "Adds a rainbow to the animated theme when it's raining with the sun still out."
+msgstr "Güneş hâlâ açıkken yağmur yağdığında animasyonlu temaya gökkuşağı ekler."
 
-msgid "Hail"
-msgstr "Dolu"
+#: ../contents/ui/settings/ConfigAppearance.qml:278
+msgid "Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers."
+msgstr "Grafiğin üzerine gelindiğinde tam sayılar yerine bir ondalık basamak hassasiyeti ekler."
 
-msgid "Showers"
-msgstr "Sağanak"
+#: ../contents/ui/settings/ConfigSupport.qml:1214
+msgid "Adds shooting stars to the animated theme's night sky."
+msgstr "Animasyonlu temanın gece gökyüzüne kayan yıldızlar ekler."
 
-msgid "Storm"
-msgstr "Fırtına"
+#: ../contents/ui/settings/ConfigAppearance.qml:271
+msgid "Animations:"
+msgstr "Animasyonlar:"
 
-msgid "Apparent Temp"
-msgstr "Hiss."
+#: ../contents/ui/settings/ConfigSupport.qml:229
+msgid "Anonymous"
+msgstr "Anonim"
 
-msgid "Humidity"
-msgstr "Nem"
+#: ../contents/config/config.qml:15
+msgid "Appearance"
+msgstr "Görünüm"
 
-msgid "UV Index"
-msgstr "UV İndeksi"
+#: ../contents/ui/settings/ConfigAppearance.qml:354
+msgid "Are you sure you want to reset all appearance settings to their default values? This action cannot be undone."
+msgstr "Tüm görünüm ayarlarını varsayılan değerlerine sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz."
 
-msgid "Wind"
-msgstr "Rüzgar"
+#: ../contents/ui/settings/ConfigData.qml:434
+msgid "Are you sure you want to reset all data metrics and forecast ranges to their default values? This action cannot be undone."
+msgstr "Tüm veri ölçütlerini ve tahmin aralıklarını varsayılan değerlerine sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz."
 
-msgid "Feels"
-msgstr "Hiss."
+#: ../contents/ui/settings/ConfigSource.qml:743
+msgid "Are you sure you want to reset the location, source and update settings to their default values? This action cannot be undone."
+msgstr "Konum, kaynak ve güncelleme ayarlarını varsayılan değerlerine sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz."
 
-msgid "Hum."
-msgstr "Nem"
+#: ../contents/ui/settings/ResetSection.qml:24
+msgid "Are you sure you want to restore this page's settings to their default values? This action cannot be undone."
+msgstr "Bu sayfanın ayarlarını varsayılan değerlerine geri yüklemek istediğinizden emin misiniz? Bu işlem geri alınamaz."
 
-msgid "UV"
-msgstr "UV"
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Automatic"
+msgstr "Otomatik"
 
-msgid "Temp."
-msgstr "Sıcak."
+#: ../contents/ui/settings/ConfigSupport.qml:1826
+msgid "Awesome!"
+msgstr "Harika!"
 
-msgid "Restore default settings?"
-msgstr "Varsayılan ayarları geri yükle?"
+#: ../contents/ui/settings/ConfigAppearance.qml:326
+msgid "Background opacity:"
+msgstr "Arka plan opaklığı:"
 
-msgid "All settings on this page will be reset to their defaults. This cannot be undone."
-msgstr "Bu sayfadaki tüm ayarlar varsayılan değerlerine sıfırlanacaktır. Bu işlem geri alınamaz."
-
-msgid "Location"
-msgstr "Konum"
-
-msgid "Automatic location (IP):"
-msgstr "Otomatik konum (IP):"
-
-msgid "Coordinates:"
-msgstr "Koordinatlar:"
-
-msgid "Latitude"
-msgstr "Enlem"
-
-msgid "Longitude"
-msgstr "Boylam"
-
-msgid "Units & updates"
-msgstr "Birimler ve güncellemeler"
-
-msgid "Units:"
-msgstr "Birimler:"
-
-msgid "Update interval:"
-msgstr "Güncelleme aralığı:"
-
-msgid "Refresh now"
-msgstr "Şimdi yenile"
-
-msgid "Style"
-msgstr "Stil"
-
-msgid "Panel"
-msgstr "Panel"
-
-msgid "Show:"
-msgstr "Göster:"
-
-msgid "Temperature"
-msgstr "Sıcaklık"
-
-msgid "Condition"
-msgstr "Durum"
-
-msgid "Reverse order"
-msgstr "Sırayı tersine çevir"
-
-msgid "Temperature font:"
-msgstr "Sıcaklık yazı tipi:"
-
+#: ../contents/ui/settings/ConfigAppearance.qml:201
+#: ../contents/ui/settings/ConfigAppearance.qml:237
+#: ../contents/ui/settings/ConfigSupport.qml:1376
 msgid "Bold"
 msgstr "Kalın"
 
-msgid "Condition font:"
-msgstr "Durum yazı tipi:"
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Bug"
+msgstr "Hata"
 
-msgid "Decimals:"
-msgstr "Ondalıklar:"
+#: ../contents/ui/settings/ConfigSupport.qml:1400
+msgid "Bulleted List"
+msgstr "Madde İşaretli Liste"
 
-msgid "Full view"
-msgstr "Tam görünüm"
+#: ../contents/ui/settings/ConfigData.qml:428
+msgid "Chart Tabs"
+msgstr "Grafik Sekmeleri"
 
+#: ../contents/ui/settings/ConfigData.qml:429
+msgid "Charts available to swipe through. If none are selected, charts are disabled."
+msgstr "Kaydırarak gezinilebilecek grafikler. Hiçbiri seçilmezse grafikler devre dışı kalır."
+
+#: ../contents/ui/js/WeatherDescription.js:17
+#: ../contents/ui/js/WeatherDescription.js:18
+#: ../contents/ui/js/WeatherDescription.js:50
+msgid "Clear"
+msgstr "Açık"
+
+#: ../contents/ui/FullRepresentation.qml:663
+msgid "Click for hourly details"
+msgstr "Saatlik ayrıntılar için tıklayın"
+
+#: ../contents/ui/js/DetailsCatalog.js:131
+msgctxt "Compact widget bottom row label"
+msgid "Cloud Cover"
+msgstr "Bulut"
+
+#: ../contents/ui/js/DetailsCatalog.js:130
+msgctxt "Settings label"
+msgid "Cloud Cover"
+msgstr "Bulutluluk"
+
+#: ../contents/ui/js/DetailsCatalog.js:129
+msgctxt "Chart Y axis label"
+msgid "Clouds"
+msgstr "Bulut"
+
+#: ../contents/ui/js/DetailsCatalog.js:128
+msgctxt "Chart tab label"
+msgid "Clouds"
+msgstr "Bulut"
+
+#: ../contents/ui/js/WeatherDescription.js:19
+#: ../contents/ui/js/WeatherDescription.js:20
+msgid "Cloudy"
+msgstr "Bulutlu"
+
+#: ../contents/ui/settings/ConfigSupport.qml:834
+msgid "Community Love"
+msgstr "Topluluk Desteği"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:167
+msgid "Condition"
+msgstr "Durum"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:214
+msgid "Condition size:"
+msgstr "Durum boyutu:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:253
 msgid "Condition:"
 msgstr "Durum:"
 
-msgid "Chart decimals:"
-msgstr "Grafik ondalıkları:"
+#: ../contents/ui/settings/ConfigSource.qml:523
+msgid "Coordinates:"
+msgstr "Koordinatlar:"
 
-msgid "Cursor decimals:"
-msgstr "İmleç ondalıkları:"
+#: ../contents/ui/settings/ConfigAppearance.qml:311
+msgid "Corner radius:"
+msgstr "Köşe yarıçapı:"
 
-msgid "Shows one decimal while hovering the chart.\nWithout it, the value only updates at whole numbers and can appear stuck as you move along."
-msgstr "Grafik üzerinde gezinirken tek ondalık basamak gösterir.\nOlmadığında değer sadece tam sayılarda güncellenir ve hareket ettikçe takılmış gibi görünebilir."
+#: ../contents/config/config.qml:23
+msgid "Data & Charts"
+msgstr "Veriler ve Grafikler"
 
-msgid "Y-axis reading:"
-msgstr "Y ekseni okuması:"
+#: ../contents/ui/settings/ConfigData.qml:303
+msgid "Days shown cannot go below the minimum forecast length of %1."
+msgstr "Gösterilen gün sayısı, %1 olan asgari tahmin süresinin altına düşemez."
 
-msgid "Hover the left edge of the chart to read a value off the Y axis instead of following the curve."
-msgstr "Eğriyi takip etmek yerine Y ekseninden değer okumak için grafiğin sol kenarının üzerine gelin."
+#: ../contents/ui/settings/ConfigData.qml:296
+msgid "Days shown reduced to %1 to fit the new start day."
+msgstr "Gösterilen gün sayısı, yeni başlangıç gününe uyacak şekilde %1 olarak azaltıldı."
 
-msgid "Weather animations:"
-msgstr "Hava durumu animasyonları:"
+#: ../contents/ui/settings/ConfigData.qml:376
+msgid "Days to display:"
+msgstr "Gösterilecek gün sayısı:"
 
-msgid "Details:"
-msgstr "Detaylar:"
+#: ../contents/ui/settings/ConfigAppearance.qml:204
+msgid "Decimals:"
+msgstr "Ondalık basamak:"
 
-msgid "Apparent temp."
-msgstr "Hissedilen sıcaklık"
+#: ../contents/ui/settings/ConfigData.qml:370
+msgid "Delays the forecast start by a specific number of days."
+msgstr "Tahminin başlangıcını belirli bir gün sayısı kadar erteler."
 
-msgid "UV index"
-msgstr "UV indeksi"
+#: ../contents/ui/js/WeatherDescription.js:55
+msgid "Depositing rime fog"
+msgstr "Kırağı oluşturan sis"
 
-msgid "Wind speed"
-msgstr "Rüzgar hızı"
+#: ../contents/ui/settings/ConfigSupport.qml:1432
+msgid "Describe your idea or the bug in detail here..."
+msgstr "Fikrinizi veya hatayı burada ayrıntılı olarak açıklayın..."
 
-msgid "Desktop widget:"
-msgstr "Masaüstü aracı:"
+#: ../contents/ui/settings/ConfigAppearance.qml:303
+msgid "Desktop Widget"
+msgstr "Masaüstü Widget'ı"
 
-msgid "Radius"
-msgstr "Yarıçap"
+#: ../contents/ui/settings/ConfigSource.qml:510
+#: ../contents/ui/settings/ConfigSource.qml:573
+msgid "Detection failed"
+msgstr "Algılama başarısız oldu"
 
-msgid "Opacity"
-msgstr "Opaklık"
+#: ../contents/ui/settings/ConfigSupport.qml:1215
+#: ../contents/ui/settings/ConfigSupport.qml:1233
+msgid "Disabled because animations are turned off in the Appearance settings."
+msgstr "Görünüm ayarlarında animasyonlar kapalı olduğu için devre dışı."
 
-msgid "Only applies when the widget sits directly on the desktop, not in a panel popup."
-msgstr "Yalnızca araç panel açılır penceresinde değil, doğrudan masaüstünde bulunduğunda geçerlidir."
+#: ../contents/ui/settings/ConfigAppearance.qml:287
+msgid "Displays minutes alongside hours when hovering (e.g. 11:04 instead of 11h) for a more precise time."
+msgstr "Daha kesin bir saat için üzerine gelindiğinde dakikaları saatlerle birlikte gösterir (ör. 11h yerine 11:04)."
 
-msgid "Forecast"
-msgstr "Tahmin"
+#: ../contents/ui/settings/ConfigAppearance.qml:266
+msgid "Displays the current weather description (e.g., Sunny, Rainy)."
+msgstr "Güncel hava durumu açıklamasını gösterir (ör. Güneşli, Yağmurlu)."
 
+#: ../contents/ui/js/WeatherDescription.js:23
+#: ../contents/ui/js/WeatherDescription.js:24
+#: ../contents/ui/js/WeatherDescription.js:25
+#: ../contents/ui/js/WeatherDescription.js:26
+#: ../contents/ui/js/WeatherDescription.js:27
+msgid "Drizzle"
+msgstr "Çiseleme"
+
+#: ../contents/ui/js/WeatherDescription.js:58
+msgid "Drizzle dense intensity"
+msgstr "Yoğun çiseleme"
+
+#: ../contents/ui/js/WeatherDescription.js:56
+msgid "Drizzle light intensity"
+msgstr "Hafif çiseleme"
+
+#: ../contents/ui/js/WeatherDescription.js:57
+msgid "Drizzle moderate intensity"
+msgstr "Orta şiddette çiseleme"
+
+#: ../contents/ui/settings/ConfigSupport.qml:537
+msgid "Enjoying Minimalist Animated Weather?"
+msgstr "Minimalist Animated Weather'ı beğendiniz mi?"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Every star and review helps the project grow."
+msgstr "Her yıldız ve her yorum projenin büyümesine yardımcı olur."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:243
+msgid "Expanded View"
+msgstr "Genişletilmiş Görünüm"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1300
+msgid "Feedback & Bug Reports"
+msgstr "Geri Bildirim ve Hata Bildirimleri"
+
+#: ../contents/ui/js/DetailsCatalog.js:49
+msgctxt "Chart Y axis label"
+msgid "Feels"
+msgstr "Hissedilen"
+
+#: ../contents/ui/js/DetailsCatalog.js:48
+msgctxt "Chart tab label"
+msgid "Feels"
+msgstr "Hissedilen"
+
+#: ../contents/ui/js/DetailsCatalog.js:51
+msgctxt "Compact widget bottom row label"
+msgid "Feels Like"
+msgstr "Hissedilen"
+
+#: ../contents/ui/js/DetailsCatalog.js:50
+msgctxt "Settings label"
+msgid "Feels Like"
+msgstr "Hissedilen"
+
+#: ../contents/ui/js/WeatherDescription.js:21
+#: ../contents/ui/js/WeatherDescription.js:22
+#: ../contents/ui/js/WeatherDescription.js:54
+msgid "Fog"
+msgstr "Sis"
+
+#: ../contents/ui/settings/ConfigSource.qml:735
+msgid "Force refresh"
+msgstr "Zorla yenile"
+
+#: ../contents/ui/settings/ConfigData.qml:336
+msgid "Forecast Range"
+msgstr "Tahmin Aralığı"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1305
+msgid "Found a bug or have an idea? Fill out the form below to send it directly to the developer."
+msgstr "Bir hata mı buldunuz yoksa bir fikriniz mi var? Doğrudan geliştiriciye göndermek için aşağıdaki formu doldurun."
+
+#: ../contents/ui/js/WeatherDescription.js:60
+msgid "Freezing Drizzle dense intensity"
+msgstr "Yoğun donan çiseleme"
+
+#: ../contents/ui/js/WeatherDescription.js:59
+msgid "Freezing Drizzle light intensity"
+msgstr "Hafif donan çiseleme"
+
+#: ../contents/ui/js/WeatherDescription.js:65
+msgid "Freezing Rain heavy intensity"
+msgstr "Kuvvetli donan yağmur"
+
+#: ../contents/ui/js/WeatherDescription.js:64
+msgid "Freezing Rain light intensity"
+msgstr "Hafif donan yağmur"
+
+#: ../contents/ui/settings/ConfigSupport.qml:718
+#: ../contents/ui/settings/ConfigSupport.qml:1064
+msgid "GitHub"
+msgstr "GitHub"
+
+#: ../contents/ui/js/WeatherDescription.js:36
+msgid "Hail"
+msgstr "Dolu"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Hide API key"
+msgstr "API anahtarını gizle"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:276
+msgid "Hover decimals:"
+msgstr "Üzerine gelindiğinde ondalık basamak:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:297
+msgid "Hovering over the Y-axis draws a horizontal guideline and highlights every matching point on the chart."
+msgstr "Y eksenine gelindiğinde yatay bir kılavuz çizgisi çizilir ve grafikteki eşleşen tüm noktalar vurgulanır."
+
+#: ../contents/ui/js/DetailsCatalog.js:65
+msgctxt "Chart Y axis label"
+msgid "Hum."
+msgstr "Nem"
+
+#: ../contents/ui/js/DetailsCatalog.js:64
+msgctxt "Chart tab label"
+msgid "Hum."
+msgstr "Nem"
+
+#: ../contents/ui/js/DetailsCatalog.js:67
+msgctxt "Compact widget bottom row label"
+msgid "Humidity"
+msgstr "Nem"
+
+#: ../contents/ui/js/DetailsCatalog.js:66
+msgctxt "Settings label"
+msgid "Humidity"
+msgstr "Nem"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Imperial  ·  °F, mph"
+msgstr "İngiliz  ·  °F, mph"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Improvement"
+msgstr "İyileştirme"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1416
+#: ../contents/ui/settings/ConfigSupport.qml:1476
+msgid "Insert Link"
+msgstr "Bağlantı Ekle"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:295
+msgid "Interactive Y-axis:"
+msgstr "Etkileşimli Y ekseni:"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid"
+msgstr "Geçersiz"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid API key."
+msgstr "Geçersiz API anahtarı."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1384
+msgid "Italic"
+msgstr "İtalik"
+
+#: ../contents/ui/settings/ConfigSupport.qml:595
+#: ../contents/ui/settings/ConfigSupport.qml:847
+msgid "KDE Store"
+msgstr "KDE Store"
+
+#: ../contents/ui/settings/ConfigSource.qml:539
+msgid "Latitude"
+msgstr "Enlem"
+
+#: ../contents/ui/settings/ConfigSupport.qml:600
+msgid "Leave a rating and a comment to help promote the plasmoid and reach more users."
+msgstr "Plazmoidin tanıtımına yardımcı olmak ve daha fazla kullanıcıya ulaşmak için bir puan ve yorum bırakın."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Left"
+msgstr "Sol"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1512
+msgid "Link text"
+msgstr "Bağlantı metni"
+
+#: ../contents/ui/settings/ConfigSupport.qml:909
+msgid "Loading ratings…"
+msgstr "Puanlar yükleniyor…"
+
+#: ../contents/ui/settings/ConfigSource.qml:440
+msgid "Location Settings"
+msgstr "Konum Ayarları"
+
+#: ../contents/ui/settings/ConfigSource.qml:465
+msgid "Location:"
+msgstr "Konum:"
+
+#: ../contents/ui/settings/ConfigSource.qml:545
+msgid "Longitude"
+msgstr "Boylam"
+
+#: ../contents/ui/js/WeatherDescription.js:51
+msgid "Mainly clear"
+msgstr "Genellikle açık"
+
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Manual"
+msgstr "Manuel"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Metric  ·  °C, km/h"
+msgstr "Metrik  ·  °C, km/sa"
+
+#: ../contents/ui/settings/ConfigData.qml:414
+msgid "Metrics"
+msgstr "Ölçütler"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Middle"
+msgstr "Orta"
+
+#: ../contents/ui/settings/ConfigData.qml:187
+msgid "Move down"
+msgstr "Aşağı taşı"
+
+#: ../contents/ui/settings/ConfigData.qml:186
+msgid "Move up"
+msgstr "Yukarı taşı"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1825
+msgid "Much appreciated!"
+msgstr "Çok teşekkürler!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:885
+#: ../contents/ui/settings/ConfigSupport.qml:1102
+msgid "N/A"
+msgstr "Yok"
+
+#: ../contents/ui/settings/ConfigData.qml:430
+msgid "No charts selected. The chart view is disabled."
+msgstr "Hiçbir grafik seçilmedi. Grafik görünümü devre dışı."
+
+#: ../contents/ui/settings/ConfigSupport.qml:923
+msgid "No ratings yet, be the first!"
+msgstr "Henüz puan yok, ilk siz olun!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1598
+msgid "Not rated"
+msgstr "Puanlanmadı"
+
+#: ../contents/ui/settings/ConfigData.qml:407
+msgid "Number of days to display in the forecast view."
+msgstr "Tahmin görünümünde gösterilecek gün sayısı."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1408
+msgid "Numbered List"
+msgstr "Numaralı Liste"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1455
+msgid "Open GitHub Issue"
+msgstr "GitHub'da Konu Aç"
+
+#: ../contents/ui/js/WeatherDescription.js:53
+msgid "Overcast"
+msgstr "Kapalı"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:153
+msgid "Panel Bar"
+msgstr "Panel Çubuğu"
+
+#: ../contents/ui/js/WeatherDescription.js:52
+msgid "Partly cloudy"
+msgstr "Parçalı bulutlu"
+
+#: ../contents/ui/settings/ConfigSource.qml:653
+#: ../contents/ui/settings/ConfigSource.qml:654
+#: ../contents/ui/settings/ConfigSource.qml:655
+#: ../contents/ui/settings/ConfigSource.qml:656
+#: ../contents/ui/settings/ConfigSource.qml:657
+msgid "Paste key here..."
+msgstr "Anahtarı buraya yapıştırın..."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1315
+msgid "Please fill in both the object/title and the description."
+msgstr "Lütfen hem konuyu/başlığı hem de açıklamayı doldurun."
+
+#: ../contents/ui/settings/ConfigSource.qml:594
+msgid "Provider:"
+msgstr "Sağlayıcı:"
+
+#: ../contents/ui/js/WeatherDescription.js:28
+#: ../contents/ui/js/WeatherDescription.js:29
+#: ../contents/ui/js/WeatherDescription.js:30
+#: ../contents/ui/js/WeatherDescription.js:31
+#: ../contents/ui/js/WeatherDescription.js:32
+msgid "Rain"
+msgstr "Yağmur"
+
+#: ../contents/ui/js/DetailsCatalog.js:113
+msgctxt "Chart Y axis label"
+msgid "Rain"
+msgstr "Yağmur"
+
+#: ../contents/ui/js/DetailsCatalog.js:112
+msgctxt "Chart tab label"
+msgid "Rain"
+msgstr "Yağmur"
+
+#: ../contents/ui/js/DetailsCatalog.js:115
+msgctxt "Compact widget bottom row label"
+msgid "Rain Prob."
+msgstr "Yağmur İht."
+
+#: ../contents/ui/js/DetailsCatalog.js:114
+msgctxt "Settings label"
+msgid "Rain Probability"
+msgstr "Yağmur İhtimali"
+
+#: ../contents/ui/js/WeatherDescription.js:63
+msgid "Rain heavy intensity"
+msgstr "Kuvvetli yağmur"
+
+#: ../contents/ui/js/WeatherDescription.js:62
+msgid "Rain moderate intensity"
+msgstr "Orta şiddette yağmur"
+
+#: ../contents/ui/components/WeatherData.qml:65
+msgid "Rain probability"
+msgstr "Yağmur ihtimali"
+
+#: ../contents/ui/js/WeatherDescription.js:71
+msgid "Rain showers moderate"
+msgstr "Orta şiddette sağanak yağmur"
+
+#: ../contents/ui/js/WeatherDescription.js:70
+msgid "Rain showers slight"
+msgstr "Hafif sağanak yağmur"
+
+#: ../contents/ui/js/WeatherDescription.js:72
+msgid "Rain showers violent"
+msgstr "Şiddetli sağanak yağmur"
+
+#: ../contents/ui/js/WeatherDescription.js:61
+msgid "Rain slight intensity"
+msgstr "Hafif yağmur"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1225
+msgid "Rainbow Effect"
+msgstr "Gökkuşağı Efekti"
+
+#: ../contents/ui/settings/ConfigSupport.qml:641
+msgid "Rate"
+msgstr "Puanla"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1552
+msgid "Ratings on the KDE Store"
+msgstr "KDE Store'daki Puanlar"
+
+#: ../contents/ui/settings/ConfigSupport.qml:916
+msgid "Ratings unavailable right now."
+msgstr "Puanlar şu anda kullanılamıyor."
+
+#: ../contents/ui/settings/ConfigSupport.qml:898
+msgid "Read comments"
+msgstr "Yorumları oku"
+
+#: ../contents/ui/settings/ConfigSource.qml:635
+msgid "Recommended"
+msgstr "Önerilen"
+
+#: ../contents/ui/settings/ConfigSource.qml:715
+msgid "Refresh every:"
+msgstr "Şu sıklıkla yenile:"
+
+#: ../contents/ui/main.qml:16
+msgid "Refresh now"
+msgstr "Şimdi yenile"
+
+#: ../contents/ui/settings/ConfigSource.qml:326
+msgid "Refreshing too often may exhaust your API limits. Minimum recommended is %1 min."
+msgstr "Çok sık yenileme yapmak API kotanızı tüketebilir. Önerilen asgari süre %1 dakikadır."
+
+#: ../contents/ui/settings/ResetSection.qml:28
+msgid "Reset"
+msgstr "Sıfırla"
+
+#: ../contents/ui/settings/ResetSection.qml:48
+msgid "Resets every setting on this page to its factory default value."
+msgstr "Bu sayfadaki tüm ayarları fabrika varsayılan değerlerine sıfırlar."
+
+#: ../contents/ui/settings/ResetSection.qml:42
+#: ../contents/ui/settings/ResetSection.qml:58
+msgid "Restore Defaults"
+msgstr "Varsayılanları Geri Yükle"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:168
+msgid "Reverse order"
+msgstr "Ters sıra"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Right"
+msgstr "Sağ"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:320
+msgid "Rounds the widget's corners."
+msgstr "Widget'ın köşelerini yuvarlar."
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "Saved"
+msgstr "Kaydedildi"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1462
+msgid "Send via Email"
+msgstr "E-posta ile Gönder"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:348
+msgid "Sets the widget's background transparency. This also works in the panel, though the result is limited by your taskbar's own behavior."
+msgstr "Widget'ın arka plan saydamlığını ayarlar. Bu, panelde de çalışır; ancak sonuç, görev çubuğunuzun kendi davranışıyla sınırlıdır."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1207
+msgid "Shooting Star Effect"
+msgstr "Kayan Yıldız Efekti"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Show API key"
+msgstr "API anahtarını göster"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:164
+msgid "Show:"
+msgstr "Göster:"
+
+#: ../contents/ui/js/WeatherDescription.js:37
+#: ../contents/ui/js/WeatherDescription.js:38
+#: ../contents/ui/js/WeatherDescription.js:39
+#: ../contents/ui/js/WeatherDescription.js:40
+#: ../contents/ui/js/WeatherDescription.js:41
+msgid "Showers"
+msgstr "Sağanak"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:292
+msgid "Shows one decimal place on the Y-axis values."
+msgstr "Y ekseni değerlerinde bir ondalık basamak gösterir."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:207
+msgid "Shows temperature values with one decimal place."
+msgstr "Sıcaklık değerlerini bir ondalık basamakla gösterir."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:273
+msgid "Shows weather animations (sun, clouds, rain, etc.) in the background."
+msgstr "Arka planda hava durumu animasyonlarını (güneş, bulut, yağmur vb.) gösterir."
+
+#: ../contents/ui/js/WeatherDescription.js:33
+#: ../contents/ui/js/WeatherDescription.js:34
+#: ../contents/ui/js/WeatherDescription.js:35
+msgid "Snow"
+msgstr "Kar"
+
+#: ../contents/ui/js/WeatherDescription.js:69
+msgid "Snow grains"
+msgstr "Kar taneleri"
+
+#: ../contents/ui/js/WeatherDescription.js:74
+msgid "Snow showers heavy"
+msgstr "Kuvvetli kar sağanağı"
+
+#: ../contents/ui/js/WeatherDescription.js:73
+msgid "Snow showers slight"
+msgstr "Hafif kar sağanağı"
+
+#: ../contents/ui/js/WeatherDescription.js:68
+msgid "Snowfall heavy intensity"
+msgstr "Kuvvetli kar yağışı"
+
+#: ../contents/ui/js/WeatherDescription.js:67
+msgid "Snowfall moderate intensity"
+msgstr "Orta şiddette kar yağışı"
+
+#: ../contents/ui/js/WeatherDescription.js:66
+msgid "Snowfall slight intensity"
+msgstr "Hafif kar yağışı"
+
+#: ../contents/ui/settings/ConfigData.qml:416
+msgid "Some previously selected metrics were not supported by the current provider and were adjusted automatically."
+msgstr "Önceden seçilen bazı ölçütler geçerli sağlayıcı tarafından desteklenmediğinden otomatik olarak ayarlandı."
+
+#: ../contents/config/config.qml:10
+msgid "Source & Location"
+msgstr "Kaynak ve Konum"
+
+#: ../contents/ui/settings/ConfigSupport.qml:764
+msgid "Star"
+msgstr "Yıldız"
+
+#: ../contents/ui/settings/ConfigSupport.qml:723
+msgid "Star the repository to support the project and follow its development."
+msgstr "Projeyi desteklemek ve gelişimini takip etmek için depoya yıldız verin."
+
+#: ../contents/ui/settings/ConfigData.qml:345
 msgid "Start day offset:"
-msgstr "Başlangıç günü farkı:"
+msgstr "Başlangıç günü kayması:"
 
-msgid "Data"
-msgstr "Veri"
+#: ../contents/ui/js/WeatherDescription.js:42
+#: ../contents/ui/js/WeatherDescription.js:43
+#: ../contents/ui/js/WeatherDescription.js:44
+msgid "Storm"
+msgstr "Fırtına"
 
-msgid "Settings:"
-msgstr "Ayarlar:"
+#: ../contents/ui/settings/ConfigSupport.qml:1392
+msgid "Strikethrough"
+msgstr "Üstü Çizili"
 
-msgid "Restore default settings"
-msgstr "Varsayılan ayarları geri yükle"
+#: ../contents/ui/settings/ConfigSupport.qml:1348
+msgid "Subject"
+msgstr "Konu"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Suggestion"
+msgstr "Öneri"
+
+#: ../contents/config/config.qml:28
+msgid "Support & Community"
+msgstr "Destek ve Topluluk"
+
+#: ../contents/ui/settings/ConfigSupport.qml:565
+msgid "Support the Project"
+msgstr "Projeyi Destekle"
+
+#: ../contents/ui/settings/ConfigSource.qml:711
+msgid "System units:"
+msgstr "Sistem birimleri:"
+
+#: ../contents/ui/js/DetailsCatalog.js:33
+msgctxt "Chart Y axis label"
+msgid "Temp."
+msgstr "Sıc."
+
+#: ../contents/ui/js/DetailsCatalog.js:32
+msgctxt "Chart tab label"
+msgid "Temp."
+msgstr "Sıc."
+
+#: ../contents/ui/js/DetailsCatalog.js:35
+msgctxt "Compact widget bottom row label"
+msgid "Temp."
+msgstr "Sıc."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:166
+msgid "Temperature"
+msgstr "Sıcaklık"
+
+#: ../contents/ui/js/DetailsCatalog.js:34
+msgctxt "Settings label"
+msgid "Temperature"
+msgstr "Sıcaklık"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:178
+msgid "Temperature size:"
+msgstr "Sıcaklık boyutu:"
+
+#: ../contents/ui/settings/ConfigData.qml:422
+msgid "Text Details"
+msgstr "Metin Ayrıntıları"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1508
+msgid "Text to display (optional, the URL is used if left empty)"
+msgstr "Gösterilecek metin (isteğe bağlı, boş bırakılırsa URL kullanılır)"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for the star!"
+msgstr "Yıldız için teşekkürler!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1323
+msgid "Thank you for your feedback! 🚀"
+msgstr "Geri bildiriminiz için teşekkürler! 🚀"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for your rating!"
+msgstr "Puanınız için teşekkürler!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Thank you for your support!"
+msgstr "Desteğiniz için teşekkürler!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1821
+msgid "Thank you!"
+msgstr "Teşekkürler!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:553
+msgid "This applet is open-source and developed with passion. Your support keeps the project active and helps it grow within the KDE ecosystem."
+msgstr "Bu applet açık kaynaklıdır ve tutkuyla geliştirilmektedir. Desteğiniz, projenin aktif kalmasını ve KDE ekosistemi içinde büyümesini sağlar."
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "This provider doesn't support key verification. The key has been saved as entered."
+msgstr "Bu sağlayıcı anahtar doğrulamasını desteklemiyor. Anahtar, girildiği şekliyle kaydedildi."
+
+#: ../contents/ui/settings/ConfigSource.qml:637
+msgid "This provider requires a free API key from its website."
+msgstr "Bu sağlayıcı, kendi web sitesinden alınan ücretsiz bir API anahtarı gerektirir."
+
+#: ../contents/ui/js/WeatherDescription.js:75
+msgid "Thunderstorm"
+msgstr "Gök gürültülü fırtına"
+
+#: ../contents/ui/js/WeatherDescription.js:77
+msgid "Thunderstorm with heavy hail"
+msgstr "Kuvvetli dolu ile gök gürültülü fırtına"
+
+#: ../contents/ui/js/WeatherDescription.js:76
+msgid "Thunderstorm with slight hail"
+msgstr "Hafif dolu ile gök gürültülü fırtına"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1516
+msgid "URL"
+msgstr "URL"
+
+#: ../contents/ui/js/DetailsCatalog.js:96
+msgctxt "Chart tab label"
+msgid "UV"
+msgstr "UV"
+
+#: ../contents/ui/js/DetailsCatalog.js:97
+msgctxt "Chart Y axis label"
+msgid "UV Index"
+msgstr "UV İndeksi"
+
+#: ../contents/ui/js/DetailsCatalog.js:99
+msgctxt "Compact widget bottom row label"
+msgid "UV Index"
+msgstr "UV İndeksi"
+
+#: ../contents/ui/js/DetailsCatalog.js:98
+msgctxt "Settings label"
+msgid "UV Index"
+msgstr "UV İndeksi"
+
+#: ../contents/ui/js/WeatherDescription.js:83
+#: ../contents/ui/js/WeatherDescription.js:88
+msgid "Unknown"
+msgstr "Bilinmiyor"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1195
+msgid "Unlocked as a Thank You"
+msgstr "Teşekkür Olarak Açıldı"
+
+#: ../contents/ui/settings/ConfigData.qml:179
+msgid "Unsupported"
+msgstr "Desteklenmiyor"
+
+#: ../contents/ui/settings/ConfigSource.qml:700
+msgid "Updates & Units"
+msgstr "Güncellemeler ve Birimler"
+
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "Valid"
+msgstr "Geçerli"
+
+#: ../contents/ui/settings/ConfigSource.qml:583
+msgid "Weather Source"
+msgstr "Hava Durumu Kaynağı"
+
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order."
+msgstr "Genişletilmiş görünümde bu sırayla gösterilen hava durumu ayrıntıları."
+
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order. Since Condition is disabled in Appearance, up to 4 details can be selected here."
+msgstr "Genişletilmiş görünümde bu sırayla gösterilen hava durumu ayrıntıları. Görünüm'de Durum devre dışı bırakıldığından burada en fazla 4 ayrıntı seçilebilir."
+
+#: ../contents/ui/js/DetailsCatalog.js:81
+msgctxt "Chart Y axis label"
+msgid "Wind"
+msgstr "Rüzgâr"
+
+#: ../contents/ui/js/DetailsCatalog.js:80
+msgctxt "Chart tab label"
+msgid "Wind"
+msgstr "Rüzgâr"
+
+#: ../contents/ui/js/DetailsCatalog.js:83
+msgctxt "Compact widget bottom row label"
+msgid "Wind"
+msgstr "Rüzgâr"
+
+#: ../contents/ui/js/DetailsCatalog.js:82
+msgctxt "Settings label"
+msgid "Wind"
+msgstr "Rüzgâr"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:285
+msgid "X-axis precision:"
+msgstr "X ekseni hassasiyeti:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:290
+msgid "Y-axis precision:"
+msgstr "Y ekseni hassasiyeti:"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1823
+msgid "You rock!"
+msgstr "Harikasınız!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1822
+msgid "You're amazing!"
+msgstr "Muhteşemsiniz!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1824
+msgid "You're the best!"
+msgstr "En iyisiniz!"

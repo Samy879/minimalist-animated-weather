@@ -1,4 +1,4 @@
-name: Update KDE Store Downloads Badge
+name: Update KDE Store Downloads Badge and History
 
 on:
   schedule:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Fetch downloads and generate JSON
+      - name: Fetch downloads, generate JSON and update History
         run: |
           # Fetch total downloads from KDE Store
           TOTAL=$(curl -s 'https://store.kde.org/p/2356087/loadFiles' | jq '[.files[].downloaded_count_uk // 0] | add')
@@ -21,8 +21,19 @@ jobs:
           # Ensure the target directory exists
           mkdir -p .github/badges
           
-          # Generate the JSON file for Shields.io
+          # 1. Generate the JSON file for Shields.io (overwrites each time)
           echo "{\"schemaVersion\": 1, \"label\": \"Downloads\", \"message\": \"$TOTAL\", \"color\": \"blue\"}" > .github/badges/downloads-badge.json
+          
+          # 2. Accumulate data for the curve (CSV format: timestamp, total)
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") # Standard UTC timestamp
+          
+          # Add header if the CSV file doesn't exist yet
+          if [ ! -f .github/badges/downloads-history.csv ]; then
+            echo "timestamp,downloads" > .github/badges/downloads-history.csv
+          fi
+          
+          # Append the new data to the CSV
+          echo "$TIMESTAMP,$TOTAL" >> .github/badges/downloads-history.csv
 
       - name: Commit and push changes
         run: |
@@ -30,9 +41,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Stage the badge file
+          # Stage both the badge file and the history file
           git add .github/badges/downloads-badge.json
+          git add .github/badges/downloads-history.csv
           
-          # Commit only if the file has changed, then push
-          git commit -m "chore: update downloads badge" || exit 0
+          # Commit only if files have changed, then push
+          git commit -m "chore: update downloads badge and history" || exit 0
           git push

@@ -1,27 +1,35 @@
 import QtQuick
-import QtQuick.Controls
 import org.kde.plasma.plasmoid
-import "../js/traductor.js" as Traduc
-import "../js/GetWeather.js" as GetWeather
-import "../js/geoCoordinates.js" as GeoCoordinates
+import "../js/WeatherDescription.js" as WeatherDesc
+import "../js/ProviderRegistry.js" as Registry
+import "../js/DetailsCatalog.js" as Catalog
+import "../js/GeoCoordinates.js" as GeoCoordinates
 import "../js/GetCity.js" as GetCity
 
 Item {
   id: root
 
-  // --- Propriétés de configuration ---
   property var useCoordinatesIp: Plasmoid.configuration.useCoordinatesIp
   property string latitudeC: Plasmoid.configuration.latitudeC
   property string longitudeC: Plasmoid.configuration.longitudeC
   property string temperatureUnit: Plasmoid.configuration.temperatureUnit
   property int updateInterval: Plasmoid.configuration.updateInterval || 15
 
+  property string weatherProvider: Plasmoid.configuration.weatherProvider || "openmeteo"
+  property string apiKeyWeatherApi: Plasmoid.configuration.apiKeyWeatherApi || ""
+  property string apiKeyTomorrow: Plasmoid.configuration.apiKeyTomorrow || ""
+  property string apiKeyOpenWeatherMap: Plasmoid.configuration.apiKeyOpenWeatherMap || ""
+  property string apiKeyVisualCrossing: Plasmoid.configuration.apiKeyVisualCrossing || ""
+  property string apiKeyPirateWeather: Plasmoid.configuration.apiKeyPirateWeather || ""
+
+  property int forecastStartDay: Plasmoid.configuration.forecastStartDay || 0
+  property int forecastDayCount: Plasmoid.configuration.forecastDayCount || 7
+  property int forecastDaysRequested: forecastStartDay + forecastDayCount
+
+  property bool usedFallbackProvider: false
+  property var lastProviderMeta: null
+
   property bool isBusy: false
-  // Devient true seulement après Component.onCompleted : permet aux
-  // handlers onXxxChanged ci-dessous de distinguer un vrai changement fait
-  // par l'utilisateur (en cours d'exécution) de l'évaluation initiale des
-  // property bindings au chargement (qui déclenche aussi ces signaux et
-  // provoquerait sinon des updateWeather() redondants au démarrage).
   property bool componentReady: false
 
   property int refreshTrigger: Plasmoid.configuration.refreshTrigger
@@ -30,45 +38,44 @@ Item {
     updateWeather();
   }
 
-  // --- Données météo ---
-  property string apparentTemp: weatherData ? Math.round(weatherData.current.apparent_temperature) : "--"
-  property string humidity: weatherData ? weatherData.current.relative_humidity_2m : "--"
-  property string uvIndex: weatherData ? Math.round(weatherData.current.uv_index) : "--"
-  property string windSpeed: weatherData ? Math.round(weatherData.current.wind_speed_10m) : "--"
+  property string apparentTemp: weatherData ? formatValue("apparentTemp") : "--"
+  property string humidity: weatherData ? formatValue("humidity") : "--"
+  property string uvIndex: weatherData ? formatValue("uvIndex") : "--"
+  property string windSpeed: weatherData ? formatValue("windSpeed") : "--"
   property var weatherData: null
   property var coordsObj: null
+  property string countryCode: coordsObj ? (coordsObj.countryCode || "") : ""
 
-  // --- Localisation ---
   property bool isAutoLoc: useCoordinatesIp === true || useCoordinatesIp === "true"
   property string latitude: isAutoLoc ? (coordsObj ? coordsObj.lat : "0") : latitudeC
-  property string longitud: isAutoLoc ? (coordsObj ? coordsObj.lon : "0") : longitudeC
-  property string codeleng: (Qt.locale().name).substring(0, 2)
+  property string longitude: isAutoLoc ? (coordsObj ? coordsObj.lon : "0") : longitudeC
+  property string languageCode: (Qt.locale().name).substring(0, 2)
   property string city: ""
 
-  // --- Propriétés d'affichage ---
   property int isDay: weatherData ? weatherData.current.is_day : 1
   readonly property string prefixIcon: isDay === 1 ? "" : "-night"
-  property string temperaturaActual: weatherData ? weatherData.current.temperature_2m.toFixed(1) : "--"
-  property string temperaturaActualPopup: weatherData ? Math.round(weatherData.current.temperature_2m) : "--"
-  property string codeweather: weatherData ? weatherData.current.weather_code : 0
-  property string iconWeatherCurrent: asingicon(codeweather, true)
-  property string weatherLongtext: Traduc.weatherLongText(codeleng, codeweather)
-  property string weatherShottext: Traduc.weatherShortText(codeleng, codeweather)
-  property string probabilidadDeLLuvia: weatherData ? weatherData.daily.precipitation_probability_max[0] : "0"
-  property string textProbability: Traduc.rainProbabilityText(codeleng)
+  property string currentTemperature: weatherData ? weatherData.current.temperature_2m.toFixed(1) : "--"
+  property string currentTemperatureRounded: weatherData ? Math.round(weatherData.current.temperature_2m) : "--"
+  property string weatherCode: weatherData ? weatherData.current.weather_code : 0
+  property string iconWeatherCurrent: assignIcon(weatherCode, true)
+  property string weatherLongText: WeatherDesc.weatherLongText(languageCode, weatherCode)
+  property string weatherShortText: WeatherDesc.weatherShortText(languageCode, weatherCode)
 
-  // --- Prévisions ---
-  property int maxweatherTomorrow: weatherData ? Math.round(weatherData.daily.temperature_2m_max[1]) : 0
-  property int minweatherTomorrow: weatherData ? Math.round(weatherData.daily.temperature_2m_min[1]) : 0
-  property int codeweatherTomorrow: weatherData ? weatherData.daily.weather_code[1] : 0
-  property int maxweatherDayAftertomorrow: weatherData ? Math.round(weatherData.daily.temperature_2m_max[2]) : 0
-  property int minweatherDayAftertomorrow: weatherData ? Math.round(weatherData.daily.temperature_2m_min[2]) : 0
-  property int codeweatherDayAftertomorrow: weatherData ? weatherData.daily.weather_code[2] : 0
-  property int maxweatherTwoDaysAfterTomorrow: weatherData ? Math.round(weatherData.daily.temperature_2m_max[3]) : 0
-  property int minweatherTwoDaysAfterTomorrow: weatherData ? Math.round(weatherData.daily.temperature_2m_min[3]) : 0
-  property int codeweatherTwoDaysAfterTomorrow: weatherData ? weatherData.daily.weather_code[3] : 0
+  property string rainProbability: (weatherData && weatherData.daily && weatherData.daily.precipitation_probability_max && weatherData.daily.precipitation_probability_max.length > 0) ? weatherData.daily.precipitation_probability_max[0] : "0"
+  property string textProbability: i18n("Rain probability")
 
-  // --- TIMERS ---
+  // --- NOTE SUR LES PRÉVISIONS JOUR PAR JOUR ---
+  // Les anciennes propriétés à index fixe (maxweatherTomorrow, ..Day2, ..Day3)
+  // ont été retirées : elles ignoraient forecastStartDay et lisaient parfois
+  // un index hors des bornes réellement renvoyées par l'API (ex: seulement 3
+  // jours demandés mais lecture de l'index 3 = 4e jour). Elles n'étaient de
+  // toute façon plus utilisées par aucune vue : FullRepresentation.qml lit
+  // désormais directement weatherData.daily[...][dayIndex], avec
+  // dayIndex = index + forecastStartDay et un model borné par
+  // (dailyData.time.length - forecastStartDay). C'est la seule source de
+  // vérité pour l'affichage des jours de prévision — ne pas réintroduire de
+  // raccourcis à index fixe ici.
+
   Timer {
     id: weatherTimer
     interval: Math.max(root.updateInterval, 5) * 60000
@@ -109,7 +116,29 @@ Item {
     }
   }
 
-  // --- FONCTIONS ---
+  function detailValue(detailId) {
+    if (!weatherData) return null;
+    let v = Catalog.readCurrentValue(detailId, weatherData);
+    if (v === null) v = Catalog.readTodayFallback(detailId, weatherData);
+    return v;
+  }
+
+  function detailUnit(detailId) {
+    let cat = Catalog.findDetail(detailId);
+    return cat ? cat.unitFn(root.temperatureUnit) : "";
+  }
+
+  function detailSupported(detailId) {
+    return Registry.isDetailSupported(weatherProvider, detailId);
+  }
+
+  function formatValue(detailId) {
+    let v = detailValue(detailId);
+    if (v === null || v === undefined || isNaN(v)) return "--";
+    let cat = Catalog.findDetail(detailId);
+    return (cat && cat.decimals) ? parseFloat(v).toFixed(1) : Math.round(v).toString();
+  }
+
   function updateWeather() {
     if (isBusy) {
       console.log("--- [INFO] Mise à jour déjà en cours...");
@@ -118,10 +147,10 @@ Item {
     isBusy = true;
     safetyUnlockTimer.start();
     retryTimer.stop();
-    console.log("--- [1/4] Démarrage du cycle (Auto-IP: " + isAutoLoc + ")");
+    console.log("--- [1/4] Démarrage du cycle (Provider: " + weatherProvider + ", Auto-IP: " + isAutoLoc + ")");
 
-    if (isAutoLoc || (latitude === "0" && longitud === "0")) {
-      GeoCoordinates.obtenerCoordenadas(function(res) {
+    if (isAutoLoc || (latitude === "0" && longitude === "0")) {
+      GeoCoordinates.getCoordinates(function(res) {
         if (res) {
           console.log("--- [2/4] Coordonnées récupérées : " + res.lat + ", " + res.lon);
           coordsObj = res;
@@ -131,26 +160,58 @@ Item {
         }
       });
     } else {
-      console.log("--- [2/4] Utilisation des coordonnées manuelles : " + latitude + ", " + longitud);
+      console.log("--- [2/4] Utilisation des coordonnées manuelles : " + latitude + ", " + longitude);
       fetchData();
     }
   }
 
+  function apiKeyForProvider(providerId) {
+    if (providerId === "weatherapi") return apiKeyWeatherApi;
+    if (providerId === "tomorrowio") return apiKeyTomorrow;
+    if (providerId === "openweathermap") return apiKeyOpenWeatherMap;
+    if (providerId === "visualcrossing") return apiKeyVisualCrossing;
+    if (providerId === "pirateweather") return apiKeyPirateWeather;
+    return "";
+  }
+
   function fetchData() {
-    console.log("--- [3/4] Requête Météo envoyée...");
-    GetWeather.fetchAllWeather(latitude, longitud, root.temperatureUnit, function(data) {
+    console.log("--- [3/4] Requête Météo envoyée (provider: " + weatherProvider + ", jours: " + forecastDaysRequested + ")...");
+
+    let params = {
+      lat: latitude,
+      lon: longitude,
+      tempUnit: root.temperatureUnit,
+      days: forecastDaysRequested,
+      apiKey: apiKeyForProvider(weatherProvider),
+      countryCode: root.countryCode,
+      apiKeys: {
+        weatherapi: apiKeyWeatherApi,
+        tomorrowio: apiKeyTomorrow,
+        openweathermap: apiKeyOpenWeatherMap,
+        visualcrossing: apiKeyVisualCrossing,
+        pirateweather: apiKeyPirateWeather
+      }
+    };
+
+    Registry.fetchWeather(weatherProvider, params, function(err, data, meta, usedFallback) {
+      usedFallbackProvider = usedFallback;
+      lastProviderMeta = meta;
+
       if (data) {
+        if (usedFallback) {
+          console.log("--- [3/4] Fallback silencieux vers Open-Meteo (provider '" + weatherProvider + "' indisponible)");
+        }
         console.log("--- [3/4] Données Météo reçues avec succès");
         weatherData = data;
         getCityName();
       } else {
-        endSession(false, "Echec API Météo");
+        endSession(false, "Echec API Météo (" + err + ")");
       }
     });
   }
 
   function getCityName() {
-    GetCity.getNameCity(latitude, longitud, codeleng, function(res) {
+    GetCity.getCityName(latitude, longitude, languageCode, function(res) {
       city = res;
       console.log("--- [4/4] Lieu détecté : " + city);
       endSession(true, "Succès");
@@ -168,25 +229,39 @@ Item {
     }
   }
 
-  function asingicon(x, b) {
-    let wmocodes = {
+  function assignIcon(code, precise) {
+    let wmoCodes = {
       0: "clear", 1: "few-clouds", 2: "few-clouds", 3: "clouds",
       45: "fog", 48: "fog",
       51: "showers-scattered", 53: "showers-scattered", 55: "showers-scattered",
+      56: "freezing-rain", 57: "freezing-rain",
       61: "showers", 63: "showers", 65: "showers",
+      66: "freezing-rain", 67: "freezing-rain",
+      71: "snow", 73: "snow", 75: "snow",
+      77: "snow",
       80: "showers", 81: "showers", 82: "showers",
+      85: "snow-scattered", 86: "snow-scattered",
       95: "storm", 96: "storm", 99: "storm"
     };
-    let icon = "weather-" + (wmocodes[x] || "clouds");
-    return (b === true || b === "preciso") ? icon + prefixIcon : icon;
+    let icon = "weather-" + (wmoCodes[code] || "clouds");
+    return (precise === true) ? icon + prefixIcon : icon;
   }
 
   Component.onCompleted: {
     updateWeather();
     componentReady = true;
   }
+
   onTemperatureUnitChanged: if (componentReady) updateWeather()
   onUseCoordinatesIpChanged: if (componentReady) updateWeather()
   onLatitudeCChanged: if (componentReady && !isAutoLoc) updateWeather()
   onLongitudeCChanged: if (componentReady && !isAutoLoc) updateWeather()
+  onWeatherProviderChanged: if (componentReady) updateWeather()
+  onApiKeyWeatherApiChanged: if (componentReady && weatherProvider === "weatherapi") updateWeather()
+  onApiKeyTomorrowChanged: if (componentReady && weatherProvider === "tomorrowio") updateWeather()
+  onApiKeyOpenWeatherMapChanged: if (componentReady && weatherProvider === "openweathermap") updateWeather()
+  onApiKeyVisualCrossingChanged: if (componentReady && weatherProvider === "visualcrossing") updateWeather()
+  onApiKeyPirateWeatherChanged: if (componentReady && weatherProvider === "pirateweather") updateWeather()
+  onForecastStartDayChanged: if (componentReady) updateWeather()
+  onForecastDayCountChanged: if (componentReady) updateWeather()
 }
