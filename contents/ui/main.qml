@@ -1,7 +1,4 @@
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import org.kde.kirigami as Kirigami
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import "components" as Components
@@ -14,32 +11,36 @@ PlasmoidItem {
     id: weatherSource
   }
 
+  Plasmoid.contextualActions: [
+    PlasmaCore.Action {
+      text: i18n("Refresh now")
+      icon.name: "view-refresh"
+      onTriggered: weatherSource.updateWeather()
+    }
+  ]
+
   // Propriétés de configuration (Lien avec main.xml)
-  property bool showConditionOnPanel: Plasmoid.configuration.showConditionOnPanel
+  property bool showConditionPanel: Plasmoid.configuration.showConditionPanel
   property int borderRadius: Plasmoid.configuration.borderRadius
   property real backgroundOpacity: Plasmoid.configuration.backgroundOpacity
-  property bool enableYAxisReading: Plasmoid.configuration.enableYAxisReading
-  property bool showCursorDecimals: Plasmoid.configuration.showCursorDecimals
+  property bool interactiveYAxis: Plasmoid.configuration.interactiveYAxis
+  property bool hoverDecimals: Plasmoid.configuration.hoverDecimals
+  property bool xAxisPrecision: Plasmoid.configuration.xAxisPrecision
   property bool showAnimations: Plasmoid.configuration.showAnimations
-  property bool boldTempPanel: Plasmoid.configuration.boldTempPanel
-  property bool boldCondPanel: Plasmoid.configuration.boldCondPanel
+  property bool temperaturePanelBold: Plasmoid.configuration.temperaturePanelBold
+  property bool conditionPanelBold: Plasmoid.configuration.conditionPanelBold
   property bool reverseOrder: Plasmoid.configuration.reverseOrder
   property int temperatureUnit: Plasmoid.configuration.temperatureUnit
-  property real sizeFontTemp: Plasmoid.configuration.sizeFontTemp
-  property real sizeFontCond: Plasmoid.configuration.sizeFontCond
+  property real temperatureFontSize: Plasmoid.configuration.temperatureFontSize
+  property real conditionFontSize: Plasmoid.configuration.conditionFontSize
 
   property bool preciseTemp: Plasmoid.configuration.preciseTemp
-  property bool preciseTempChart: Plasmoid.configuration.preciseTempChart
-
-  property bool showApparentTemp: Plasmoid.configuration.showApparentTemp
-  property bool showHumidity: Plasmoid.configuration.showHumidity
-  property bool showUVIndex: Plasmoid.configuration.showUVIndex
-  property bool showWind: Plasmoid.configuration.showWind
+  property bool yAxisDecimals: Plasmoid.configuration.yAxisDecimals
 
   // Gère l'affichage du titre dans la vue détaillée
-  property bool showConditionFull: Plasmoid.configuration.showConditionFull
+  property bool showConditionExpanded: Plasmoid.configuration.showConditionExpanded
 
-  property bool textweather: Plasmoid.configuration.textweather
+  property bool showTemperaturePanel: Plasmoid.configuration.showTemperaturePanel
   property int forecastStartDay: Plasmoid.configuration.forecastStartDay
 
   // Référence vers la FullRepresentation pour pouvoir appeler resetScroll()

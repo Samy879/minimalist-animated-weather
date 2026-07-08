@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pin de localisation -->
+  <path d="M30 6c-9.94 0-18 8.06-18 18 0 13.5 18 34 18 34s18-20.5 18-34c0-9.94-8.06-18-18-18z" fill="#536AC6"/>
+  <circle cx="30" cy="24" r="7" fill="#ffffff"/>
+
+  <!-- Ondes de signal (source) -->
+  <g stroke="#8FA8E0" stroke-width="3.2" stroke-linecap="round" fill="none">
+    <path d="M40 16a13 13 0 0 1 0 14"/>
+    <path d="M46 10a22 22 0 0 1 0 26" stroke="#9FDBB8"/>
+  </g>
+</svg>

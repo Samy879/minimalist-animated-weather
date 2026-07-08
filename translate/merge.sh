@@ -1,5 +1,5 @@
 #!/bin/sh
-# Version: 20
+# Version: 21 (Sans metadata.desktop)
 
 # https://techbase.kde.org/Development/Tutorials/Localization/i18n_Build_Systems
 # https://techbase.kde.org/Development/Tutorials/Localization/i18n_Build_Systems/Outside_KDE_repositories
@@ -31,18 +31,10 @@ fi
 echo "[merge] Extracting messages"
 potArgs="--from-code=UTF-8 --width=200 --add-location=file"
 
-find "${packageRoot}" -name '*.desktop' | sort > "${DIR}/infiles.list"
-xgettext \
-	${potArgs} \
-	--files-from="${DIR}/infiles.list" \
-	--language=Desktop \
-	-D "${packageRoot}" \
-	-D "${DIR}" \
-	-o "template.pot.new" \
-	|| \
-	{ echo "[merge] error while calling xgettext. aborting."; exit 1; }
-
-sed -i 's/"Content-Type: text\/plain; charset=CHARSET\\n"/"Content-Type: text\/plain; charset=UTF-8\\n"/' "template.pot.new"
+# NOTE: Il n'y a plus de metadata.desktop dans ce projet (Name/Comment/Keywords
+# sont désormais uniquement dans metadata.json et ne sont pas traduits via
+# gettext). L'ancienne première passe xgettext --language=Desktop a donc été
+# retirée, ainsi que tout le bloc de régénération de metadata.desktop plus bas.
 
 # See Ki18n's extract-messages.sh for a full example:
 # https://invent.kde.org/sysadmin/l10n-scripty/-/blob/master/extract-messages.sh#L25
@@ -69,11 +61,11 @@ xgettext \
 	--msgid-bugs-address="${bugAddress}" \
 	-D "${packageRoot}" \
 	-D "${DIR}" \
-	--join-existing \
 	-o "template.pot.new" \
 	|| \
 	{ echo "[merge] error while calling xgettext. aborting."; exit 1; }
 
+sed -i 's/"Content-Type: text\/plain; charset=CHARSET\\n"/"Content-Type: text\/plain; charset=UTF-8\\n"/' "template.pot.new"
 sed -i 's/# SOME DESCRIPTIVE TITLE./'"# Translation of ${widgetName} in LANGUAGE"'/' "template.pot.new"
 sed -i 's/# Copyright (C) YEAR THE PACKAGE'"'"'S COPYRIGHT HOLDER/'"# Copyright (C) $(date +%Y)"'/' "template.pot.new"
 
@@ -154,61 +146,11 @@ for cat in $catalogs; do
 done
 echo "[merge] Done merging messages"
 
-#---
-echo "[merge] Updating .desktop file"
-
-# Generate LINGUAS for msgfmt
-if [ -f "$DIR/LINGUAS" ]; then
-	rm "$DIR/LINGUAS"
-fi
-touch "$DIR/LINGUAS"
-for cat in $catalogs; do
-	catLocale=`basename ${cat%.*}`
-	echo "${catLocale}" >> "$DIR/LINGUAS"
-done
-
-cp -f "$DIR/../metadata.desktop" "$DIR/template.desktop"
-sed -i '/^Name\[/ d; /^GenericName\[/ d; /^Comment\[/ d; /^Keywords\[/ d' "$DIR/template.desktop"
-
-msgfmt \
-	--desktop \
-	--template="$DIR/template.desktop" \
-	-d "$DIR/" \
-	-o "$DIR/new.desktop"
-
-# Delete empty msgid messages that used the po header
-if [ ! -z "$(grep '^Name=$' "$DIR/new.desktop")" ]; then
-	echo "[merge] Name in metadata.desktop is empty!"
-	sed -i '/^Name\[/ d' "$DIR/new.desktop"
-fi
-if [ ! -z "$(grep '^GenericName=$' "$DIR/new.desktop")" ]; then
-	echo "[merge] GenericName in metadata.desktop is empty!"
-	sed -i '/^GenericName\[/ d' "$DIR/new.desktop"
-fi
-if [ ! -z "$(grep '^Comment=$' "$DIR/new.desktop")" ]; then
-	echo "[merge] Comment in metadata.desktop is empty!"
-	sed -i '/^Comment\[/ d' "$DIR/new.desktop"
-fi
-if [ ! -z "$(grep '^Keywords=$' "$DIR/new.desktop")" ]; then
-	echo "[merge] Keywords in metadata.desktop is empty!"
-	sed -i '/^Keywords\[/ d' "$DIR/new.desktop"
-fi
-
-# Place translations at the bottom of the desktop file.
-translatedLines=`cat "$DIR/new.desktop" | grep "]="`
-if [ ! -z "${translatedLines}" ]; then
-	sed -i '/^Name\[/ d; /^GenericName\[/ d; /^Comment\[/ d; /^Keywords\[/ d' "$DIR/new.desktop"
-	if [ "$(tail -c 2 "$DIR/new.desktop" | wc -l)" != "2" ]; then
-		# Does not end with 2 empty lines, so add an empty line.
-		echo "" >> "$DIR/new.desktop"
-	fi
-	echo "${translatedLines}" >> "$DIR/new.desktop"
-fi
-
-# Cleanup
-mv "$DIR/new.desktop" "$DIR/../metadata.desktop"
-rm "$DIR/template.desktop"
-rm "$DIR/LINGUAS"
+# NOTE: L'ancien bloc "Updating .desktop file" a été retiré. Il générait
+# metadata.desktop à partir d'un template.desktop et de LINGUAS via
+# msgfmt --desktop, ce qui n'a plus lieu d'être puisque le projet n'utilise
+# plus que metadata.json (les clés Name/GenericName/Comment/Keywords ne sont
+# plus traduites par ce mécanisme).
 
 #---
 # Populate ReadMe.md

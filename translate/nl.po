@@ -1,187 +1,925 @@
-# Translation of Minimalist Animated Weather in Dutch
-# Copyright (C) 2026
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the plasma_applet_com.github.samy879.minimalist-animated-weather package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Minimalist Animated Weather\n"
-"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather/issues\n"
-"POT-Creation-Date: 2026-05-12 00:00+0300\n"
-"PO-Revision-Date: 2026-06-16 17:49+0200\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"Project-Id-Version: plasma_applet_com.github.samy879.minimalist-animated-weather\n"
+"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather\n"
+"POT-Creation-Date: 2026-07-08 09:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Clear"
-msgstr "Helder"
+#: ../contents/ui/settings/ConfigData.qml:206
+msgid " / "
+msgstr " / "
 
-msgid "Cloudy"
-msgstr "Bewolkt"
+#: ../contents/ui/settings/ConfigSupport.qml:988
+#: ../contents/ui/settings/ConfigSupport.qml:1591
+msgid "/10"
+msgstr "/10"
 
-msgid "Drizzle"
-msgstr "Motregen"
+#: ../contents/ui/settings/ConfigSource.qml:643
+msgid "API Key:"
+msgstr "API-sleutel:"
 
-msgid "Rain"
-msgstr "Regen"
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "API key validated."
+msgstr "API-sleutel gevalideerd."
 
-msgid "Snow"
-msgstr "Sneeuw"
+#: ../contents/ui/settings/ConfigSupport.qml:1232
+msgid "Adds a rainbow to the animated theme when it's raining with the sun still out."
+msgstr "Voegt een regenboog toe aan het geanimeerde thema wanneer het regent terwijl de zon nog schijnt."
 
-msgid "Hail"
-msgstr "Hagel"
+#: ../contents/ui/settings/ConfigAppearance.qml:278
+msgid "Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers."
+msgstr "Voegt één decimaal precisie toe bij het aanwijzen van de grafiek, in plaats van hele getallen."
 
-msgid "Showers"
-msgstr "Buien"
+#: ../contents/ui/settings/ConfigSupport.qml:1214
+msgid "Adds shooting stars to the animated theme's night sky."
+msgstr "Voegt vallende sterren toe aan de nachtelijke hemel van het geanimeerde thema."
 
-msgid "Storm"
-msgstr "Storm"
+#: ../contents/ui/settings/ConfigAppearance.qml:271
+msgid "Animations:"
+msgstr "Animaties:"
 
-msgid "Apparent Temp"
-msgstr "Gevoel"
+#: ../contents/ui/settings/ConfigSupport.qml:229
+msgid "Anonymous"
+msgstr "Anoniem"
 
-msgid "Humidity"
-msgstr "Vochtigheid"
+#: ../contents/config/config.qml:15
+msgid "Appearance"
+msgstr "Uiterlijk"
 
-msgid "UV Index"
-msgstr "UV-index"
+#: ../contents/ui/settings/ConfigAppearance.qml:354
+msgid "Are you sure you want to reset all appearance settings to their default values? This action cannot be undone."
+msgstr "Weet u zeker dat u alle uiterlijkinstellingen wilt terugzetten naar hun standaardwaarden? Deze actie kan niet ongedaan worden gemaakt."
 
-msgid "Wind"
-msgstr "Wind"
+#: ../contents/ui/settings/ConfigData.qml:434
+msgid "Are you sure you want to reset all data metrics and forecast ranges to their default values? This action cannot be undone."
+msgstr "Weet u zeker dat u alle gegevensmetrieken en voorspellingsperiodes wilt terugzetten naar hun standaardwaarden? Deze actie kan niet ongedaan worden gemaakt."
 
-msgid "Feels"
-msgstr "Gevoel"
+#: ../contents/ui/settings/ConfigSource.qml:743
+msgid "Are you sure you want to reset the location, source and update settings to their default values? This action cannot be undone."
+msgstr "Weet u zeker dat u de locatie-, bron- en update-instellingen wilt terugzetten naar hun standaardwaarden? Deze actie kan niet ongedaan worden gemaakt."
 
-msgid "Hum."
-msgstr "Vocht."
+#: ../contents/ui/settings/ResetSection.qml:24
+msgid "Are you sure you want to restore this page's settings to their default values? This action cannot be undone."
+msgstr "Weet u zeker dat u de instellingen van deze pagina wilt terugzetten naar hun standaardwaarden? Deze actie kan niet ongedaan worden gemaakt."
 
-msgid "UV"
-msgstr "UV"
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Automatic"
+msgstr "Automatisch"
 
-msgid "Temp."
-msgstr "Temp."
+#: ../contents/ui/settings/ConfigSupport.qml:1826
+msgid "Awesome!"
+msgstr "Fantastisch!"
 
-msgid "Restore default settings?"
-msgstr "Standaardinstellingen herstellen?"
+#: ../contents/ui/settings/ConfigAppearance.qml:326
+msgid "Background opacity:"
+msgstr "Ondoorzichtigheid van achtergrond:"
 
-msgid "All settings on this page will be reset to their defaults. This cannot be undone."
-msgstr "Alle instellingen op deze pagina worden teruggezet naar de standaardwaarden. Dit kan niet ongedaan worden gemaakt."
-
-msgid "Location"
-msgstr "Locatie"
-
-msgid "Automatic location (IP):"
-msgstr "Automatische locatie (IP):"
-
-msgid "Coordinates:"
-msgstr "Coördinaten:"
-
-msgid "Latitude"
-msgstr "Breedtegraad"
-
-msgid "Longitude"
-msgstr "Lengtegraad"
-
-msgid "Units & updates"
-msgstr "Eenheden & updates"
-
-msgid "Units:"
-msgstr "Eenheden:"
-
-msgid "Update interval:"
-msgstr "Update-interval:"
-
-msgid "Refresh now"
-msgstr "Nu vernieuwen"
-
-msgid "Style"
-msgstr "Stijl"
-
-msgid "Panel"
-msgstr "Paneel"
-
-msgid "Show:"
-msgstr "Tonen:"
-
-msgid "Temperature"
-msgstr "Temperatuur"
-
-msgid "Condition"
-msgstr "Conditie"
-
-msgid "Reverse order"
-msgstr "Volgorde omkeren"
-
-msgid "Temperature font:"
-msgstr "Lettertype temperatuur:"
-
+#: ../contents/ui/settings/ConfigAppearance.qml:201
+#: ../contents/ui/settings/ConfigAppearance.qml:237
+#: ../contents/ui/settings/ConfigSupport.qml:1376
 msgid "Bold"
 msgstr "Vet"
 
-msgid "Condition font:"
-msgstr "Lettertype conditie:"
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Bug"
+msgstr "Bug"
 
+#: ../contents/ui/settings/ConfigSupport.qml:1400
+msgid "Bulleted List"
+msgstr "Opsommingslijst"
+
+#: ../contents/ui/settings/ConfigData.qml:428
+msgid "Chart Tabs"
+msgstr "Grafiektabbladen"
+
+#: ../contents/ui/settings/ConfigData.qml:429
+msgid "Charts available to swipe through. If none are selected, charts are disabled."
+msgstr "Grafieken die u kunt doorswipen. Als er geen zijn geselecteerd, is de grafiekweergave uitgeschakeld."
+
+#: ../contents/ui/js/WeatherDescription.js:17
+#: ../contents/ui/js/WeatherDescription.js:18
+#: ../contents/ui/js/WeatherDescription.js:50
+msgid "Clear"
+msgstr "Helder"
+
+#: ../contents/ui/FullRepresentation.qml:663
+msgid "Click for hourly details"
+msgstr "Klik voor uurlijkse details"
+
+#: ../contents/ui/js/DetailsCatalog.js:131
+msgctxt "Compact widget bottom row label"
+msgid "Cloud Cover"
+msgstr "Bewolking"
+
+#: ../contents/ui/js/DetailsCatalog.js:130
+msgctxt "Settings label"
+msgid "Cloud Cover"
+msgstr "Bewolkingsgraad"
+
+#: ../contents/ui/js/DetailsCatalog.js:129
+msgctxt "Chart Y axis label"
+msgid "Clouds"
+msgstr "Bewolking"
+
+#: ../contents/ui/js/DetailsCatalog.js:128
+msgctxt "Chart tab label"
+msgid "Clouds"
+msgstr "Bewolking"
+
+#: ../contents/ui/js/WeatherDescription.js:19
+#: ../contents/ui/js/WeatherDescription.js:20
+msgid "Cloudy"
+msgstr "Bewolkt"
+
+#: ../contents/ui/settings/ConfigSupport.qml:834
+msgid "Community Love"
+msgstr "Steun van de community"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:167
+msgid "Condition"
+msgstr "Weersomstandigheid"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:214
+msgid "Condition size:"
+msgstr "Grootte van weersomstandigheid:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:253
+msgid "Condition:"
+msgstr "Weersomstandigheid:"
+
+#: ../contents/ui/settings/ConfigSource.qml:523
+msgid "Coordinates:"
+msgstr "Coördinaten:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:311
+msgid "Corner radius:"
+msgstr "Hoekstraal:"
+
+#: ../contents/config/config.qml:23
+msgid "Data & Charts"
+msgstr "Gegevens en grafieken"
+
+#: ../contents/ui/settings/ConfigData.qml:303
+msgid "Days shown cannot go below the minimum forecast length of %1."
+msgstr "Het aantal weergegeven dagen kan niet lager zijn dan de minimale voorspellingsduur van %1."
+
+#: ../contents/ui/settings/ConfigData.qml:296
+msgid "Days shown reduced to %1 to fit the new start day."
+msgstr "Het aantal weergegeven dagen is verminderd tot %1 om aan te sluiten bij de nieuwe startdag."
+
+#: ../contents/ui/settings/ConfigData.qml:376
+msgid "Days to display:"
+msgstr "Weer te geven dagen:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:204
 msgid "Decimals:"
 msgstr "Decimalen:"
 
-msgid "Full view"
-msgstr "Volledige weergave"
+#: ../contents/ui/settings/ConfigData.qml:370
+msgid "Delays the forecast start by a specific number of days."
+msgstr "Stelt het begin van de voorspelling met een bepaald aantal dagen uit."
 
-msgid "Condition:"
-msgstr "Conditie:"
+#: ../contents/ui/js/WeatherDescription.js:55
+msgid "Depositing rime fog"
+msgstr "Aanvriezende mist"
 
-msgid "Chart decimals:"
-msgstr "Grafiek decimalen:"
+#: ../contents/ui/settings/ConfigSupport.qml:1432
+msgid "Describe your idea or the bug in detail here..."
+msgstr "Beschrijf hier uw idee of de bug in detail..."
 
-msgid "Cursor decimals:"
-msgstr "Cursor decimalen:"
+#: ../contents/ui/settings/ConfigAppearance.qml:303
+msgid "Desktop Widget"
+msgstr "Bureaubladwidget"
 
-msgid "Shows one decimal while hovering the chart.\nWithout it, the value only updates at whole numbers and can appear stuck as you move along."
-msgstr "Toont één decimaal wanneer u over de grafiek zweeft.\nZonder dit wordt de waarde alleen bij hele getallen bijgewerkt en kan deze vast lijken te zitten tijdens het verplaatsen."
+#: ../contents/ui/settings/ConfigSource.qml:510
+#: ../contents/ui/settings/ConfigSource.qml:573
+msgid "Detection failed"
+msgstr "Detectie mislukt"
 
-msgid "Y-axis reading:"
-msgstr "Y-as aflezing:"
+#: ../contents/ui/settings/ConfigSupport.qml:1215
+#: ../contents/ui/settings/ConfigSupport.qml:1233
+msgid "Disabled because animations are turned off in the Appearance settings."
+msgstr "Uitgeschakeld omdat animaties zijn uitgeschakeld in de instellingen voor Uiterlijk."
 
-msgid "Hover the left edge of the chart to read a value off the Y axis instead of following the curve."
-msgstr "Zweef over de linkerrand van de grafiek om een waarde van de Y-as af te lezen in plaats van de curve te volgen."
+#: ../contents/ui/settings/ConfigAppearance.qml:287
+msgid "Displays minutes alongside hours when hovering (e.g. 11:04 instead of 11h) for a more precise time."
+msgstr "Toont minuten naast uren bij het aanwijzen (bijv. 11:04 in plaats van 11u) voor een preciezere tijdsaanduiding."
 
-msgid "Weather animations:"
-msgstr "Weeranimaties:"
+#: ../contents/ui/settings/ConfigAppearance.qml:266
+msgid "Displays the current weather description (e.g., Sunny, Rainy)."
+msgstr "Toont de huidige weersbeschrijving (bijv. Zonnig, Regenachtig)."
 
-msgid "Details:"
-msgstr "Details:"
+#: ../contents/ui/js/WeatherDescription.js:23
+#: ../contents/ui/js/WeatherDescription.js:24
+#: ../contents/ui/js/WeatherDescription.js:25
+#: ../contents/ui/js/WeatherDescription.js:26
+#: ../contents/ui/js/WeatherDescription.js:27
+msgid "Drizzle"
+msgstr "Motregen"
 
-msgid "Apparent temp."
-msgstr "Gevoelstemp."
+#: ../contents/ui/js/WeatherDescription.js:58
+msgid "Drizzle dense intensity"
+msgstr "Zware motregen"
 
-msgid "UV index"
+#: ../contents/ui/js/WeatherDescription.js:56
+msgid "Drizzle light intensity"
+msgstr "Lichte motregen"
+
+#: ../contents/ui/js/WeatherDescription.js:57
+msgid "Drizzle moderate intensity"
+msgstr "Matige motregen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:537
+msgid "Enjoying Minimalist Animated Weather?"
+msgstr "Bevalt Minimalist Animated Weather u?"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Every star and review helps the project grow."
+msgstr "Elke ster en recensie helpt het project groeien."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:243
+msgid "Expanded View"
+msgstr "Uitgebreide weergave"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1300
+msgid "Feedback & Bug Reports"
+msgstr "Feedback en bugmeldingen"
+
+#: ../contents/ui/js/DetailsCatalog.js:49
+msgctxt "Chart Y axis label"
+msgid "Feels"
+msgstr "Gevoel"
+
+#: ../contents/ui/js/DetailsCatalog.js:48
+msgctxt "Chart tab label"
+msgid "Feels"
+msgstr "Gevoel"
+
+#: ../contents/ui/js/DetailsCatalog.js:51
+msgctxt "Compact widget bottom row label"
+msgid "Feels Like"
+msgstr "Gevoel"
+
+#: ../contents/ui/js/DetailsCatalog.js:50
+msgctxt "Settings label"
+msgid "Feels Like"
+msgstr "Gevoelstemperatuur"
+
+#: ../contents/ui/js/WeatherDescription.js:21
+#: ../contents/ui/js/WeatherDescription.js:22
+#: ../contents/ui/js/WeatherDescription.js:54
+msgid "Fog"
+msgstr "Mist"
+
+#: ../contents/ui/settings/ConfigSource.qml:735
+msgid "Force refresh"
+msgstr "Vernieuwen forceren"
+
+#: ../contents/ui/settings/ConfigData.qml:336
+msgid "Forecast Range"
+msgstr "Voorspellingsperiode"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1305
+msgid "Found a bug or have an idea? Fill out the form below to send it directly to the developer."
+msgstr "Een bug gevonden of een idee? Vul onderstaand formulier in om het rechtstreeks naar de ontwikkelaar te sturen."
+
+#: ../contents/ui/js/WeatherDescription.js:60
+msgid "Freezing Drizzle dense intensity"
+msgstr "Zware ijzelmotregen"
+
+#: ../contents/ui/js/WeatherDescription.js:59
+msgid "Freezing Drizzle light intensity"
+msgstr "Lichte ijzelmotregen"
+
+#: ../contents/ui/js/WeatherDescription.js:65
+msgid "Freezing Rain heavy intensity"
+msgstr "Zware ijzelregen"
+
+#: ../contents/ui/js/WeatherDescription.js:64
+msgid "Freezing Rain light intensity"
+msgstr "Lichte ijzelregen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:718
+#: ../contents/ui/settings/ConfigSupport.qml:1064
+msgid "GitHub"
+msgstr "GitHub"
+
+#: ../contents/ui/js/WeatherDescription.js:36
+msgid "Hail"
+msgstr "Hagel"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Hide API key"
+msgstr "API-sleutel verbergen"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:276
+msgid "Hover decimals:"
+msgstr "Decimalen bij aanwijzen:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:297
+msgid "Hovering over the Y-axis draws a horizontal guideline and highlights every matching point on the chart."
+msgstr "Als u de Y-as aanwijst, wordt een horizontale hulplijn getekend en elk overeenkomend punt op de grafiek gemarkeerd."
+
+#: ../contents/ui/js/DetailsCatalog.js:65
+msgctxt "Chart Y axis label"
+msgid "Hum."
+msgstr "Vocht."
+
+#: ../contents/ui/js/DetailsCatalog.js:64
+msgctxt "Chart tab label"
+msgid "Hum."
+msgstr "Vocht."
+
+#: ../contents/ui/js/DetailsCatalog.js:67
+msgctxt "Compact widget bottom row label"
+msgid "Humidity"
+msgstr "Vocht."
+
+#: ../contents/ui/js/DetailsCatalog.js:66
+msgctxt "Settings label"
+msgid "Humidity"
+msgstr "Luchtvochtigheid"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Imperial  ·  °F, mph"
+msgstr "Imperiaal  ·  °F, mph"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Improvement"
+msgstr "Verbetering"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1416
+#: ../contents/ui/settings/ConfigSupport.qml:1476
+msgid "Insert Link"
+msgstr "Koppeling invoegen"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:295
+msgid "Interactive Y-axis:"
+msgstr "Interactieve Y-as:"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid"
+msgstr "Ongeldig"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid API key."
+msgstr "Ongeldige API-sleutel."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1384
+msgid "Italic"
+msgstr "Cursief"
+
+#: ../contents/ui/settings/ConfigSupport.qml:595
+#: ../contents/ui/settings/ConfigSupport.qml:847
+msgid "KDE Store"
+msgstr "KDE Store"
+
+#: ../contents/ui/settings/ConfigSource.qml:539
+msgid "Latitude"
+msgstr "Breedtegraad"
+
+#: ../contents/ui/settings/ConfigSupport.qml:600
+msgid "Leave a rating and a comment to help promote the plasmoid and reach more users."
+msgstr "Laat een beoordeling en reactie achter om de plasmoid te promoten en meer gebruikers te bereiken."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Left"
+msgstr "Links"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1512
+msgid "Link text"
+msgstr "Koppelingstekst"
+
+#: ../contents/ui/settings/ConfigSupport.qml:909
+msgid "Loading ratings…"
+msgstr "Beoordelingen laden…"
+
+#: ../contents/ui/settings/ConfigSource.qml:440
+msgid "Location Settings"
+msgstr "Locatie-instellingen"
+
+#: ../contents/ui/settings/ConfigSource.qml:465
+msgid "Location:"
+msgstr "Locatie:"
+
+#: ../contents/ui/settings/ConfigSource.qml:545
+msgid "Longitude"
+msgstr "Lengtegraad"
+
+#: ../contents/ui/js/WeatherDescription.js:51
+msgid "Mainly clear"
+msgstr "Overwegend helder"
+
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Manual"
+msgstr "Handmatig"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Metric  ·  °C, km/h"
+msgstr "Metrisch  ·  °C, km/u"
+
+#: ../contents/ui/settings/ConfigData.qml:414
+msgid "Metrics"
+msgstr "Meetwaarden"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Middle"
+msgstr "Midden"
+
+#: ../contents/ui/settings/ConfigData.qml:187
+msgid "Move down"
+msgstr "Omlaag verplaatsen"
+
+#: ../contents/ui/settings/ConfigData.qml:186
+msgid "Move up"
+msgstr "Omhoog verplaatsen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1825
+msgid "Much appreciated!"
+msgstr "Zeer gewaardeerd!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:885
+#: ../contents/ui/settings/ConfigSupport.qml:1102
+msgid "N/A"
+msgstr "N.v.t."
+
+#: ../contents/ui/settings/ConfigData.qml:430
+msgid "No charts selected. The chart view is disabled."
+msgstr "Geen grafieken geselecteerd. De grafiekweergave is uitgeschakeld."
+
+#: ../contents/ui/settings/ConfigSupport.qml:923
+msgid "No ratings yet, be the first!"
+msgstr "Nog geen beoordelingen, wees de eerste!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1598
+msgid "Not rated"
+msgstr "Niet beoordeeld"
+
+#: ../contents/ui/settings/ConfigData.qml:407
+msgid "Number of days to display in the forecast view."
+msgstr "Aantal dagen dat wordt weergegeven in de voorspellingsweergave."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1408
+msgid "Numbered List"
+msgstr "Genummerde lijst"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1455
+msgid "Open GitHub Issue"
+msgstr "GitHub-issue openen"
+
+#: ../contents/ui/js/WeatherDescription.js:53
+msgid "Overcast"
+msgstr "Zwaar bewolkt"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:153
+msgid "Panel Bar"
+msgstr "Paneelbalk"
+
+#: ../contents/ui/js/WeatherDescription.js:52
+msgid "Partly cloudy"
+msgstr "Half bewolkt"
+
+#: ../contents/ui/settings/ConfigSource.qml:653
+#: ../contents/ui/settings/ConfigSource.qml:654
+#: ../contents/ui/settings/ConfigSource.qml:655
+#: ../contents/ui/settings/ConfigSource.qml:656
+#: ../contents/ui/settings/ConfigSource.qml:657
+msgid "Paste key here..."
+msgstr "Plak hier de sleutel..."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1315
+msgid "Please fill in both the object/title and the description."
+msgstr "Vul zowel het onderwerp/de titel als de beschrijving in."
+
+#: ../contents/ui/settings/ConfigSource.qml:594
+msgid "Provider:"
+msgstr "Provider:"
+
+#: ../contents/ui/js/WeatherDescription.js:28
+#: ../contents/ui/js/WeatherDescription.js:29
+#: ../contents/ui/js/WeatherDescription.js:30
+#: ../contents/ui/js/WeatherDescription.js:31
+#: ../contents/ui/js/WeatherDescription.js:32
+msgid "Rain"
+msgstr "Regen"
+
+#: ../contents/ui/js/DetailsCatalog.js:113
+msgctxt "Chart Y axis label"
+msgid "Rain"
+msgstr "Regen"
+
+#: ../contents/ui/js/DetailsCatalog.js:112
+msgctxt "Chart tab label"
+msgid "Rain"
+msgstr "Regen"
+
+#: ../contents/ui/js/DetailsCatalog.js:115
+msgctxt "Compact widget bottom row label"
+msgid "Rain Prob."
+msgstr "Regenkans"
+
+#: ../contents/ui/js/DetailsCatalog.js:114
+msgctxt "Settings label"
+msgid "Rain Probability"
+msgstr "Regenkans"
+
+#: ../contents/ui/js/WeatherDescription.js:63
+msgid "Rain heavy intensity"
+msgstr "Zware regen"
+
+#: ../contents/ui/js/WeatherDescription.js:62
+msgid "Rain moderate intensity"
+msgstr "Matige regen"
+
+#: ../contents/ui/components/WeatherData.qml:65
+msgid "Rain probability"
+msgstr "Regenkans"
+
+#: ../contents/ui/js/WeatherDescription.js:71
+msgid "Rain showers moderate"
+msgstr "Matige regenbuien"
+
+#: ../contents/ui/js/WeatherDescription.js:70
+msgid "Rain showers slight"
+msgstr "Lichte regenbuien"
+
+#: ../contents/ui/js/WeatherDescription.js:72
+msgid "Rain showers violent"
+msgstr "Zeer zware regenbuien"
+
+#: ../contents/ui/js/WeatherDescription.js:61
+msgid "Rain slight intensity"
+msgstr "Lichte regen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1225
+msgid "Rainbow Effect"
+msgstr "Regenboogeffect"
+
+#: ../contents/ui/settings/ConfigSupport.qml:641
+msgid "Rate"
+msgstr "Beoordelen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1552
+msgid "Ratings on the KDE Store"
+msgstr "Beoordelingen op de KDE Store"
+
+#: ../contents/ui/settings/ConfigSupport.qml:916
+msgid "Ratings unavailable right now."
+msgstr "Beoordelingen momenteel niet beschikbaar."
+
+#: ../contents/ui/settings/ConfigSupport.qml:898
+msgid "Read comments"
+msgstr "Reacties lezen"
+
+#: ../contents/ui/settings/ConfigSource.qml:635
+msgid "Recommended"
+msgstr "Aanbevolen"
+
+#: ../contents/ui/settings/ConfigSource.qml:715
+msgid "Refresh every:"
+msgstr "Vernieuwen elke:"
+
+#: ../contents/ui/main.qml:16
+msgid "Refresh now"
+msgstr "Nu vernieuwen"
+
+#: ../contents/ui/settings/ConfigSource.qml:326
+msgid "Refreshing too often may exhaust your API limits. Minimum recommended is %1 min."
+msgstr "Te vaak vernieuwen kan uw API-limiet uitputten. Het aanbevolen minimum is %1 min."
+
+#: ../contents/ui/settings/ResetSection.qml:28
+msgid "Reset"
+msgstr "Terugzetten"
+
+#: ../contents/ui/settings/ResetSection.qml:48
+msgid "Resets every setting on this page to its factory default value."
+msgstr "Zet alle instellingen op deze pagina terug naar hun fabrieksinstelling."
+
+#: ../contents/ui/settings/ResetSection.qml:42
+#: ../contents/ui/settings/ResetSection.qml:58
+msgid "Restore Defaults"
+msgstr "Standaardwaarden herstellen"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:168
+msgid "Reverse order"
+msgstr "Omgekeerde volgorde"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Right"
+msgstr "Rechts"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:320
+msgid "Rounds the widget's corners."
+msgstr "Rondt de hoeken van de widget af."
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "Saved"
+msgstr "Opgeslagen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1462
+msgid "Send via Email"
+msgstr "Via e-mail verzenden"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:348
+msgid "Sets the widget's background transparency. This also works in the panel, though the result is limited by your taskbar's own behavior."
+msgstr "Stelt de transparantie van de achtergrond van de widget in. Dit werkt ook in het paneel, al is het resultaat afhankelijk van het gedrag van uw taakbalk."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1207
+msgid "Shooting Star Effect"
+msgstr "Vallende-sterreneffect"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Show API key"
+msgstr "API-sleutel tonen"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:164
+msgid "Show:"
+msgstr "Tonen:"
+
+#: ../contents/ui/js/WeatherDescription.js:37
+#: ../contents/ui/js/WeatherDescription.js:38
+#: ../contents/ui/js/WeatherDescription.js:39
+#: ../contents/ui/js/WeatherDescription.js:40
+#: ../contents/ui/js/WeatherDescription.js:41
+msgid "Showers"
+msgstr "Buien"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:292
+msgid "Shows one decimal place on the Y-axis values."
+msgstr "Toont één decimaal bij de waarden op de Y-as."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:207
+msgid "Shows temperature values with one decimal place."
+msgstr "Toont temperatuurwaarden met één decimaal."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:273
+msgid "Shows weather animations (sun, clouds, rain, etc.) in the background."
+msgstr "Toont weeranimaties (zon, wolken, regen, enz.) op de achtergrond."
+
+#: ../contents/ui/js/WeatherDescription.js:33
+#: ../contents/ui/js/WeatherDescription.js:34
+#: ../contents/ui/js/WeatherDescription.js:35
+msgid "Snow"
+msgstr "Sneeuw"
+
+#: ../contents/ui/js/WeatherDescription.js:69
+msgid "Snow grains"
+msgstr "Sneeuwkorrels"
+
+#: ../contents/ui/js/WeatherDescription.js:74
+msgid "Snow showers heavy"
+msgstr "Zware sneeuwbuien"
+
+#: ../contents/ui/js/WeatherDescription.js:73
+msgid "Snow showers slight"
+msgstr "Lichte sneeuwbuien"
+
+#: ../contents/ui/js/WeatherDescription.js:68
+msgid "Snowfall heavy intensity"
+msgstr "Zware sneeuwval"
+
+#: ../contents/ui/js/WeatherDescription.js:67
+msgid "Snowfall moderate intensity"
+msgstr "Matige sneeuwval"
+
+#: ../contents/ui/js/WeatherDescription.js:66
+msgid "Snowfall slight intensity"
+msgstr "Lichte sneeuwval"
+
+#: ../contents/ui/settings/ConfigData.qml:416
+msgid "Some previously selected metrics were not supported by the current provider and were adjusted automatically."
+msgstr "Sommige eerder geselecteerde meetwaarden werden niet ondersteund door de huidige provider en zijn automatisch aangepast."
+
+#: ../contents/config/config.qml:10
+msgid "Source & Location"
+msgstr "Bron en locatie"
+
+#: ../contents/ui/settings/ConfigSupport.qml:764
+msgid "Star"
+msgstr "Ster geven"
+
+#: ../contents/ui/settings/ConfigSupport.qml:723
+msgid "Star the repository to support the project and follow its development."
+msgstr "Geef de repository een ster om het project te steunen en de ontwikkeling te volgen."
+
+#: ../contents/ui/settings/ConfigData.qml:345
+msgid "Start day offset:"
+msgstr "Verschuiving startdag:"
+
+#: ../contents/ui/js/WeatherDescription.js:42
+#: ../contents/ui/js/WeatherDescription.js:43
+#: ../contents/ui/js/WeatherDescription.js:44
+msgid "Storm"
+msgstr "Storm"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1392
+msgid "Strikethrough"
+msgstr "Doorhalen"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1348
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Suggestion"
+msgstr "Suggestie"
+
+#: ../contents/config/config.qml:28
+msgid "Support & Community"
+msgstr "Ondersteuning en community"
+
+#: ../contents/ui/settings/ConfigSupport.qml:565
+msgid "Support the Project"
+msgstr "Het project steunen"
+
+#: ../contents/ui/settings/ConfigSource.qml:711
+msgid "System units:"
+msgstr "Systeemeenheden:"
+
+#: ../contents/ui/js/DetailsCatalog.js:33
+msgctxt "Chart Y axis label"
+msgid "Temp."
+msgstr "Temp."
+
+#: ../contents/ui/js/DetailsCatalog.js:32
+msgctxt "Chart tab label"
+msgid "Temp."
+msgstr "Temp."
+
+#: ../contents/ui/js/DetailsCatalog.js:35
+msgctxt "Compact widget bottom row label"
+msgid "Temp."
+msgstr "Temp."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:166
+msgid "Temperature"
+msgstr "Temperatuur"
+
+#: ../contents/ui/js/DetailsCatalog.js:34
+msgctxt "Settings label"
+msgid "Temperature"
+msgstr "Temperatuur"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:178
+msgid "Temperature size:"
+msgstr "Grootte van temperatuur:"
+
+#: ../contents/ui/settings/ConfigData.qml:422
+msgid "Text Details"
+msgstr "Tekstdetails"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1508
+msgid "Text to display (optional, the URL is used if left empty)"
+msgstr "Weer te geven tekst (optioneel, de URL wordt gebruikt als dit leeg blijft)"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for the star!"
+msgstr "Bedankt voor de ster!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1323
+msgid "Thank you for your feedback! 🚀"
+msgstr "Bedankt voor uw feedback! 🚀"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for your rating!"
+msgstr "Bedankt voor uw beoordeling!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Thank you for your support!"
+msgstr "Bedankt voor uw steun!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1821
+msgid "Thank you!"
+msgstr "Dank u wel!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:553
+msgid "This applet is open-source and developed with passion. Your support keeps the project active and helps it grow within the KDE ecosystem."
+msgstr "Deze applet is open source en met veel toewijding ontwikkeld. Uw steun houdt het project actief en helpt het groeien binnen het KDE-ecosysteem."
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "This provider doesn't support key verification. The key has been saved as entered."
+msgstr "Deze provider ondersteunt geen sleutelverificatie. De sleutel is opgeslagen zoals ingevoerd."
+
+#: ../contents/ui/settings/ConfigSource.qml:637
+msgid "This provider requires a free API key from its website."
+msgstr "Deze provider vereist een gratis API-sleutel van zijn website."
+
+#: ../contents/ui/js/WeatherDescription.js:75
+msgid "Thunderstorm"
+msgstr "Onweer"
+
+#: ../contents/ui/js/WeatherDescription.js:77
+msgid "Thunderstorm with heavy hail"
+msgstr "Onweer met zware hagel"
+
+#: ../contents/ui/js/WeatherDescription.js:76
+msgid "Thunderstorm with slight hail"
+msgstr "Onweer met lichte hagel"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1516
+msgid "URL"
+msgstr "URL"
+
+#: ../contents/ui/js/DetailsCatalog.js:96
+msgctxt "Chart tab label"
+msgid "UV"
+msgstr "UV"
+
+#: ../contents/ui/js/DetailsCatalog.js:97
+msgctxt "Chart Y axis label"
+msgid "UV Index"
 msgstr "UV-index"
 
-msgid "Wind speed"
-msgstr "Windsnelheid"
+#: ../contents/ui/js/DetailsCatalog.js:99
+msgctxt "Compact widget bottom row label"
+msgid "UV Index"
+msgstr "UV-index"
 
-msgid "Desktop widget:"
-msgstr "Desktop widget:"
+#: ../contents/ui/js/DetailsCatalog.js:98
+msgctxt "Settings label"
+msgid "UV Index"
+msgstr "UV-index"
 
-msgid "Radius"
-msgstr "Radius"
+#: ../contents/ui/js/WeatherDescription.js:83
+#: ../contents/ui/js/WeatherDescription.js:88
+msgid "Unknown"
+msgstr "Onbekend"
 
-msgid "Opacity"
-msgstr "Ondoorzichtigheid"
+#: ../contents/ui/settings/ConfigSupport.qml:1195
+msgid "Unlocked as a Thank You"
+msgstr "Ontgrendeld als bedankje"
 
-msgid "Only applies when the widget sits directly on the desktop, not in a panel popup."
-msgstr "Alleen van toepassing wanneer de widget direct op het bureaublad staat, niet in een paneel pop-up."
+#: ../contents/ui/settings/ConfigData.qml:179
+msgid "Unsupported"
+msgstr "Niet ondersteund"
 
-msgid "Forecast"
-msgstr "Voorspelling"
+#: ../contents/ui/settings/ConfigSource.qml:700
+msgid "Updates & Units"
+msgstr "Updates en eenheden"
 
-msgid "Start day offset:"
-msgstr "Startdag offset:"
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "Valid"
+msgstr "Geldig"
 
-msgid "Data"
-msgstr "Gegevens"
+#: ../contents/ui/settings/ConfigSource.qml:583
+msgid "Weather Source"
+msgstr "Weerbron"
 
-msgid "Settings:"
-msgstr "Instellingen:"
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order."
+msgstr "Weerdetails die in deze volgorde worden weergegeven in de uitgebreide weergave."
 
-msgid "Restore default settings"
-msgstr "Standaardinstellingen herstellen"
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order. Since Condition is disabled in Appearance, up to 4 details can be selected here."
+msgstr "Weerdetails die in deze volgorde worden weergegeven in de uitgebreide weergave. Omdat Weersomstandigheid is uitgeschakeld in Uiterlijk, kunnen hier maximaal 4 details worden geselecteerd."
+
+#: ../contents/ui/js/DetailsCatalog.js:81
+msgctxt "Chart Y axis label"
+msgid "Wind"
+msgstr "Wind"
+
+#: ../contents/ui/js/DetailsCatalog.js:80
+msgctxt "Chart tab label"
+msgid "Wind"
+msgstr "Wind"
+
+#: ../contents/ui/js/DetailsCatalog.js:83
+msgctxt "Compact widget bottom row label"
+msgid "Wind"
+msgstr "Wind"
+
+#: ../contents/ui/js/DetailsCatalog.js:82
+msgctxt "Settings label"
+msgid "Wind"
+msgstr "Wind"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:285
+msgid "X-axis precision:"
+msgstr "Precisie van X-as:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:290
+msgid "Y-axis precision:"
+msgstr "Precisie van Y-as:"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1823
+msgid "You rock!"
+msgstr "Geweldig gedaan!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1822
+msgid "You're amazing!"
+msgstr "U bent geweldig!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1824
+msgid "You're the best!"
+msgstr "U bent de beste!"

@@ -1,7 +1,7 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
-import org.kde.plasma.components 3.0 as PlasmaComponents3
-import org.kde.kirigami 2.20 as Kirigami
+import QtQuick
+import QtQuick.Layouts
+import org.kde.plasma.components as PlasmaComponents3
+import org.kde.kirigami as Kirigami
 
 Item {
     id: chartRoot
@@ -11,7 +11,7 @@ Item {
     property string unit: ""
     property string label: ""
     property bool preciseTemp: false
-    property int chartType: 0 // 0=Temp, 1=Hum, 2=Vent, 3=UV
+    property int chartType: 0 // 0=Temp/Ressenti, 1=Hum, 2=Vent, 3=UV, 4=Pluie, 5=Nébulosité
 
     property bool isToday: true
     property bool viewActive: false
@@ -43,7 +43,8 @@ Item {
         }
 
         property bool yAxisReadingEnabled: false // option utilisateur, désactivée par défaut
-        property bool showCursorDecimals: true   // option utilisateur, activée par défaut
+        property bool hoverDecimals: true   // option utilisateur, activée par défaut
+        property bool xAxisPrecision: true    // option utilisateur, activée par défaut
 
         property real hoverIndex: -1 // index continu (ex: 13.42 = entre 13h et 14h), pas snappé à l'heure
         property real hoverYPos: -1  // position Y exacte pour la règle fluide
@@ -67,13 +68,17 @@ Item {
         readonly property real minV: arrMin(values)
         readonly property real maxV: arrMax(values)
 
-        // padLeft s'élargit uniquement quand la lecture axe Y est active, pour
-        // loger les libellés de valeur à gauche. Sans cette option, le graphique
-        // est parfaitement symétrique (padLeft = padRight).
-        readonly property real padLeft:   yAxisReadingEnabled
-        ? Kirigami.Units.gridUnit * 1.5
-        : Kirigami.Units.gridUnit * 1.0
-        readonly property real padRight:  Kirigami.Units.gridUnit * 1.0
+        // padLeft n'est plus une valeur figée : elle part d'un minimum
+        // confortable (baselinePadLeft) que onPaint() peut ensuite agrandir
+        // en mesurant (ctx.measureText) le libellé le plus large réellement
+        // affiché sur l'axe Y. Ainsi, si les valeurs deviennent plus grandes
+        // (3 chiffres, négatives, décimales...), la marge s'adapte toute
+        // seule au lieu de couper les chiffres.
+        readonly property real baselinePadLeft: (yAxisReadingEnabled || preciseTemp)
+        ? Kirigami.Units.gridUnit * 1.3
+        : Kirigami.Units.gridUnit * 0.9
+        property real padLeft: baselinePadLeft
+        readonly property real padRight:  Kirigami.Units.gridUnit * 0.6
         readonly property real padTop:    Kirigami.Units.gridUnit * 0.6
         readonly property real padBottom: Kirigami.Units.gridUnit * 1.2
 
@@ -233,6 +238,18 @@ Item {
                         domain: { top: 12, bottom: 0 },
                         stops: [[0.00, "#800080"], [0.33, "#FF0000"], [0.50, "#FF8C00"], [0.75, "#FFD700"], [1.00, "#32CD32"]]
                     };
+                case 4: // Probabilité de pluie (%)
+                    return {
+                        domain: { top: 100, bottom: 0 },
+                        // pos=0.0 correspond à 100% (Sombre), pos=1.0 correspond à 0% (Clair)
+                        stops: [[0.0, "#1A5276"], [0.5, "#2980B9"], [1.0, "#D4E6F1"]]
+                    };
+                case 5: // Nébulosité (%)
+                    return {
+                        domain: { top: 100, bottom: 0 },
+                        // pos=0.0 correspond à 100% (Sombre), pos=1.0 correspond à 0% (Clair)
+                        stops: [[0.0, "#424949"], [0.5, "#7F8C8D"], [1.0, "#E5E8E8"]]
+                    };
                 default:
                     return null;
             }
@@ -288,7 +305,23 @@ Item {
                     onEntered: { _entryX = -1; _entryY = -1; _moved = false; }
                     onExited: { _moved = false; chartRoot.hoverIndex = -1; chartRoot.hoverYPos = -1; chartRoot.hoverMode = ""; }
 
+                    // Pendant un défilement à la molette/pavé tactile, on
+                    // suspend temporairement le suivi par la position de la
+                    // souris : sans ça, le moindre micro-mouvement du
+                    // pointeur (fréquent pendant un swipe trackpad) écrase
+                    // immédiatement l'index qu'on vient de définir et on
+                    // revient au point de départ.
+                    property bool wheelNavActive: false
+
+                    Timer {
+                        id: wheelNavCooldown
+                        interval: 400
+                        onTriggered: parent.wheelNavActive = false
+                    }
+
                     onPositionChanged: (mouse) => {
+                        if (wheelNavActive) return;
+
                         if (_entryX < 0) { _entryX = mouse.x; _entryY = mouse.y; }
                         if (!_moved) {
                             let dx = mouse.x - _entryX, dy = mouse.y - _entryY;
@@ -307,8 +340,6 @@ Item {
                         let pB = chartRoot.padBottom;
 
                         // --- LA VALEUR MAGIQUE POUR LA SYMÉTRIE ET L'ÉLARGISSEMENT ---
-                        // C'est cette variable qui contrôle la hitbox globale.
-                        // En la passant à 25, on augmente uniformément la marge de capture en haut, en bas, à gauche et à droite.
                         let margin = 25;
 
                         // Box de détection globale
@@ -324,14 +355,7 @@ Item {
                             return;
                         }
 
-                        // Définition de l'axe des Heures (en bas) avec 8px de tolérance vers le haut
-                        // pour ne pas rater les creux de la courbe qui frôlent l'axe.
                         let isBelowAxis = mouse.y > h - pB + 8;
-                        // Zone Y (Axe des températures, Rouge sur ton schéma)
-                        // Elle s'active à gauche MAIS s'annule si on rentre dans la zone basse de l'axe X.
-                        // Cette lecture est une option utilisateur (désactivée par défaut) : si elle
-                        // n'est pas activée, on ignore cette bande et on tombe directement dans la
-                        // zone X ci-dessous (la souris est alors simplement clampée au premier point).
                         let isYAxisBand = mouse.x < pL - 4 && !isBelowAxis;
                         if (isYAxisBand && chartRoot.yAxisReadingEnabled) {
                             chartRoot.hoverIndex = -1;
@@ -340,19 +364,49 @@ Item {
                             return;
                         }
 
-                        // Zone X (Axe des heures, Verte sur ton schéma)
-                        // Puisqu'on a supprimé la "zone morte" asymétrique, si tu descends ta souris
-                        // dans "isBelowAxis", la bordure de détection à gauche de 0h est EXACTEMENT
-                        // la même qu'à droite de 23h (soit la valeur de "margin").
-                        //
-                        // Lecture continue : on garde l'index fractionnaire (pas de Math.round) pour
-                        // pouvoir déduire une valeur entre deux points horaires, exactement comme la
-                        // règle de l'axe Y interpole entre les points de la courbe.
                         chartRoot.hoverYPos = -1;
                         chartRoot.hoverMode = "x";
 
                         let rawIdx = (mouse.x - pL) / (w - pL - pR) * (n - 1);
                         chartRoot.hoverIndex = Math.max(0, Math.min(rawIdx, n - 1));
+                    }
+
+                    // Molette / pavé tactile : avance ou recule d'un point sur la
+                    // courbe, sur le même principe d'accumulateur que la liste
+                    // d'icônes (le trackpad envoie une rafale de micro-deltas
+                    // plutôt qu'un seul "cran" net comme la molette souris).
+                    property real wheelAccum: 0
+                    readonly property real wheelThreshold: 85 // plus réactif que la liste d'icônes (120)
+
+                    onWheel: function(wheel) {
+                        let n = chartRoot.values.length;
+                        if (n < 2) { wheel.accepted = true; return; }
+
+                        let delta = wheel.angleDelta.y !== 0 ? wheel.angleDelta.y : wheel.angleDelta.x;
+                        wheelAccum += delta;
+
+                        // Point de départ : l'index déjà survolé, ou l'heure
+                        // courante si aucun survol "x" n'est actif.
+                        let base = (chartRoot.hoverMode === "x" && chartRoot.hoverIndex !== -1)
+                        ? chartRoot.hoverIndex
+                        : (chartRoot.isToday ? Math.max(0, Math.min(chartRoot.currentHour, n - 1)) : 0);
+                        let idx = Math.round(base);
+
+                        while (wheelAccum <= -wheelThreshold) {
+                            idx = Math.min(n - 1, idx + 1);
+                            wheelAccum += wheelThreshold;
+                        }
+                        while (wheelAccum >= wheelThreshold) {
+                            idx = Math.max(0, idx - 1);
+                            wheelAccum -= wheelThreshold;
+                        }
+
+                        wheelNavActive = true;
+                        wheelNavCooldown.restart();
+                        chartRoot.hoverYPos = -1;
+                        chartRoot.hoverMode = "x";
+                        chartRoot.hoverIndex = idx;
+                        wheel.accepted = true;
                     }
                 }
 
@@ -384,6 +438,30 @@ Item {
                     let gridOpacity  = isLightTheme ? 0.22 : 0.12;
                     let guideOpacity = isLightTheme ? 0.34 : 0.22;
                     let labelOpacity = 0.80;
+
+                    // --- padLeft dynamique ---
+                    // On mesure le libellé le plus large parmi les 4 valeurs
+                    // affichées sur l'axe Y (mêmes valeurs que drawYGrid,
+                    // ySteps = 3) et on élargit padLeft si besoin, pour ne
+                    // jamais couper les chiffres même si les valeurs
+                    // deviennent plus grandes (3 chiffres, négatives...).
+                    // On garde toujours au moins baselinePadLeft comme
+                    // plancher pour ne pas resserrer le cas courant.
+                    let yFontSizeMeasure = Math.round(Kirigami.Units.gridUnit * 0.48);
+                    ctx.font = (chartRoot.yAxisReadingEnabled ? "bold " : "") + yFontSizeMeasure + "px sans-serif";
+                    let widestLabelWidth = 0;
+                    for (let s = 0; s <= 3; s++) {
+                        let vLabel = chartRoot.minV + (range * s / 3);
+                        let labelTextMeasure = chartRoot.preciseTemp
+                        ? parseFloat(vLabel.toFixed(1)).toString()
+                        : Math.round(vLabel).toString();
+                        let textW = ctx.measureText(labelTextMeasure).width;
+                        if (textW > widestLabelWidth) widestLabelWidth = textW;
+                    }
+                    let dynamicPadLeft = Math.max(chartRoot.baselinePadLeft, widestLabelWidth + Kirigami.Units.smallSpacing * 1.4);
+                    if (Math.abs(chartRoot.padLeft - dynamicPadLeft) > 0.5) {
+                        chartRoot.padLeft = dynamicPadLeft;
+                    }
 
                     function xAt(i) { return pL + (w - pL - pR) * (i / (n - 1)); }
                     function yAt(v) { return pT + (h - pT - pB) * (1 - (v - chartRoot.minV) / range); }
@@ -437,12 +515,11 @@ Item {
                         }
                     }
 
-                    // Libellé d'heure partagé entre l'axe statique et le marqueur actif :
-                    // affiche les minutes seulement si on n'est pas tombé sur une heure pleine.
                     function timeLabelFor(ci) {
                         let totalMinutes = Math.round(ci * 60);
                         let hh = Math.floor(totalMinutes / 60);
                         let mm = totalMinutes % 60;
+                        if (!chartRoot.xAxisPrecision) return hh + "h";
                         return mm === 0 ? (hh + "h") : (hh + "h" + String(mm).padStart(2, "0"));
                     }
 
@@ -450,9 +527,7 @@ Item {
                         let xLabels = [0, 6, 12, 18];
                         let xFontSize = Math.round(Kirigami.Units.gridUnit * 0.45);
                         ctx.font = xFontSize + "px sans-serif";
-                        // On mesure la largeur RÉELLE du libellé actif (ex: "14h23" est plus
-                        // large que "14h") pour ne masquer les heures statiques qu'à partir du
-                        // moment où elles se superposeraient vraiment, ni avant ni après.
+
                         let activeCx = -1, activeHalfWidth = 0;
                         if (activeIdx !== -1) {
                             activeCx = xAt(activeIdx);
@@ -466,8 +541,7 @@ Item {
                             let lblHalfWidth = ctx.measureText(lbl).width / 2;
                             let isTooClose = activeIdx !== -1 &&
                             Math.abs(xx - activeCx) < (lblHalfWidth + activeHalfWidth + 2);
-                            // Supprime aussi les labels statiques qui se
-                            // superposeraient aux heures des intersections Y.
+
                             if (!isTooClose && suppressList) {
                                 for (let si = 0; si < suppressList.length; si++) {
                                     if (Math.abs(xx - suppressList[si].cx) < (lblHalfWidth + suppressList[si].halfW + 2)) {
@@ -530,13 +604,6 @@ Item {
                         ctx.stroke();
                     }
 
-                    // Interpolation Catmull-Rom (en espace "valeur", pas en pixels) : c'est la
-                    // formule mathématiquement équivalente à celle utilisée pour tracer la courbe
-                    // (buildSmoothPath, conversion Catmull-Rom -> Bézier avec tension 1/6).
-                    // Comme les coefficients de cette base forment une combinaison affine (somme = 1),
-                    // l'interpoler en valeur puis la passer par yAt() (linéaire) donne exactement le
-                    // même point que celui dessiné à l'écran. Au pic d'un index entier (t=0), elle
-                    // redonne exactement pts[i] : aucune perte de précision sur les points connus.
                     function catmullRomValue(p0, p1, p2, p3, t) {
                         let t2 = t * t, t3 = t2 * t;
                         return 0.5 * (
@@ -547,9 +614,6 @@ Item {
                         );
                     }
 
-                    // Valeur déduite à un index continu (ex: 13.4 = 24 minutes après 13h),
-                    // même quand ce point n'existe pas dans les données (lecture fluide
-                    // demandée, sur le même principe que la règle de l'axe Y).
                     function valueAtContinuous(ci) {
                         let i = Math.max(0, Math.min(Math.floor(ci), n - 2));
                         let t = ci - i;
@@ -573,8 +637,6 @@ Item {
                         ctx.stroke();
                         ctx.setLineDash([]);
 
-                        // Heure déduite : affiche les minutes seulement si on n'est pas
-                        // tombé exactement sur une heure pleine (point réel ou pile dessus).
                         let timeLabel = timeLabelFor(ci);
 
                         let hourFontSize = Math.round(Kirigami.Units.gridUnit * 0.45);
@@ -610,15 +672,8 @@ Item {
                         ctx.lineWidth = 1.5;
                         ctx.strokeStyle = Qt.rgba(bgColor.r, bgColor.g, bgColor.b, 1.0);
                         ctx.stroke();
-                        // Cette valeur suit le point survolé sur la courbe (donc
-                        // une position de souris quasi continue). Quand l'option
-                        // showCursorDecimals est active (par défaut), on affiche
-                        // une décimale pour que la valeur paraisse avancer de façon
-                        // continue pendant le survol — sans elle, le chiffre reste
-                        // figé jusqu'au prochain entier alors que le point bouge
-                        // bien. L'option permet à l'utilisateur de désactiver ce
-                        // comportement s'il préfère un affichage entier.
-                        let curValText = chartRoot.showCursorDecimals
+
+                        let curValText = chartRoot.hoverDecimals
                         ? parseFloat(interpVal.toFixed(1)).toFixed(1)
                         : Math.round(interpVal).toString();
                         let fontSize = Math.round(Kirigami.Units.gridUnit * 0.55);
@@ -655,11 +710,6 @@ Item {
                     Math.round(chartRoot.lineColor.b * 255);
                     let palette = chartRoot.paletteFor(chartRoot.chartType, chartRoot.unit);
 
-                    // Précalcul des intersections en mode Y pour pouvoir :
-                    // (a) supprimer les libellés statiques de l'axe X qui se
-                    //     superposeraient aux heures dynamiques (passé à drawXAxis),
-                    // (b) réutiliser la liste dans le bloc de rendu Y ci-dessous
-                    //     sans la recalculer une deuxième fois.
                     let yModeIntersections = [];
                     if (chartRoot.hoverMode === "y" && chartRoot.hoverYPos !== -1) {
                         let gy0 = chartRoot.hoverYPos;
@@ -675,9 +725,6 @@ Item {
                         }
                     }
 
-                    // Liste de suppression pour drawXAxis : pour chaque
-                    // intersection, on mesure la largeur de son libellé d'heure
-                    // afin de masquer les heures statiques qui se chevaucheraient.
                     let xFontPreview = Math.round(Kirigami.Units.gridUnit * 0.45);
                     ctx.font = xFontPreview + "px sans-serif";
                     let suppressList = yModeIntersections.map(function(icx) {
@@ -702,17 +749,12 @@ Item {
                         strokeStyle = chartRoot.lineColor;
                     }
                     drawCurveLine(strokeStyle);
-                    // ─────────────────────────────────────────────────────────
-                    // RENDU FINAL DES MARQUEURS Y (Intersections continues)
-                    // ─────────────────────────────────────────────────────────
+
                     if (chartRoot.hoverMode === "y") {
                         let gy = chartRoot.hoverYPos;
                         let refVal = chartRoot.minV + (1 - (gy - pT) / (h - pT - pB)) * range;
-                        // 1. Réutilisation des intersections précalculées plus haut
-                        //    (évite de les recalculer une deuxième fois à l'identique).
                         let intersections = yModeIntersections;
 
-                        // 2. Ligne horizontale (ne s'étire que jusqu'à la dernière intersection)
                         if (intersections.length > 0) {
                             let lastX = intersections[intersections.length - 1];
                             ctx.strokeStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, guideOpacity);
@@ -725,7 +767,6 @@ Item {
                             ctx.setLineDash([]);
                         }
 
-                        // 3. Texte dynamique sur l'axe Y
                         let yLabelText = chartRoot.preciseTemp
                         ? parseFloat(refVal.toFixed(1)).toString()
                         : Math.round(refVal).toString();
@@ -745,7 +786,7 @@ Item {
                         ctx.shadowBlur = 3;
                         ctx.fillText(yLabelText, pL - 4, gy);
                         ctx.shadowBlur = 0;
-                        // 4. Trace les intersections avec traits verticaux
+
                         for (let k = 0; k < intersections.length; k++) {
                             let cx = intersections[k];
                             ctx.strokeStyle = Qt.rgba(textColor.r, textColor.g, textColor.b, guideOpacity * 0.7);
@@ -766,53 +807,18 @@ Item {
                             ctx.stroke();
                         }
 
-                        // 5. Affiche l'heure de chaque intersection sur l'axe X.
-                        //    L'axe est continu (Catmull-Rom) : on convertit cx en
-                        //    index fractionnaire puis timeLabelFor() donne l'heure
-                        //    exacte (avec minutes si on n'est pas pile sur une heure
-                        //    pleine), exactement comme pour le marqueur en mode X.
-                        //    La couleur est volontairement identique aux heures
-                        //    statiques (textColor + labelOpacity) — pas de teinte
-                        //    issue de la courbe, pour rester cohérent avec l'axe X.
-                        //
-                        //    Anti-chevauchement : si la courbe redescend puis remonte
-                        //    vite vers la même valeur, deux intersections peuvent être
-                        //    très proches en X. Dégradé progressif, du plus doux au
-                        //    plus radical :
-                        //    1. Fusion : deux intersections si proches qu'elles
-                        //       arrondissent à la même minute affichent le même
-                        //       texte — on ne garde que la première occurrence.
-                        //    2. Regroupement en "clusters" : les libellés qui se
-                        //       chevauchent à taille normale sont rassemblés (un
-                        //       cluster isolé n'affecte pas les autres libellés).
-                        //    3. Réduction de police PROGRESSIVE au sein de chaque
-                        //       cluster, jusqu'à ce que tout tienne côte à côte —
-                        //       pas de saut brusque, on rétrécit pas à pas avant
-                        //       d'envisager de masquer quoi que ce soit.
-                        //    4. Seulement si même le seuil minimal ne suffit pas :
-                        //       on n'affiche plus qu'UN libellé pour tout le
-                        //       cluster — le plus central (ou le plus à gauche des
-                        //       deux du milieu si le cluster a un nombre pair
-                        //       d'éléments), à taille normale puisqu'il est alors
-                        //       seul. Les autres gardent leur trait pointillé et
-                        //       leur point (étapes 3 et 4 ci-dessus), donc rien
-                        //       n'est totalement perdu, juste épuré.
                         if (intersections.length > 0) {
                             let baseFontSizeY = Math.round(Kirigami.Units.gridUnit * 0.45);
                             let minFontSizeY  = Math.max(7, Math.round(baseFontSizeY * 0.65));
                             const labelGap = 4;
 
-                            // Texte + alignement de chaque libellé. Les intersections
-                            // sont déjà triées par cx croissant (ordre des index dans
-                            // yModeIntersections).
                             let rawLabels = intersections.map(function(icx) {
                                 let ici = (w - pL - pR) > 0 ? (icx - pL) / (w - pL - pR) * (n - 1) : 0;
                                 let roundedIci = Math.round(ici);
                                 let align = roundedIci <= 0 ? "left" : (roundedIci >= n - 1 ? "right" : "center");
                                 return { cx: icx, text: timeLabelFor(ici), align: align, ici: ici };
                             });
-                            // 1. Fusion des doublons consécutifs (même texte = même
-                            //    minute arrondie, inutile de le dupliquer).
+
                             let labels = [];
                             for (let k = 0; k < rawLabels.length; k++) {
                                 if (k === 0 || rawLabels[k].text !== rawLabels[k - 1].text) {
@@ -829,10 +835,6 @@ Item {
                                 return { left: left, right: left + textW };
                             }
 
-                            // 2. Regroupement en clusters : deux libellés voisins
-                            //    rejoignent le même cluster s'ils se chevaucheraient
-                            //    à taille normale (le pire cas). Au-delà, ils ne se
-                            //    gênent pas et n'ont besoin d'aucun traitement.
                             let clusters = [];
                             let current = [labels[0]];
                             let prevEdges = labelEdges(labels[0], baseFontSizeY);
@@ -870,9 +872,6 @@ Item {
                                     continue;
                                 }
 
-                                // 3. Recherche de la plus grande taille (entre la
-                                //    taille normale et le seuil minimal) qui fait
-                                //    tenir tout le cluster côte à côte.
                                 let fittingSize = -1;
                                 for (let fs = baseFontSizeY; fs >= minFontSizeY; fs--) {
                                     if (clusterFits(cluster, fs)) { fittingSize = fs;
@@ -886,8 +885,6 @@ Item {
                                         ctx.fillText(cluster[i].text, cluster[i].cx, h - pB + 4);
                                     }
                                 } else {
-                                    // 4. Seuil atteint sans succès : on calcule l'heure moyenne
-                                    // et on l'affiche au centre géométrique du cluster.
                                     let sumCx = 0;
                                     let sumIci = 0;
 
@@ -899,7 +896,6 @@ Item {
                                     let avgCx = sumCx / cluster.length;
                                     let avgIci = sumIci / cluster.length;
 
-                                    // Sécurité pour l'alignement sur les bords
                                     let roundedAvgIci = Math.round(avgIci);
                                     let avgAlign = roundedAvgIci <= 0 ? "left" : (roundedAvgIci >= n - 1 ? "right" : "center");
 

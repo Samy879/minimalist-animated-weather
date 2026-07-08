@@ -1,187 +1,925 @@
-# Translation of Minimalist Animated Weather in Vietnamese
-# Copyright (C) 2026
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the plasma_applet_com.github.samy879.minimalist-animated-weather package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Minimalist Animated Weather\n"
-"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather/issues\n"
-"POT-Creation-Date: 2026-05-12 00:00+0300\n"
-"PO-Revision-Date: 2026-06-16 17:49+0200\n"
-"Language-Team: Vietnamese <vi@li.org>\n"
+"Project-Id-Version: plasma_applet_com.github.samy879.minimalist-animated-weather\n"
+"Report-Msgid-Bugs-To: https://github.com/Samy879/minimalist-animated-weather\n"
+"POT-Creation-Date: 2026-07-08 09:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../contents/ui/settings/ConfigData.qml:206
+msgid " / "
+msgstr " / "
+
+#: ../contents/ui/settings/ConfigSupport.qml:988
+#: ../contents/ui/settings/ConfigSupport.qml:1591
+msgid "/10"
+msgstr "/10"
+
+#: ../contents/ui/settings/ConfigSource.qml:643
+msgid "API Key:"
+msgstr "Khóa API:"
+
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "API key validated."
+msgstr "Khóa API đã được xác thực."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1232
+msgid "Adds a rainbow to the animated theme when it's raining with the sun still out."
+msgstr "Thêm cầu vồng vào chủ đề hoạt hình khi trời mưa mà vẫn còn nắng."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:278
+msgid "Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers."
+msgstr "Thêm một chữ số thập phân khi di chuột qua biểu đồ, thay vì thay đổi theo số nguyên."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1214
+msgid "Adds shooting stars to the animated theme's night sky."
+msgstr "Thêm sao băng vào bầu trời đêm của chủ đề hoạt hình."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:271
+msgid "Animations:"
+msgstr "Hoạt hình:"
+
+#: ../contents/ui/settings/ConfigSupport.qml:229
+msgid "Anonymous"
+msgstr "Ẩn danh"
+
+#: ../contents/config/config.qml:15
+msgid "Appearance"
+msgstr "Giao diện"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:354
+msgid "Are you sure you want to reset all appearance settings to their default values? This action cannot be undone."
+msgstr "Bạn có chắc chắn muốn đặt lại tất cả cài đặt giao diện về giá trị mặc định không? Hành động này không thể hoàn tác."
+
+#: ../contents/ui/settings/ConfigData.qml:434
+msgid "Are you sure you want to reset all data metrics and forecast ranges to their default values? This action cannot be undone."
+msgstr "Bạn có chắc chắn muốn đặt lại tất cả chỉ số dữ liệu và phạm vi dự báo về giá trị mặc định không? Hành động này không thể hoàn tác."
+
+#: ../contents/ui/settings/ConfigSource.qml:743
+msgid "Are you sure you want to reset the location, source and update settings to their default values? This action cannot be undone."
+msgstr "Bạn có chắc chắn muốn đặt lại cài đặt vị trí, nguồn và cập nhật về giá trị mặc định không? Hành động này không thể hoàn tác."
+
+#: ../contents/ui/settings/ResetSection.qml:24
+msgid "Are you sure you want to restore this page's settings to their default values? This action cannot be undone."
+msgstr "Bạn có chắc chắn muốn khôi phục cài đặt của trang này về giá trị mặc định không? Hành động này không thể hoàn tác."
+
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Automatic"
+msgstr "Tự động"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1826
+msgid "Awesome!"
+msgstr "Tuyệt vời!"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:326
+msgid "Background opacity:"
+msgstr "Độ mờ nền:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:201
+#: ../contents/ui/settings/ConfigAppearance.qml:237
+#: ../contents/ui/settings/ConfigSupport.qml:1376
+msgid "Bold"
+msgstr "Đậm"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Bug"
+msgstr "Lỗi"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1400
+msgid "Bulleted List"
+msgstr "Danh sách dấu đầu dòng"
+
+#: ../contents/ui/settings/ConfigData.qml:428
+msgid "Chart Tabs"
+msgstr "Thẻ biểu đồ"
+
+#: ../contents/ui/settings/ConfigData.qml:429
+msgid "Charts available to swipe through. If none are selected, charts are disabled."
+msgstr "Các biểu đồ có thể vuốt qua. Nếu không chọn biểu đồ nào, biểu đồ sẽ bị tắt."
+
+#: ../contents/ui/js/WeatherDescription.js:17
+#: ../contents/ui/js/WeatherDescription.js:18
+#: ../contents/ui/js/WeatherDescription.js:50
 msgid "Clear"
-msgstr "Trời trong"
+msgstr "Quang đãng"
 
+#: ../contents/ui/FullRepresentation.qml:663
+msgid "Click for hourly details"
+msgstr "Nhấp để xem chi tiết theo giờ"
+
+#: ../contents/ui/js/DetailsCatalog.js:131
+msgctxt "Compact widget bottom row label"
+msgid "Cloud Cover"
+msgstr "Mây"
+
+#: ../contents/ui/js/DetailsCatalog.js:130
+msgctxt "Settings label"
+msgid "Cloud Cover"
+msgstr "Độ che phủ mây"
+
+#: ../contents/ui/js/DetailsCatalog.js:129
+msgctxt "Chart Y axis label"
+msgid "Clouds"
+msgstr "Mây"
+
+#: ../contents/ui/js/DetailsCatalog.js:128
+msgctxt "Chart tab label"
+msgid "Clouds"
+msgstr "Mây"
+
+#: ../contents/ui/js/WeatherDescription.js:19
+#: ../contents/ui/js/WeatherDescription.js:20
 msgid "Cloudy"
-msgstr "Có mây"
+msgstr "Nhiều mây"
 
-msgid "Drizzle"
-msgstr "Mưa phùn"
+#: ../contents/ui/settings/ConfigSupport.qml:834
+msgid "Community Love"
+msgstr "Sự ủng hộ từ cộng đồng"
 
-msgid "Rain"
-msgstr "Mưa"
+#: ../contents/ui/settings/ConfigAppearance.qml:167
+msgid "Condition"
+msgstr "Thời tiết"
 
-msgid "Snow"
-msgstr "Tuyết"
+#: ../contents/ui/settings/ConfigAppearance.qml:214
+msgid "Condition size:"
+msgstr "Cỡ chữ thời tiết:"
 
-msgid "Hail"
-msgstr "Mưa đá"
+#: ../contents/ui/settings/ConfigAppearance.qml:253
+msgid "Condition:"
+msgstr "Thời tiết:"
 
-msgid "Showers"
-msgstr "Mưa rào"
-
-msgid "Storm"
-msgstr "Bão"
-
-msgid "Apparent Temp"
-msgstr "C.giác"
-
-msgid "Humidity"
-msgstr "Độ ẩm"
-
-msgid "UV Index"
-msgstr "Chỉ số UV"
-
-msgid "Wind"
-msgstr "Gió"
-
-msgid "Feels"
-msgstr "C.giác"
-
-msgid "Hum."
-msgstr "Đ.ẩm"
-
-msgid "UV"
-msgstr "UV"
-
-msgid "Temp."
-msgstr "N.độ"
-
-msgid "Restore default settings?"
-msgstr "Khôi phục cài đặt mặc định?"
-
-msgid "All settings on this page will be reset to their defaults. This cannot be undone."
-msgstr "Tất cả cài đặt trên trang này sẽ được đặt lại về mặc định. Hành động này không thể hoàn tác."
-
-msgid "Location"
-msgstr "Vị trí"
-
-msgid "Automatic location (IP):"
-msgstr "Vị trí tự động (IP):"
-
+#: ../contents/ui/settings/ConfigSource.qml:523
 msgid "Coordinates:"
 msgstr "Tọa độ:"
 
+#: ../contents/ui/settings/ConfigAppearance.qml:311
+msgid "Corner radius:"
+msgstr "Bán kính góc:"
+
+#: ../contents/config/config.qml:23
+msgid "Data & Charts"
+msgstr "Dữ liệu và biểu đồ"
+
+#: ../contents/ui/settings/ConfigData.qml:303
+msgid "Days shown cannot go below the minimum forecast length of %1."
+msgstr "Số ngày hiển thị không thể thấp hơn độ dài dự báo tối thiểu là %1."
+
+#: ../contents/ui/settings/ConfigData.qml:296
+msgid "Days shown reduced to %1 to fit the new start day."
+msgstr "Số ngày hiển thị đã giảm xuống %1 để phù hợp với ngày bắt đầu mới."
+
+#: ../contents/ui/settings/ConfigData.qml:376
+msgid "Days to display:"
+msgstr "Số ngày hiển thị:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:204
+msgid "Decimals:"
+msgstr "Chữ số thập phân:"
+
+#: ../contents/ui/settings/ConfigData.qml:370
+msgid "Delays the forecast start by a specific number of days."
+msgstr "Trì hoãn ngày bắt đầu dự báo theo số ngày cụ thể."
+
+#: ../contents/ui/js/WeatherDescription.js:55
+msgid "Depositing rime fog"
+msgstr "Sương mù đóng băng"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1432
+msgid "Describe your idea or the bug in detail here..."
+msgstr "Mô tả chi tiết ý tưởng hoặc lỗi của bạn tại đây..."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:303
+msgid "Desktop Widget"
+msgstr "Tiện ích màn hình nền"
+
+#: ../contents/ui/settings/ConfigSource.qml:510
+#: ../contents/ui/settings/ConfigSource.qml:573
+msgid "Detection failed"
+msgstr "Phát hiện thất bại"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1215
+#: ../contents/ui/settings/ConfigSupport.qml:1233
+msgid "Disabled because animations are turned off in the Appearance settings."
+msgstr "Đã tắt vì hoạt hình đang bị tắt trong cài đặt Giao diện."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:287
+msgid "Displays minutes alongside hours when hovering (e.g. 11:04 instead of 11h) for a more precise time."
+msgstr "Hiển thị phút cùng với giờ khi di chuột qua (ví dụ: 11:04 thay vì 11h) để có thời gian chính xác hơn."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:266
+msgid "Displays the current weather description (e.g., Sunny, Rainy)."
+msgstr "Hiển thị mô tả thời tiết hiện tại (ví dụ: Nắng, Mưa)."
+
+#: ../contents/ui/js/WeatherDescription.js:23
+#: ../contents/ui/js/WeatherDescription.js:24
+#: ../contents/ui/js/WeatherDescription.js:25
+#: ../contents/ui/js/WeatherDescription.js:26
+#: ../contents/ui/js/WeatherDescription.js:27
+msgid "Drizzle"
+msgstr "Mưa phùn"
+
+#: ../contents/ui/js/WeatherDescription.js:58
+msgid "Drizzle dense intensity"
+msgstr "Mưa phùn dày đặc"
+
+#: ../contents/ui/js/WeatherDescription.js:56
+msgid "Drizzle light intensity"
+msgstr "Mưa phùn nhẹ"
+
+#: ../contents/ui/js/WeatherDescription.js:57
+msgid "Drizzle moderate intensity"
+msgstr "Mưa phùn vừa"
+
+#: ../contents/ui/settings/ConfigSupport.qml:537
+msgid "Enjoying Minimalist Animated Weather?"
+msgstr "Bạn có thích Minimalist Animated Weather không?"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Every star and review helps the project grow."
+msgstr "Mỗi lượt gắn sao và đánh giá đều giúp dự án phát triển."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:243
+msgid "Expanded View"
+msgstr "Chế độ xem mở rộng"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1300
+msgid "Feedback & Bug Reports"
+msgstr "Phản hồi và báo lỗi"
+
+#: ../contents/ui/js/DetailsCatalog.js:49
+msgctxt "Chart Y axis label"
+msgid "Feels"
+msgstr "Cảm giác"
+
+#: ../contents/ui/js/DetailsCatalog.js:48
+msgctxt "Chart tab label"
+msgid "Feels"
+msgstr "Cảm giác"
+
+#: ../contents/ui/js/DetailsCatalog.js:51
+msgctxt "Compact widget bottom row label"
+msgid "Feels Like"
+msgstr "Cảm giác"
+
+#: ../contents/ui/js/DetailsCatalog.js:50
+msgctxt "Settings label"
+msgid "Feels Like"
+msgstr "Cảm giác"
+
+#: ../contents/ui/js/WeatherDescription.js:21
+#: ../contents/ui/js/WeatherDescription.js:22
+#: ../contents/ui/js/WeatherDescription.js:54
+msgid "Fog"
+msgstr "Sương mù"
+
+#: ../contents/ui/settings/ConfigSource.qml:735
+msgid "Force refresh"
+msgstr "Buộc làm mới"
+
+#: ../contents/ui/settings/ConfigData.qml:336
+msgid "Forecast Range"
+msgstr "Phạm vi dự báo"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1305
+msgid "Found a bug or have an idea? Fill out the form below to send it directly to the developer."
+msgstr "Tìm thấy lỗi hoặc có ý tưởng? Điền vào biểu mẫu bên dưới để gửi trực tiếp cho nhà phát triển."
+
+#: ../contents/ui/js/WeatherDescription.js:60
+msgid "Freezing Drizzle dense intensity"
+msgstr "Mưa phùn đóng băng dày đặc"
+
+#: ../contents/ui/js/WeatherDescription.js:59
+msgid "Freezing Drizzle light intensity"
+msgstr "Mưa phùn đóng băng nhẹ"
+
+#: ../contents/ui/js/WeatherDescription.js:65
+msgid "Freezing Rain heavy intensity"
+msgstr "Mưa đóng băng to"
+
+#: ../contents/ui/js/WeatherDescription.js:64
+msgid "Freezing Rain light intensity"
+msgstr "Mưa đóng băng nhẹ"
+
+#: ../contents/ui/settings/ConfigSupport.qml:718
+#: ../contents/ui/settings/ConfigSupport.qml:1064
+msgid "GitHub"
+msgstr "GitHub"
+
+#: ../contents/ui/js/WeatherDescription.js:36
+msgid "Hail"
+msgstr "Mưa đá"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Hide API key"
+msgstr "Ẩn khóa API"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:276
+msgid "Hover decimals:"
+msgstr "Chữ số thập phân khi di chuột:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:297
+msgid "Hovering over the Y-axis draws a horizontal guideline and highlights every matching point on the chart."
+msgstr "Di chuột qua trục Y sẽ vẽ một đường dẫn ngang và làm nổi bật mọi điểm tương ứng trên biểu đồ."
+
+#: ../contents/ui/js/DetailsCatalog.js:65
+msgctxt "Chart Y axis label"
+msgid "Hum."
+msgstr "Ẩm"
+
+#: ../contents/ui/js/DetailsCatalog.js:64
+msgctxt "Chart tab label"
+msgid "Hum."
+msgstr "Ẩm"
+
+#: ../contents/ui/js/DetailsCatalog.js:67
+msgctxt "Compact widget bottom row label"
+msgid "Humidity"
+msgstr "Độ ẩm"
+
+#: ../contents/ui/js/DetailsCatalog.js:66
+msgctxt "Settings label"
+msgid "Humidity"
+msgstr "Độ ẩm"
+
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Imperial  ·  °F, mph"
+msgstr "Anh  ·  °F, mph"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Improvement"
+msgstr "Cải tiến"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1416
+#: ../contents/ui/settings/ConfigSupport.qml:1476
+msgid "Insert Link"
+msgstr "Chèn liên kết"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:295
+msgid "Interactive Y-axis:"
+msgstr "Trục Y tương tác:"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid"
+msgstr "Không hợp lệ"
+
+#: ../contents/ui/settings/ConfigSource.qml:313
+msgid "Invalid API key."
+msgstr "Khóa API không hợp lệ."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1384
+msgid "Italic"
+msgstr "In nghiêng"
+
+#: ../contents/ui/settings/ConfigSupport.qml:595
+#: ../contents/ui/settings/ConfigSupport.qml:847
+msgid "KDE Store"
+msgstr "KDE Store"
+
+#: ../contents/ui/settings/ConfigSource.qml:539
 msgid "Latitude"
 msgstr "Vĩ độ"
 
+#: ../contents/ui/settings/ConfigSupport.qml:600
+msgid "Leave a rating and a comment to help promote the plasmoid and reach more users."
+msgstr "Để lại đánh giá và bình luận để giúp quảng bá plasmoid và tiếp cận nhiều người dùng hơn."
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Left"
+msgstr "Trái"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1512
+msgid "Link text"
+msgstr "Văn bản liên kết"
+
+#: ../contents/ui/settings/ConfigSupport.qml:909
+msgid "Loading ratings…"
+msgstr "Đang tải đánh giá…"
+
+#: ../contents/ui/settings/ConfigSource.qml:440
+msgid "Location Settings"
+msgstr "Cài đặt vị trí"
+
+#: ../contents/ui/settings/ConfigSource.qml:465
+msgid "Location:"
+msgstr "Vị trí:"
+
+#: ../contents/ui/settings/ConfigSource.qml:545
 msgid "Longitude"
 msgstr "Kinh độ"
 
-msgid "Units & updates"
-msgstr "Đơn vị & cập nhật"
+#: ../contents/ui/js/WeatherDescription.js:51
+msgid "Mainly clear"
+msgstr "Chủ yếu quang đãng"
 
-msgid "Units:"
-msgstr "Đơn vị:"
+#: ../contents/ui/settings/ConfigSource.qml:478
+msgid "Manual"
+msgstr "Thủ công"
 
-msgid "Update interval:"
-msgstr "Khoảng thời gian cập nhật:"
+#: ../contents/ui/settings/ConfigSource.qml:712
+msgid "Metric  ·  °C, km/h"
+msgstr "Hệ mét  ·  °C, km/h"
 
+#: ../contents/ui/settings/ConfigData.qml:414
+msgid "Metrics"
+msgstr "Chỉ số"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Middle"
+msgstr "Giữa"
+
+#: ../contents/ui/settings/ConfigData.qml:187
+msgid "Move down"
+msgstr "Di chuyển xuống"
+
+#: ../contents/ui/settings/ConfigData.qml:186
+msgid "Move up"
+msgstr "Di chuyển lên"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1825
+msgid "Much appreciated!"
+msgstr "Rất cảm kích!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:885
+#: ../contents/ui/settings/ConfigSupport.qml:1102
+msgid "N/A"
+msgstr "Không có"
+
+#: ../contents/ui/settings/ConfigData.qml:430
+msgid "No charts selected. The chart view is disabled."
+msgstr "Chưa chọn biểu đồ nào. Chế độ xem biểu đồ đã bị tắt."
+
+#: ../contents/ui/settings/ConfigSupport.qml:923
+msgid "No ratings yet, be the first!"
+msgstr "Chưa có đánh giá nào, hãy là người đầu tiên!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1598
+msgid "Not rated"
+msgstr "Chưa đánh giá"
+
+#: ../contents/ui/settings/ConfigData.qml:407
+msgid "Number of days to display in the forecast view."
+msgstr "Số ngày hiển thị trong chế độ xem dự báo."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1408
+msgid "Numbered List"
+msgstr "Danh sách đánh số"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1455
+msgid "Open GitHub Issue"
+msgstr "Mở vấn đề trên GitHub"
+
+#: ../contents/ui/js/WeatherDescription.js:53
+msgid "Overcast"
+msgstr "U ám"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:153
+msgid "Panel Bar"
+msgstr "Thanh bảng điều khiển"
+
+#: ../contents/ui/js/WeatherDescription.js:52
+msgid "Partly cloudy"
+msgstr "Mây rải rác"
+
+#: ../contents/ui/settings/ConfigSource.qml:653
+#: ../contents/ui/settings/ConfigSource.qml:654
+#: ../contents/ui/settings/ConfigSource.qml:655
+#: ../contents/ui/settings/ConfigSource.qml:656
+#: ../contents/ui/settings/ConfigSource.qml:657
+msgid "Paste key here..."
+msgstr "Dán khóa vào đây..."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1315
+msgid "Please fill in both the object/title and the description."
+msgstr "Vui lòng điền cả chủ đề/tiêu đề và mô tả."
+
+#: ../contents/ui/settings/ConfigSource.qml:594
+msgid "Provider:"
+msgstr "Nhà cung cấp:"
+
+#: ../contents/ui/js/WeatherDescription.js:28
+#: ../contents/ui/js/WeatherDescription.js:29
+#: ../contents/ui/js/WeatherDescription.js:30
+#: ../contents/ui/js/WeatherDescription.js:31
+#: ../contents/ui/js/WeatherDescription.js:32
+msgid "Rain"
+msgstr "Mưa"
+
+#: ../contents/ui/js/DetailsCatalog.js:113
+msgctxt "Chart Y axis label"
+msgid "Rain"
+msgstr "Mưa"
+
+#: ../contents/ui/js/DetailsCatalog.js:112
+msgctxt "Chart tab label"
+msgid "Rain"
+msgstr "Mưa"
+
+#: ../contents/ui/js/DetailsCatalog.js:115
+msgctxt "Compact widget bottom row label"
+msgid "Rain Prob."
+msgstr "KN mưa"
+
+#: ../contents/ui/js/DetailsCatalog.js:114
+msgctxt "Settings label"
+msgid "Rain Probability"
+msgstr "Khả năng mưa"
+
+#: ../contents/ui/js/WeatherDescription.js:63
+msgid "Rain heavy intensity"
+msgstr "Mưa to"
+
+#: ../contents/ui/js/WeatherDescription.js:62
+msgid "Rain moderate intensity"
+msgstr "Mưa vừa"
+
+#: ../contents/ui/components/WeatherData.qml:65
+msgid "Rain probability"
+msgstr "Khả năng mưa"
+
+#: ../contents/ui/js/WeatherDescription.js:71
+msgid "Rain showers moderate"
+msgstr "Mưa rào vừa"
+
+#: ../contents/ui/js/WeatherDescription.js:70
+msgid "Rain showers slight"
+msgstr "Mưa rào nhẹ"
+
+#: ../contents/ui/js/WeatherDescription.js:72
+msgid "Rain showers violent"
+msgstr "Mưa rào dữ dội"
+
+#: ../contents/ui/js/WeatherDescription.js:61
+msgid "Rain slight intensity"
+msgstr "Mưa nhẹ"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1225
+msgid "Rainbow Effect"
+msgstr "Hiệu ứng cầu vồng"
+
+#: ../contents/ui/settings/ConfigSupport.qml:641
+msgid "Rate"
+msgstr "Đánh giá"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1552
+msgid "Ratings on the KDE Store"
+msgstr "Đánh giá trên KDE Store"
+
+#: ../contents/ui/settings/ConfigSupport.qml:916
+msgid "Ratings unavailable right now."
+msgstr "Hiện chưa có đánh giá."
+
+#: ../contents/ui/settings/ConfigSupport.qml:898
+msgid "Read comments"
+msgstr "Đọc bình luận"
+
+#: ../contents/ui/settings/ConfigSource.qml:635
+msgid "Recommended"
+msgstr "Được đề xuất"
+
+#: ../contents/ui/settings/ConfigSource.qml:715
+msgid "Refresh every:"
+msgstr "Làm mới mỗi:"
+
+#: ../contents/ui/main.qml:16
 msgid "Refresh now"
 msgstr "Làm mới ngay"
 
-msgid "Style"
-msgstr "Giao diện"
+#: ../contents/ui/settings/ConfigSource.qml:326
+msgid "Refreshing too often may exhaust your API limits. Minimum recommended is %1 min."
+msgstr "Làm mới quá thường xuyên có thể làm cạn kiệt giới hạn API của bạn. Mức tối thiểu được khuyến nghị là %1 phút."
 
-msgid "Panel"
-msgstr "Bảng điều khiển"
+#: ../contents/ui/settings/ResetSection.qml:28
+msgid "Reset"
+msgstr "Đặt lại"
 
+#: ../contents/ui/settings/ResetSection.qml:48
+msgid "Resets every setting on this page to its factory default value."
+msgstr "Đặt lại tất cả cài đặt trên trang này về giá trị mặc định gốc."
+
+#: ../contents/ui/settings/ResetSection.qml:42
+#: ../contents/ui/settings/ResetSection.qml:58
+msgid "Restore Defaults"
+msgstr "Khôi phục mặc định"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:168
+msgid "Reverse order"
+msgstr "Thứ tự ngược"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:258
+msgid "Right"
+msgstr "Phải"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:320
+msgid "Rounds the widget's corners."
+msgstr "Bo tròn các góc của tiện ích."
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "Saved"
+msgstr "Đã lưu"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1462
+msgid "Send via Email"
+msgstr "Gửi qua email"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:348
+msgid "Sets the widget's background transparency. This also works in the panel, though the result is limited by your taskbar's own behavior."
+msgstr "Đặt độ trong suốt nền của tiện ích. Điều này cũng hoạt động trên bảng, mặc dù kết quả bị giới hạn bởi hành vi riêng của thanh tác vụ."
+
+#: ../contents/ui/settings/ConfigSupport.qml:1207
+msgid "Shooting Star Effect"
+msgstr "Hiệu ứng sao băng"
+
+#: ../contents/ui/settings/ConfigSource.qml:671
+msgid "Show API key"
+msgstr "Hiện khóa API"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:164
 msgid "Show:"
 msgstr "Hiển thị:"
 
-msgid "Temperature"
-msgstr "Nhiệt độ"
+#: ../contents/ui/js/WeatherDescription.js:37
+#: ../contents/ui/js/WeatherDescription.js:38
+#: ../contents/ui/js/WeatherDescription.js:39
+#: ../contents/ui/js/WeatherDescription.js:40
+#: ../contents/ui/js/WeatherDescription.js:41
+msgid "Showers"
+msgstr "Mưa rào"
 
-msgid "Condition"
-msgstr "Điều kiện"
+#: ../contents/ui/settings/ConfigAppearance.qml:292
+msgid "Shows one decimal place on the Y-axis values."
+msgstr "Hiển thị một chữ số thập phân trong giá trị trục Y."
 
-msgid "Reverse order"
-msgstr "Đảo ngược thứ tự"
+#: ../contents/ui/settings/ConfigAppearance.qml:207
+msgid "Shows temperature values with one decimal place."
+msgstr "Hiển thị giá trị nhiệt độ với một chữ số thập phân."
 
-msgid "Temperature font:"
-msgstr "Phông chữ nhiệt độ:"
+#: ../contents/ui/settings/ConfigAppearance.qml:273
+msgid "Shows weather animations (sun, clouds, rain, etc.) in the background."
+msgstr "Hiển thị hoạt hình thời tiết (mặt trời, mây, mưa, v.v.) ở nền."
 
-msgid "Bold"
-msgstr "In đậm"
+#: ../contents/ui/js/WeatherDescription.js:33
+#: ../contents/ui/js/WeatherDescription.js:34
+#: ../contents/ui/js/WeatherDescription.js:35
+msgid "Snow"
+msgstr "Tuyết"
 
-msgid "Condition font:"
-msgstr "Phông chữ điều kiện:"
+#: ../contents/ui/js/WeatherDescription.js:69
+msgid "Snow grains"
+msgstr "Hạt tuyết"
 
-msgid "Decimals:"
-msgstr "Số thập phân:"
+#: ../contents/ui/js/WeatherDescription.js:74
+msgid "Snow showers heavy"
+msgstr "Mưa tuyết rào to"
 
-msgid "Full view"
-msgstr "Chế độ xem đầy đủ"
+#: ../contents/ui/js/WeatherDescription.js:73
+msgid "Snow showers slight"
+msgstr "Mưa tuyết rào nhẹ"
 
-msgid "Condition:"
-msgstr "Điều kiện:"
+#: ../contents/ui/js/WeatherDescription.js:68
+msgid "Snowfall heavy intensity"
+msgstr "Tuyết rơi dày"
 
-msgid "Chart decimals:"
-msgstr "Số thập phân biểu đồ:"
+#: ../contents/ui/js/WeatherDescription.js:67
+msgid "Snowfall moderate intensity"
+msgstr "Tuyết rơi vừa"
 
-msgid "Cursor decimals:"
-msgstr "Số thập phân con trỏ:"
+#: ../contents/ui/js/WeatherDescription.js:66
+msgid "Snowfall slight intensity"
+msgstr "Tuyết rơi nhẹ"
 
-msgid "Shows one decimal while hovering the chart.\nWithout it, the value only updates at whole numbers and can appear stuck as you move along."
-msgstr "Hiển thị một số thập phân khi di chuột qua biểu đồ.\nNếu không có nó, giá trị chỉ cập nhật ở các số nguyên và có vẻ như bị kẹt khi bạn di chuyển."
+#: ../contents/ui/settings/ConfigData.qml:416
+msgid "Some previously selected metrics were not supported by the current provider and were adjusted automatically."
+msgstr "Một số chỉ số đã chọn trước đó không được nhà cung cấp hiện tại hỗ trợ và đã được tự động điều chỉnh."
 
-msgid "Y-axis reading:"
-msgstr "Đọc trục Y:"
+#: ../contents/config/config.qml:10
+msgid "Source & Location"
+msgstr "Nguồn và vị trí"
 
-msgid "Hover the left edge of the chart to read a value off the Y axis instead of following the curve."
-msgstr "Di chuột qua cạnh trái của biểu đồ để đọc giá trị ngoài trục Y thay vì theo đường cong."
+#: ../contents/ui/settings/ConfigSupport.qml:764
+msgid "Star"
+msgstr "Gắn sao"
 
-msgid "Weather animations:"
-msgstr "Hiệu ứng thời tiết:"
+#: ../contents/ui/settings/ConfigSupport.qml:723
+msgid "Star the repository to support the project and follow its development."
+msgstr "Gắn sao cho kho lưu trữ để ủng hộ dự án và theo dõi quá trình phát triển của nó."
 
-msgid "Details:"
-msgstr "Chi tiết:"
-
-msgid "Apparent temp."
-msgstr "Nhiệt độ cảm nhận"
-
-msgid "UV index"
-msgstr "Chỉ số UV"
-
-msgid "Wind speed"
-msgstr "Tốc độ gió"
-
-msgid "Desktop widget:"
-msgstr "Tiện ích trên màn hình:"
-
-msgid "Radius"
-msgstr "Bán kính"
-
-msgid "Opacity"
-msgstr "Độ mờ"
-
-msgid "Only applies when the widget sits directly on the desktop, not in a panel popup."
-msgstr "Chỉ áp dụng khi tiện ích nằm trực tiếp trên màn hình, không phải trong cửa sổ bật lên của bảng điều khiển."
-
-msgid "Forecast"
-msgstr "Dự báo"
-
+#: ../contents/ui/settings/ConfigData.qml:345
 msgid "Start day offset:"
 msgstr "Độ lệch ngày bắt đầu:"
 
-msgid "Data"
-msgstr "Dữ liệu"
+#: ../contents/ui/js/WeatherDescription.js:42
+#: ../contents/ui/js/WeatherDescription.js:43
+#: ../contents/ui/js/WeatherDescription.js:44
+msgid "Storm"
+msgstr "Bão"
 
-msgid "Settings:"
-msgstr "Cài đặt:"
+#: ../contents/ui/settings/ConfigSupport.qml:1392
+msgid "Strikethrough"
+msgstr "Gạch ngang"
 
-msgid "Restore default settings"
-msgstr "Khôi phục cài đặt mặc định"
+#: ../contents/ui/settings/ConfigSupport.qml:1348
+msgid "Subject"
+msgstr "Chủ đề"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1342
+msgid "Suggestion"
+msgstr "Đề xuất"
+
+#: ../contents/config/config.qml:28
+msgid "Support & Community"
+msgstr "Hỗ trợ và cộng đồng"
+
+#: ../contents/ui/settings/ConfigSupport.qml:565
+msgid "Support the Project"
+msgstr "Ủng hộ dự án"
+
+#: ../contents/ui/settings/ConfigSource.qml:711
+msgid "System units:"
+msgstr "Đơn vị hệ thống:"
+
+#: ../contents/ui/js/DetailsCatalog.js:33
+msgctxt "Chart Y axis label"
+msgid "Temp."
+msgstr "Nhiệt"
+
+#: ../contents/ui/js/DetailsCatalog.js:32
+msgctxt "Chart tab label"
+msgid "Temp."
+msgstr "Nhiệt"
+
+#: ../contents/ui/js/DetailsCatalog.js:35
+msgctxt "Compact widget bottom row label"
+msgid "Temp."
+msgstr "Nhiệt"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:166
+msgid "Temperature"
+msgstr "Nhiệt độ"
+
+#: ../contents/ui/js/DetailsCatalog.js:34
+msgctxt "Settings label"
+msgid "Temperature"
+msgstr "Nhiệt độ"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:178
+msgid "Temperature size:"
+msgstr "Cỡ chữ nhiệt độ:"
+
+#: ../contents/ui/settings/ConfigData.qml:422
+msgid "Text Details"
+msgstr "Chi tiết văn bản"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1508
+msgid "Text to display (optional, the URL is used if left empty)"
+msgstr "Văn bản hiển thị (tùy chọn, để trống sẽ dùng URL)"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for the star!"
+msgstr "Cảm ơn vì đã gắn sao!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1323
+msgid "Thank you for your feedback! 🚀"
+msgstr "Cảm ơn phản hồi của bạn! 🚀"
+
+#: ../contents/ui/settings/ConfigSupport.qml:306
+msgid "Thank you for your rating!"
+msgstr "Cảm ơn đánh giá của bạn!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:303
+msgid "Thank you for your support!"
+msgstr "Cảm ơn sự ủng hộ của bạn!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1821
+msgid "Thank you!"
+msgstr "Cảm ơn!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:553
+msgid "This applet is open-source and developed with passion. Your support keeps the project active and helps it grow within the KDE ecosystem."
+msgstr "Applet này là mã nguồn mở và được phát triển với niềm đam mê. Sự ủng hộ của bạn giúp dự án luôn hoạt động và phát triển trong hệ sinh thái KDE."
+
+#: ../contents/ui/settings/ConfigSource.qml:301
+msgid "This provider doesn't support key verification. The key has been saved as entered."
+msgstr "Nhà cung cấp này không hỗ trợ xác minh khóa. Khóa đã được lưu đúng như đã nhập."
+
+#: ../contents/ui/settings/ConfigSource.qml:637
+msgid "This provider requires a free API key from its website."
+msgstr "Nhà cung cấp này yêu cầu khóa API miễn phí từ trang web của họ."
+
+#: ../contents/ui/js/WeatherDescription.js:75
+msgid "Thunderstorm"
+msgstr "Dông"
+
+#: ../contents/ui/js/WeatherDescription.js:77
+msgid "Thunderstorm with heavy hail"
+msgstr "Dông kèm mưa đá to"
+
+#: ../contents/ui/js/WeatherDescription.js:76
+msgid "Thunderstorm with slight hail"
+msgstr "Dông kèm mưa đá nhẹ"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1516
+msgid "URL"
+msgstr "URL"
+
+#: ../contents/ui/js/DetailsCatalog.js:96
+msgctxt "Chart tab label"
+msgid "UV"
+msgstr "UV"
+
+#: ../contents/ui/js/DetailsCatalog.js:97
+msgctxt "Chart Y axis label"
+msgid "UV Index"
+msgstr "Chỉ số UV"
+
+#: ../contents/ui/js/DetailsCatalog.js:99
+msgctxt "Compact widget bottom row label"
+msgid "UV Index"
+msgstr "Chỉ số UV"
+
+#: ../contents/ui/js/DetailsCatalog.js:98
+msgctxt "Settings label"
+msgid "UV Index"
+msgstr "Chỉ số UV"
+
+#: ../contents/ui/js/WeatherDescription.js:83
+#: ../contents/ui/js/WeatherDescription.js:88
+msgid "Unknown"
+msgstr "Không xác định"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1195
+msgid "Unlocked as a Thank You"
+msgstr "Mở khóa như một lời cảm ơn"
+
+#: ../contents/ui/settings/ConfigData.qml:179
+msgid "Unsupported"
+msgstr "Không được hỗ trợ"
+
+#: ../contents/ui/settings/ConfigSource.qml:700
+msgid "Updates & Units"
+msgstr "Cập nhật và đơn vị"
+
+#: ../contents/ui/settings/ConfigSource.qml:317
+msgid "Valid"
+msgstr "Hợp lệ"
+
+#: ../contents/ui/settings/ConfigSource.qml:583
+msgid "Weather Source"
+msgstr "Nguồn thời tiết"
+
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order."
+msgstr "Chi tiết thời tiết được hiển thị trong chế độ xem mở rộng, theo thứ tự này."
+
+#: ../contents/ui/settings/ConfigData.qml:423
+msgid "Weather details shown in the expanded view, in this order. Since Condition is disabled in Appearance, up to 4 details can be selected here."
+msgstr "Chi tiết thời tiết được hiển thị trong chế độ xem mở rộng, theo thứ tự này. Vì mục Thời tiết đã bị tắt trong Giao diện, tối đa 4 chi tiết có thể được chọn ở đây."
+
+#: ../contents/ui/js/DetailsCatalog.js:81
+msgctxt "Chart Y axis label"
+msgid "Wind"
+msgstr "Gió"
+
+#: ../contents/ui/js/DetailsCatalog.js:80
+msgctxt "Chart tab label"
+msgid "Wind"
+msgstr "Gió"
+
+#: ../contents/ui/js/DetailsCatalog.js:83
+msgctxt "Compact widget bottom row label"
+msgid "Wind"
+msgstr "Gió"
+
+#: ../contents/ui/js/DetailsCatalog.js:82
+msgctxt "Settings label"
+msgid "Wind"
+msgstr "Gió"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:285
+msgid "X-axis precision:"
+msgstr "Độ chính xác trục X:"
+
+#: ../contents/ui/settings/ConfigAppearance.qml:290
+msgid "Y-axis precision:"
+msgstr "Độ chính xác trục Y:"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1823
+msgid "You rock!"
+msgstr "Bạn thật tuyệt!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1822
+msgid "You're amazing!"
+msgstr "Bạn thật xuất sắc!"
+
+#: ../contents/ui/settings/ConfigSupport.qml:1824
+msgid "You're the best!"
+msgstr "Bạn là tuyệt nhất!"

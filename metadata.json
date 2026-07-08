@@ -1,14 +1,15 @@
 {
     "KPlugin": {
         "Authors": [
-            { "Email": "samy.rk800@gmail.com", "Name": "Samy879" },
-            { "Email": "adolfo@librepixels.com", "Name": "zayronxio (Original Author)" }
+            { "Email": "samy.rk800@gmail.com", "Name": "Samy879 (Concept & Development)" },
+            { "Email": "adolfo@librepixels.com", "Name": "zayronxio (Initial codebase)" }
         ],
         "Name": "Minimalist Animated Weather",
         "Name[ar]": "Minimalist Animated Weather",
         "Name[de]": "Minimalist Animated Weather",
         "Name[es]": "Minimalist Animated Weather",
         "Name[fr]": "Minimalist Animated Weather",
+        "Name[it]": "Minimalist Animated Weather",
         "Name[ja]": "Minimalist Animated Weather",
         "Name[nl]": "Minimalist Animated Weather",
         "Name[pt]": "Minimalist Animated Weather",
@@ -24,6 +25,7 @@
         "Description[de]": "Ein animiertes Wetter-Widget für KDE Plasma 6.",
         "Description[es]": "Un widget de clima animado para KDE Plasma 6.",
         "Description[fr]": "Un widget météo animé pour KDE Plasma 6.",
+        "Description[it]": "Un widget meteo animato per KDE Plasma 6.",
         "Description[ja]": "KDE Plasma 6 用のアニメーション化された天気ウィジェット。",
         "Description[nl]": "Een geanimeerde weerwidget voor KDE Plasma 6.",
         "Description[pt]": "Um widget de clima animado para o KDE Plasma 6.",
@@ -33,14 +35,15 @@
         "Description[zh_CN]": "一个适用于 KDE Plasma 6 的动画化天气小组件。",
         "Category": "Environment and Weather",
 
-        "Keywords": "Weather;Meteo;Météo;Forecast;Animated;Minimalist;Widget;Plasma;",
+        "Keywords": "Weather;Meteo;Météo;Wetter;Clima;Tempo;天気;Погода;Hava Durumu;Thời Tiết;天气;Forecast;Prévisions;Previsioni;Vorhersage;Pronóstico;Previsão;Animated;Minimalist;Widget;Plasmoid;Plasma;Plasma6;KDE;KDE Plasma;Sun;Rain;Cloud;Snow;Temperature;API;Desktop Widget;",
 
-        "Icon": "weather-clouds",
+        "Icon": "/icons/weather-clouds.svg",
         "EnabledByDefault": true,
         "License": "GPL-3.0+",
         "ServiceTypes": ["Plasma/Applet"],
-        "Version": "1.0.7",
-        "Website": "https://github.com/Samy879/minimalist-animated-weather"
+        "Version": "1.0.8",
+        "Website": "https://github.com/Samy879/minimalist-animated-weather",
+        "BugReportUrl": "https://github.com/Samy879/minimalist-animated-weather/issues"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-MainScript": "ui/main.qml"
