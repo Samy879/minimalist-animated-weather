@@ -46,7 +46,7 @@ This project is an enhanced version of the original [Minimal Chaac Weather](http
 
 1. Right-click your taskbar and select Add Widgets.
 2. Click Get New Widgets > Download New Plasma Widgets.
-3. Search for Minimalist Weather Animated and click Install.
+3. Search for Minimalist Animated Weather and click Install.
 
 ### Option 2: Local Installation (Manual)
 
@@ -75,7 +75,7 @@ Whether it's:
 * 🔧 Code refactoring and maintenance
 * 📚 Documentation improvements
 
-Feel free to open an Issue, submit a Pull Request, or suggest enhancements. Every contribution, big or small, helps make **Minimalist Weather Animated** even better for everyone.
+Feel free to open an Issue, submit a Pull Request, or suggest enhancements. Every contribution, big or small, helps make **Minimalist Animated Weather** even better for everyone.
 
 ---
 
