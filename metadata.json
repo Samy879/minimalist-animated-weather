@@ -40,11 +40,11 @@
         "Icon": "/icons/weather-clouds.svg",
         "EnabledByDefault": true,
         "License": "GPL-3.0+",
-        "ServiceTypes": ["Plasma/Applet"],
         "Version": "1.0.8",
         "Website": "https://github.com/Samy879/minimalist-animated-weather",
         "BugReportUrl": "https://github.com/Samy879/minimalist-animated-weather/issues"
     },
+    "KPackageStructure": "Plasma/Applet",
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-MainScript": "ui/main.qml"
 }
