@@ -3,7 +3,7 @@
 
 
 # Minimalist Animated Weather 🌦️
-[![Downloads KDE Store](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Samy879/minimalist-animated-weather/data/.github/badges/downloads-badge.json)](https://store.kde.org/p/2356087)
+[![Downloads KDE Store](https://img.shields.io/endpoint?url=https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Samy879/minimalist-animated-weather/data/downloads-badge.json)](https://store.kde.org/p/2356087)
 
 A highly customizable, animated, and minimalist weather widget for KDE Plasma 6, focused on data clarity and modern design.
 
