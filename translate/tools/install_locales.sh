@@ -1,20 +1,23 @@
 #!/bin/bash
 
+TOOLS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TRANSLATE_DIR="$TOOLS_DIR/.."
+ROOT_DIR="$TRANSLATE_DIR/.."
+
 APP_DOMAIN="plasma_applet_com.github.samy879.minimalist-animated-weather"
-LOCALE_DIR="../contents/locale"
+LOCALE_DIR="$ROOT_DIR/contents/locale"
 USER_LOCALE_DIR="$HOME/.local/share/locale"
-# Utilisation du dossier courant au lieu de la racine utilisateur
-TEST_LOCALE_DIR="$PWD/.locale"
+TEST_LOCALE_DIR="$TOOLS_DIR/.locale"
 TARGET_LANG=$1
 
 if [ -z "$TARGET_LANG" ]; then
-    echo "❌ Erreur : Tu dois spécifier une langue. Exemple : ./install_locales.sh ru"
+    echo "❌ Erreur : Tu dois spécifier une langue. Exemple : ./tools/install_locales.sh ru"
     exit 1
 fi
 
 # 1. Compilation
 echo "==> 1. Compilation des fichiers .po..."
-sh build.sh
+sh "$TOOLS_DIR/build.sh"
 
 # 2. Copie temporaire
 echo -e "\n==> 2. Installation temporaire des fichiers .mo dans $USER_LOCALE_DIR..."
@@ -58,7 +61,7 @@ fi
 
 # 4. Lancement du test (le script se met en pause tant que la fenêtre est ouverte)
 echo -e "\n🚀 Lancement du test pour la langue : $TARGET_LANG..."
-LOCPATH="$TEST_LOCALE_DIR" ./plasmoidlocaletest.sh "$TARGET_LANG"
+LOCPATH="$TEST_LOCALE_DIR" "$TOOLS_DIR/plasmoidlocaletest.sh" "$TARGET_LANG"
 
 # 5. Nettoyage absolu (s'exécute dès que tu fermes le widget)
 echo -e "\n🧹 Fermeture détectée. Nettoyage des fichiers temporaires..."

@@ -1,16 +1,21 @@
-#!/bin/sh
-# Version: 21 (Sans metadata.desktop)
+#!/bin/bash
+# Version: 22 (Sans metadata.desktop)
 
 # https://techbase.kde.org/Development/Tutorials/Localization/i18n_Build_Systems
 # https://techbase.kde.org/Development/Tutorials/Localization/i18n_Build_Systems/Outside_KDE_repositories
 # https://invent.kde.org/sysadmin/l10n-scripty/-/blob/master/extract-messages.sh
 
-DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
+TOOLS_DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
+TRANSLATE_DIR="$TOOLS_DIR/.."
+ROOT_DIR="$TRANSLATE_DIR/.."
+
+cd "$TRANSLATE_DIR" || exit 1
+DIR="$TRANSLATE_DIR"
 
 # Extraction propre depuis metadata.json avec jq
-plasmoidName=$(jq -r '.KPlugin.Id' "$DIR/../metadata.json")
-widgetName=$(jq -r '.KPlugin.Name' "$DIR/../metadata.json")
-website=$(jq -r '.KPlugin.Website' "$DIR/../metadata.json")
+plasmoidName=$(jq -r '.KPlugin.Id' "$ROOT_DIR/metadata.json")
+widgetName=$(jq -r '.KPlugin.Name' "$ROOT_DIR/metadata.json")
+website=$(jq -r '.KPlugin.Website' "$ROOT_DIR/metadata.json")
 bugAddress="$website/issues"
 packageRoot=".."
 projectName="plasma_applet_${plasmoidName}"
@@ -110,7 +115,7 @@ echo "[merge] Done extracting messages"
 
 #---
 echo "[merge] Merging messages"
-catalogs=`find . -name '*.po' | sort`
+catalogs=`find . -maxdepth 1 -name '*.po' | sort`
 for cat in $catalogs; do
 	echo "[merge] $cat"
 	catLocale=`basename ${cat%.*}`

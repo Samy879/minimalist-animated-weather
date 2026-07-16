@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 9
+# Version 10
 # Requires plasmoidviewer v5.13.0
 
 function checkIfLangInstalled {
@@ -146,7 +146,7 @@ done
 if [ -z "$lang" ]; then
 	echo "plasmoidlocaletest doesn't recognize the language '$lang'"
 	echo "Eg:"
-	scriptcmd='sh ./plasmoidlocaletest'
+	scriptcmd='sh ./tools/plasmoidlocaletest'
 	for i in "${langArr[@]}"; do
 		IFS=: read -r l1 l2 l3 <<< "$i"
 		echo "    ${scriptcmd} ${l2}     | ${l3}"
@@ -173,7 +173,8 @@ echo "LANGUAGE=\"${lang}\""
 echo "LANG=\"${l1}\""
 
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-packageDir="${scriptDir}/.."
+translateDir="${scriptDir}/.."
+packageDir="${translateDir}/.."
 
 # Build local translations for plasmoidviewer
 sh "${scriptDir}/build.sh"
