@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 12 (extraction + fusion automatique des .po + compilation)
+# Version: 13 (extraction + fusion automatique des .po + compilation)
 
 TOOLS_DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 TRANSLATE_DIR="$TOOLS_DIR/.."
@@ -17,7 +17,7 @@ fi
 projectName="plasma_applet_${plasmoidName}"
 
 # Optionnel : évite l'avertissement xgettext sur --msgid-bugs-address
-website=$(grep '"Website"' "$ROOT_DIR/metadata.json" | cut -d'"' -f4)
+bugReportUrl=$(grep '"BugReportUrl"' "$ROOT_DIR/metadata.json" | cut -d'"' -f4)
 
 for tool in msgfmt msgmerge xgettext msguniq; do
     if [ -z "$(which $tool)" ]; then
@@ -42,7 +42,7 @@ if [ -z "$sourceFiles" ]; then
     exit 1
 fi
 
-xgettext \
+TZ=UTC xgettext \
     --from-code=UTF-8 \
     --language=JavaScript \
     --keyword=i18n:1 \
@@ -52,7 +52,7 @@ xgettext \
     --keyword=i18nd:2 \
     --keyword=i18ndc:2c,3 \
     --package-name="$projectName" \
-    --msgid-bugs-address="${website}" \
+    --msgid-bugs-address="${bugReportUrl}" \
     --add-comments=TRANSLATORS: \
     --no-wrap \
     -o "$potFile" \
@@ -77,7 +77,7 @@ if [ -z "$poFiles" ]; then
     echo "[build] Avertissement: aucun fichier .po trouvé, rien à fusionner."
 else
     for po in $poFiles; do
-        msgmerge --update --backup=off --quiet "$po" "$potFile"
+        msgmerge --update --backup=off --quiet --no-wrap "$po" "$potFile"
         echo " -> Mis à jour : $(basename "$po")"
     done
 fi
