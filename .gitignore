@@ -1,2 +1,4 @@
-# Compiled translation files
+# Compiled files
+/contents/locale/
 *.mo
+*.plasmoid

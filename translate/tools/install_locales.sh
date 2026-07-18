@@ -45,6 +45,7 @@ declare -A locales=(
     ["ja"]="ja_JP"
     ["nl"]="nl_NL"
     ["pt"]="pt_PT"
+    ["pt_br"]="pt_BR"
     ["ru"]="ru_RU"
     ["tr"]="tr_TR"
     ["vi"]="vi_VN"

@@ -36,7 +36,7 @@ This project is an enhanced version of the original [Minimal Chaac Weather](http
   * **Data Precision**: Toggle decimal display independently for the panel and interactive charts.
   * **Timing**: Set your preferred weather update interval.
   * **...and much more!**
-* **Multilingual Support**: Available in 🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French, 🇯🇵 Japanese, 🇳🇱 Dutch, 🇵🇹 Portuguese, 🇷🇺 Russian, 🇹🇷 Turkish, 🇻🇳 Vietnamese, 🇨🇳 Simplified Chinese, and 🇩🇪 German
+* **Multilingual Support**: Available in 🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French, 🇯🇵 Japanese, 🇳🇱 Dutch, 🇵🇹 Portuguese (Portugal), 🇧🇷 Portuguese (Brazil), 🇷🇺 Russian, 🇹🇷 Turkish, 🇻🇳 Vietnamese, 🇨🇳 Simplified Chinese, and 🇩🇪 German
 
 ---
 
