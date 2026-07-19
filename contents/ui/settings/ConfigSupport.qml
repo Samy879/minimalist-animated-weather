@@ -85,7 +85,9 @@ Item {
     property var cfg_useCoordinatesIpDefault: undefined
     property var cfg_latitudeCDefault: undefined
     property var cfg_longitudeCDefault: undefined
+    property var cfg_showLocationExpanded: undefined
     property var cfg_showConditionPanelDefault: undefined
+    property var cfg_showLocationExpandedDefault: undefined
     property var cfg_showConditionExpandedDefault: undefined
     property var cfg_conditionAlignmentDefault: undefined
     property var cfg_reverseOrderDefault: undefined

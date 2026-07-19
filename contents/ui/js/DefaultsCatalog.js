@@ -31,6 +31,7 @@ var APPEARANCE = {
     conditionPanelBold: false,
     preciseTemp: false,
     showConditionExpanded: true,
+    showLocationExpanded: true,
     showAnimations: true,
     hoverDecimals: true,
     xAxisPrecision: true,

@@ -30,6 +30,7 @@ Item {
     property alias cfg_conditionPanelBold:    conditionPanelBoldCheck.checked
     property alias cfg_preciseTemp:           preciseTempCheck.checked
     property alias cfg_showConditionExpanded: showConditionExpandedCheck.checked
+    property alias cfg_showLocationExpanded:  showLocationExpandedCheck.checked
     property alias cfg_conditionAlignment:    conditionAlignmentCombo.currentIndex
     property alias cfg_showAnimations:        showAnimationsCheck.checked
     property alias cfg_hoverDecimals:         hoverDecimalsCheck.checked
@@ -69,6 +70,7 @@ Item {
     property var cfg_longitudeCDefault: undefined
     property var cfg_showConditionPanelDefault: undefined
     property var cfg_showConditionExpandedDefault: undefined
+    property var cfg_showLocationExpandedDefault: undefined
     property var cfg_conditionAlignmentDefault: undefined
     property var cfg_reverseOrderDefault: undefined
     property var cfg_temperatureUnitDefault: undefined
@@ -115,6 +117,7 @@ Item {
         conditionPanelBoldCheck.checked = d.conditionPanelBold;
         preciseTempCheck.checked = d.preciseTemp;
         showConditionExpandedCheck.checked = d.showConditionExpanded;
+        showLocationExpandedCheck.checked = d.showLocationExpanded;
         conditionAlignmentCombo.currentIndex = (d.conditionAlignment !== undefined) ? d.conditionAlignment : 1;
         showAnimationsCheck.checked = d.showAnimations;
         hoverDecimalsCheck.checked = d.hoverDecimals;
@@ -276,6 +279,11 @@ Item {
                             label: i18n("Hover decimals:");
                             CheckBox { id: hoverDecimalsCheck }
                             InfoIcon { text: i18n("Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers.") }
+                        }
+                        SettingRow {
+                            label: i18n("Location Text:");
+                            CheckBox { id: showLocationExpandedCheck }
+                            InfoIcon { text: i18n("Displays the detected location text below the temperature.") }
                         }
                     }
                     rightItem: SettingGroup {

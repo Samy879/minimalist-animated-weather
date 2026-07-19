@@ -21,6 +21,9 @@
     <entry name="showConditionExpanded" type="bool">
       <default>true</default>
     </entry>
+    <entry name="showLocationExpanded" type="bool">
+      <default>true</default>
+    </entry>
     <entry name="conditionAlignment" type="int">
       <default>1</default>
     </entry>

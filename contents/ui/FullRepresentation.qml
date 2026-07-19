@@ -320,24 +320,50 @@ Item {
 
                 Item { Layout.fillWidth: true; visible: !rootItem.isDesktopMode && !(conditionLabel.visible || rightSideContainer.visible) }
 
-                Row {
+                ColumnLayout {
                     id: tempContainer
                     spacing: 0
                     Layout.alignment: Qt.AlignVCenter
 
-                    PlasmaComponents3.Label {
-                        text: currentTempText
-                        font.pixelSize: Kirigami.Units.gridUnit * 2.5
-                        font.bold: true
-                        leftPadding: currentTempText.length === 1 ? Kirigami.Units.gridUnit * 0.4 : 0
-                        color: Kirigami.Theme.textColor
+                    Row {
+                        spacing: 0
+
+                        PlasmaComponents3.Label {
+                            text: currentTempText
+                            font.pixelSize: Kirigami.Units.gridUnit * 2.5
+                            font.bold: true
+                            leftPadding: currentTempText.length === 1 ? Kirigami.Units.gridUnit * 0.4 : 0
+                            color: Kirigami.Theme.textColor
+                        }
+                        PlasmaComponents3.Label {
+                            text: unitStr
+                            font.pixelSize: Kirigami.Units.gridUnit * 1.5
+                            font.bold: true
+                            topPadding: Kirigami.Units.gridUnit * 0.2
+                            color: Kirigami.Theme.textColor
+                        }
                     }
-                    PlasmaComponents3.Label {
-                        text: unitStr
-                        font.pixelSize: Kirigami.Units.gridUnit * 1.5
-                        font.bold: true
-                        topPadding: Kirigami.Units.gridUnit * 0.2
-                        color: Kirigami.Theme.textColor
+
+                    Row {
+                        spacing: Kirigami.Units.smallSpacing / 2
+                        visible: !!(Plasmoid.configuration.showLocationExpanded && weatherData && weatherData.city)
+
+                        Kirigami.Icon {
+                            source: "mark-location"
+                            width: Kirigami.Units.gridUnit * 0.8
+                            height: width
+                            color: Kirigami.Theme.textColor
+                            opacity: 0.7
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        PlasmaComponents3.Label {
+                            text: weatherData && weatherData.city ? weatherData.city : ""
+                            font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                            color: Kirigami.Theme.textColor
+                            opacity: 0.7
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
 
