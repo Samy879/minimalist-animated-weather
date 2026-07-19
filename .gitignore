@@ -1,0 +1,4 @@
+# Compiled files
+/contents/locale/
+*.mo
+*.plasmoid
