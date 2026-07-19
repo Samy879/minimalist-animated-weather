@@ -31,6 +31,7 @@ PlasmoidItem {
   property bool conditionPanelBold: Plasmoid.configuration.conditionPanelBold
   property bool reverseOrder: Plasmoid.configuration.reverseOrder
   property int temperatureUnit: Plasmoid.configuration.temperatureUnit
+  property int windSpeedUnit: Plasmoid.configuration.windSpeedUnit
   property real temperatureFontSize: Plasmoid.configuration.temperatureFontSize
   property real conditionFontSize: Plasmoid.configuration.conditionFontSize
 
@@ -42,6 +43,7 @@ PlasmoidItem {
 
   property bool showTemperaturePanel: Plasmoid.configuration.showTemperaturePanel
   property int forecastStartDay: Plasmoid.configuration.forecastStartDay
+  property int forecastVisibleDayCount: Plasmoid.configuration.forecastVisibleDayCount
 
   // Référence vers la FullRepresentation pour pouvoir appeler resetScroll()
   property var fullRepRef: null
@@ -61,6 +63,7 @@ PlasmoidItem {
 
   compactRepresentation: CompactRepresentation {
     weatherData: weatherSource
+    plasmoidRoot: root
   }
 
   fullRepresentation: FullRepresentation {

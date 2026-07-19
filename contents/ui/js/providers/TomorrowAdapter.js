@@ -1,5 +1,6 @@
 // TomorrowAdapter.js
 
+.import "../ForecastAggregator.js" as Aggregator
 .import "../HttpCacheService.js" as Http
 
 var id = "tomorrowio";
@@ -14,6 +15,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: true,
+        rainAmount: true, // approximé depuis rainIntensity (mm/h), voir fetch()
         cloudCover: true
     },
     maxForecastDays: 5,
@@ -40,13 +42,14 @@ function fetch(params, callback) {
         callback(new Error("missing-api-key"), null, null);
         return;
     }
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
     let days = Math.min(params.days || 7, capabilities.maxForecastDays);
-    let units = isFahrenheit ? "imperial" : "metric";
 
+    // "metric" : Celsius + km/h, notre unité canonique interne. La
+    // conversion finale vers l'unité choisie par l'utilisateur se fait en
+    // aval, dans ProviderRegistry.fetchWeather().
     let url = "https://api.tomorrow.io/v4/weather/forecast" +
     "?location=" + params.lat + "," + params.lon +
-    "&units=" + units + "&apikey=" + encodeURIComponent(params.apiKey);
+    "&units=metric&apikey=" + encodeURIComponent(params.apiKey);
 
     Http.get(url, { timeoutMs: 8000, cacheTtlMs: 20000 }, function (err, raw, status) {
         if (err || !raw || !raw.timelines) {
@@ -63,7 +66,7 @@ function fetch(params, callback) {
 
         let hourly = {
             temperature_2m: [], relative_humidity_2m: [], apparent_temperature: [],
-            uv_index: [], precipitation_probability: [], cloud_cover: [],
+            uv_index: [], precipitation_probability: [], precipitation: [], cloud_cover: [],
             wind_speed_10m: [], weather_code: []
         };
         for (let i = 0; i < hourlySlice.length; i++) {
@@ -73,6 +76,9 @@ function fetch(params, callback) {
             hourly.apparent_temperature.push(v.temperatureApparent);
             hourly.uv_index.push(v.uvIndex);
             hourly.precipitation_probability.push(v.precipitationProbability);
+            // Tomorrow.io ne fournit pas de total mm direct par heure, seulement une
+            // intensité (mm/h). Approximation acceptée : intensité x 1h ~= mm de ce créneau.
+            hourly.precipitation.push((v.rainIntensity !== undefined && v.rainIntensity !== null) ? v.rainIntensity : 0);
             hourly.cloud_cover.push(v.cloudCover);
             hourly.wind_speed_10m.push(v.windSpeed);
             hourly.weather_code.push(codeToWmo(v.weatherCode));
@@ -81,7 +87,7 @@ function fetch(params, callback) {
         let daily = {
             time: [],
             temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
-            precipitation_probability_max: [], uv_index_max: [], sunrise: [], sunset: []
+            precipitation_probability_max: [], precipitation_sum: [], uv_index_max: [], sunrise: [], sunset: []
         };
         for (let d = 0; d < dailySlice.length; d++) {
             let v = dailySlice[d].values || {};
@@ -94,6 +100,10 @@ function fetch(params, callback) {
             daily.temperature_2m_min.push(v.temperatureMin);
             daily.weather_code.push(codeToWmo(v.weatherCodeMax || v.weatherCodeDay));
             daily.precipitation_probability_max.push(v.precipitationProbabilityMax);
+            // Pas de total mm journalier fiable côté API : on somme les 24 valeurs
+            // horaires déjà approximées ci-dessus, pour rester cohérent avec elles.
+            let dayHourly = hourly.precipitation.slice(d * 24, d * 24 + 24);
+            daily.precipitation_sum.push(dayHourly.reduce(function (a, b) { return a + (b || 0); }, 0));
             daily.uv_index_max.push(v.uvIndexMax);
             daily.sunrise.push(v.sunriseTime || null);
             daily.sunset.push(v.sunsetTime || null);
@@ -112,6 +122,8 @@ function fetch(params, callback) {
              is_day: (daily.sunrise[0] && daily.sunset[0] &&
              now >= new Date(daily.sunrise[0]) && now <= new Date(daily.sunset[0])) ? 1 : 0
         };
+
+        daily = Aggregator.fillMissingDailyAggregates(hourly, daily, dailySlice.length);
 
         callback(null, { current: current, hourly: hourly, daily: daily }, {
             provider: id,

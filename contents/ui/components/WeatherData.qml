@@ -134,9 +134,13 @@ Item {
 
   function formatValue(detailId) {
     let v = detailValue(detailId);
-    if (v === null || v === undefined || isNaN(v)) return "--";
-    let cat = Catalog.findDetail(detailId);
-    return (cat && cat.decimals) ? parseFloat(v).toFixed(1) : Math.round(v).toString();
+    // Formatage centralisé dans DetailsCatalog.js (cat.textDetailDecimals,
+    // 0 par défaut) : seule source de vérité, partagée avec
+    // FullRepresentation.qml::buildDetailEntries() pour que les deux ne
+    // puissent jamais diverger. Ce flag est indépendant de cat.decimals,
+    // qui ne pilote que la précision du graphique (Y-axis/Hover decimals).
+    let formatted = Catalog.formatTextDetailValue(detailId, v);
+    return formatted === null ? "--" : formatted;
   }
 
   function updateWeather() {

@@ -16,6 +16,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: false,
+        rainAmount: true, // Yr ne donne pas de %, mais donne bien un total mm (precipitation_amount)
         cloudCover: true
     },
     maxForecastDays: 9,
@@ -59,7 +60,6 @@ function isSymbolDay(symbolCode) {
 
 function fetch(params, callback) {
     let days = Math.min(params.days || 7, capabilities.maxForecastDays);
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
 
     let url = "https://api.met.no/weatherapi/locationforecast/2.0/complete" +
     "?lat=" + params.lat + "&lon=" + params.lon;
@@ -77,7 +77,7 @@ function fetch(params, callback) {
 
         let sparse = {
             temperature_2m: [], relative_humidity_2m: [], wind_speed_10m: [],
-            uv_index: [], cloud_cover: [], weather_code: []
+            uv_index: [], cloud_cover: [], weather_code: [], precipitation: []
         };
 
         let currentEntry = null;
@@ -93,14 +93,15 @@ function fetch(params, callback) {
             if (!det) continue;
 
             if (det.air_temperature !== undefined) {
-                sparse.temperature_2m.push({ index: hourIndex, value: isFahrenheit ? (det.air_temperature * 9 / 5 + 32) : det.air_temperature });
+                sparse.temperature_2m.push({ index: hourIndex, value: det.air_temperature });
             }
             if (det.relative_humidity !== undefined) {
                 sparse.relative_humidity_2m.push({ index: hourIndex, value: det.relative_humidity });
             }
             if (det.wind_speed !== undefined) {
-                let w = det.wind_speed;
-                sparse.wind_speed_10m.push({ index: hourIndex, value: isFahrenheit ? (w * 2.23694) : (w * 3.6) });
+                // MET Norway renvoie toujours le vent en m/s ; on normalise en km/h,
+                // notre unité canonique interne (conversion finale faite en aval).
+                sparse.wind_speed_10m.push({ index: hourIndex, value: det.wind_speed * 3.6 });
             }
             if (det.ultraviolet_index_clear_sky !== undefined) {
                 sparse.uv_index.push({ index: hourIndex, value: det.ultraviolet_index_clear_sky });
@@ -114,6 +115,26 @@ function fetch(params, callback) {
             (entry.data.next_12_hours && entry.data.next_12_hours.summary);
             if (summaryBlock && summaryBlock.symbol_code) {
                 sparse.weather_code.push({ index: hourIndex, value: symbolToWmo(summaryBlock.symbol_code) });
+            }
+
+            // Yr ne donne pas de probabilité de pluie, mais donne un total mm par bloc
+            // (next_1_hours = 1h, next_6_hours = 6h, next_12_hours = 12h selon l'horizon).
+            // On normalise en mm/h moyen avant interpolation, pour rester cohérent
+            // avec un axe horaire (même logique/limite que weather_code ci-dessus :
+            // approximation, plus le point est loin, moins le détail horaire est fin).
+            let p1 = entry.data.next_1_hours && entry.data.next_1_hours.details;
+            let p6 = entry.data.next_6_hours && entry.data.next_6_hours.details;
+            let p12 = entry.data.next_12_hours && entry.data.next_12_hours.details;
+            let precipHourlyMm = null;
+            if (p1 && p1.precipitation_amount !== undefined) {
+                precipHourlyMm = p1.precipitation_amount;
+            } else if (p6 && p6.precipitation_amount !== undefined) {
+                precipHourlyMm = p6.precipitation_amount / 6;
+            } else if (p12 && p12.precipitation_amount !== undefined) {
+                precipHourlyMm = p12.precipitation_amount / 12;
+            }
+            if (precipHourlyMm !== null) {
+                sparse.precipitation.push({ index: hourIndex, value: precipHourlyMm });
             }
 
             let delta = Math.abs(t - now);
@@ -131,18 +152,20 @@ function fetch(params, callback) {
              cloud_cover: Aggregator.denseInterpolate(sparse.cloud_cover, totalSlots),
              weather_code: Aggregator.denseInterpolate(sparse.weather_code, totalSlots).map(function (v) {
                  return v === null ? 3 : Math.round(v);
+             }),
+             precipitation: Aggregator.denseInterpolate(sparse.precipitation, totalSlots).map(function (v) {
+                 return v === null ? 0 : v;
              })
         };
 
         hourly.apparent_temperature = [];
         for (let h = 0; h < totalSlots; h++) {
-            let tC = isFahrenheit ? (hourly.temperature_2m[h] - 32) * 5 / 9 : hourly.temperature_2m[h];
-            let windMs = isFahrenheit ? hourly.wind_speed_10m[h] / 2.23694 : hourly.wind_speed_10m[h] / 3.6;
-            let feelsC = steadmanApparentTemp(tC, hourly.relative_humidity_2m[h] || 0, windMs || 0);
-            hourly.apparent_temperature[h] = isFahrenheit ? (feelsC * 9 / 5 + 32) : feelsC;
+            let tC = hourly.temperature_2m[h];
+            let windMs = (hourly.wind_speed_10m[h] || 0) / 3.6;
+            hourly.apparent_temperature[h] = steadmanApparentTemp(tC, hourly.relative_humidity_2m[h] || 0, windMs);
         }
 
-        let daily = { time: [], temperature_2m_max: [], temperature_2m_min: [], weather_code: [], sunrise: [], sunset: [] };
+        let daily = { time: [], temperature_2m_max: [], temperature_2m_min: [], weather_code: [], precipitation_sum: [], sunrise: [], sunset: [] };
         for (let d = 0; d < days; d++) {
             let block = hourly.temperature_2m.slice(d * 24, d * 24 + 24).filter(function (v) { return v !== null; });
             daily.temperature_2m_max.push(block.length ? Math.max.apply(null, block) : null);
@@ -150,6 +173,11 @@ function fetch(params, callback) {
 
             let codeBlock = hourly.weather_code.slice(d * 24, d * 24 + 24);
             daily.weather_code.push(codeBlock[12] !== undefined ? codeBlock[12] : codeBlock[0]);
+
+            // Pas de total mm journalier natif : on somme les 24 valeurs horaires
+            // déjà normalisées ci-dessus (mêmes limites/approximations qu'elles).
+            let precipBlock = hourly.precipitation.slice(d * 24, d * 24 + 24);
+            daily.precipitation_sum.push(precipBlock.reduce(function (a, b) { return a + (b || 0); }, 0));
 
             let dDate = new Date(dayStart.getFullYear(), dayStart.getMonth(), dayStart.getDate() + d);
 
@@ -163,9 +191,9 @@ function fetch(params, callback) {
         daily = Aggregator.fillMissingDailyAggregates(hourly, daily, days);
 
         let current = currentEntry ? {
-            temperature_2m: isFahrenheit ? (currentEntry.det.air_temperature * 9 / 5 + 32) : currentEntry.det.air_temperature,
+            temperature_2m: currentEntry.det.air_temperature,
              relative_humidity_2m: currentEntry.det.relative_humidity,
-             wind_speed_10m: isFahrenheit ? (currentEntry.det.wind_speed * 2.23694) : (currentEntry.det.wind_speed * 3.6),
+             wind_speed_10m: currentEntry.det.wind_speed * 3.6,
              uv_index: currentEntry.det.ultraviolet_index_clear_sky,
              cloud_cover: currentEntry.det.cloud_area_fraction,
              apparent_temperature: hourly.apparent_temperature[0],

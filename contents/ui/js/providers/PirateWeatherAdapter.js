@@ -7,6 +7,7 @@
 // 10 000-25 000 appels/mois selon le palier de soutien -> on reste prudent
 // côté intervalle minimal (voir safeMinInterval ci-dessous).
 
+.import "../ForecastAggregator.js" as Aggregator
 .import "../HttpCacheService.js" as Http
 
 var id = "pirateweather";
@@ -21,6 +22,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: true,
+        rainAmount: true, // approximé depuis precipIntensity (mm/h), voir fetch()
         cloudCover: true
     },
     maxForecastDays: 7, // Bloc "daily" : 7 jours seulement (le plus court après Tomorrow.io)
@@ -84,15 +86,14 @@ function fetch(params, callback) {
         callback(new Error("missing-api-key"), null, null);
         return;
     }
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
-    // "ca" = °C + km/h, "us" = °F + mph : correspond exactement aux deux
-    // unités utilisées par le widget, sans aucune conversion manuelle à faire.
-    let unitGroup = isFahrenheit ? "us" : "ca";
     let days = Math.min(params.days || 7, capabilities.maxForecastDays);
 
+    // Groupe "ca" (Canada) : Celsius + km/h, exactement notre unité canonique
+    // interne. La conversion vers l'unité réellement choisie par
+    // l'utilisateur se fait en aval, dans ProviderRegistry.fetchWeather().
     let url = "https://api.pirateweather.net/forecast/" + encodeURIComponent(params.apiKey) + "/" +
     params.lat + "," + params.lon +
-    "?units=" + unitGroup +
+    "?units=ca" +
     "&exclude=minutely,alerts" +
     "&extend=hourly";
 
@@ -109,8 +110,8 @@ function fetch(params, callback) {
 
         let hourly = {
             temperature_2m: [], relative_humidity_2m: [], apparent_temperature: [],
-            uv_index: [], precipitation_probability: [], cloud_cover: [],
-            wind_speed_10m: [], weather_code: []
+             uv_index: [], precipitation_probability: [], precipitation: [], cloud_cover: [],
+             wind_speed_10m: [], weather_code: []
         };
         for (let h = 0; h < hourlyRaw.length; h++) {
             let hr = hourlyRaw[h];
@@ -119,6 +120,9 @@ function fetch(params, callback) {
             hourly.apparent_temperature.push(hr.apparentTemperature);
             hourly.uv_index.push(hr.uvIndex);
             hourly.precipitation_probability.push((hr.precipProbability !== undefined) ? Math.round(hr.precipProbability * 100) : null);
+            // Pas de total mm direct par heure : precipIntensity (mm/h, déjà dans la bonne
+            // unité via unitGroup ca/us comme le reste de l'adapter) approximé x1h.
+            hourly.precipitation.push((hr.precipIntensity !== undefined && hr.precipIntensity !== null) ? hr.precipIntensity : 0);
             hourly.cloud_cover.push((hr.cloudCover !== undefined && hr.cloudCover !== null) ? Math.round(hr.cloudCover * 100) : null);
             hourly.wind_speed_10m.push(hr.windSpeed);
             hourly.weather_code.push(iconToWmo(hr.icon));
@@ -126,8 +130,8 @@ function fetch(params, callback) {
 
         let daily = {
             time: [],
-            temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
-            precipitation_probability_max: [], uv_index_max: [], sunrise: [], sunset: []
+             temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
+             precipitation_probability_max: [], precipitation_sum: [], uv_index_max: [], sunrise: [], sunset: []
         };
         for (let d = 0; d < dailyRaw.length; d++) {
             let dy = dailyRaw[d];
@@ -136,6 +140,10 @@ function fetch(params, callback) {
             daily.temperature_2m_min.push((dy.temperatureMin !== undefined) ? dy.temperatureMin : dy.temperatureLow);
             daily.weather_code.push(iconToWmo(dy.icon));
             daily.precipitation_probability_max.push((dy.precipProbability !== undefined) ? Math.round(dy.precipProbability * 100) : null);
+            // Même logique que l'horaire : pas de total mm fiable au niveau jour,
+            // on somme les 24 valeurs horaires déjà approximées ci-dessus.
+            let dayHourly = hourly.precipitation.slice(d * 24, d * 24 + 24);
+            daily.precipitation_sum.push(dayHourly.reduce(function (a, b) { return a + (b || 0); }, 0));
             daily.uv_index_max.push(dy.uvIndex);
             daily.sunrise.push(unixToLocalIso(dy.sunriseTime, tzOffset));
             daily.sunset.push(unixToLocalIso(dy.sunsetTime, tzOffset));
@@ -152,6 +160,8 @@ function fetch(params, callback) {
              weather_code: iconToWmo(cur.icon),
              is_day: isDayFromUnix(cur.time, dailyRaw[0] ? dailyRaw[0].sunriseTime : null, dailyRaw[0] ? dailyRaw[0].sunsetTime : null)
         };
+
+        daily = Aggregator.fillMissingDailyAggregates(hourly, daily, dailyRaw.length);
 
         callback(null, { current: current, hourly: hourly, daily: daily }, {
             provider: id,
@@ -182,7 +192,7 @@ function detectPlan(apiKey, lat, lon, callback) {
         callback({
             tier: "valid",
             maxForecastDays: (raw.daily.data && raw.daily.data.length) || capabilities.maxForecastDays,
-            message: "API key successfully validated."
+                 message: "API key successfully validated."
         });
     });
 }

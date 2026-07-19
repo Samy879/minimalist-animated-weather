@@ -15,6 +15,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: true,
+        rainAmount: true,
         cloudCover: true
     },
     maxForecastDays: 16, // On demande le max absolu, on filtrera les jours vides au retour
@@ -23,18 +24,20 @@ var capabilities = {
 };
 
 function fetch(params, callback) {
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
-    let unitParam = isFahrenheit ? "&temperature_unit=fahrenheit&wind_speed_unit=mph" : "";
     let requestedDays = Math.min(params.days || 7, capabilities.maxForecastDays);
     let requestDays = capabilities.maxForecastDays; // on demande toujours le max pour profiter du filtre anti-0°
 
     let hourlyParams = "temperature_2m,relative_humidity_2m,apparent_temperature,uv_index," +
-    "precipitation_probability,cloud_cover,weather_code,wind_speed_10m";
+    "precipitation_probability,precipitation,cloud_cover,weather_code,wind_speed_10m";
     let dailyParams = "weather_code,temperature_2m_max,temperature_2m_min," +
-    "precipitation_probability_max,uv_index_max,sunrise,sunset";
+    "precipitation_probability_max,precipitation_sum,uv_index_max,sunrise,sunset";
 
+    // Pas de temperature_unit / wind_speed_unit dans l'URL : Open-Meteo répond
+    // par défaut en Celsius + km/h, notre unité canonique interne. La
+    // conversion vers l'unité réellement choisie par l'utilisateur est faite
+    // une seule fois, en aval, par ProviderRegistry.fetchWeather().
     let url = "https://api.open-meteo.com/v1/forecast" +
-    "?latitude=" + params.lat + "&longitude=" + params.lon + unitParam +
+    "?latitude=" + params.lat + "&longitude=" + params.lon +
     "&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,weather_code,wind_speed_10m,uv_index,cloud_cover" +
     "&hourly=" + hourlyParams +
     "&daily=" + dailyParams +

@@ -27,10 +27,16 @@
     <entry name="conditionAlignment" type="int">
       <default>1</default>
     </entry>
+    <entry name="forecastHoverZoneSize" type="int">
+      <default>1</default>
+    </entry>
     <entry name="reverseOrder" type="bool">
       <default>false</default>
     </entry>
     <entry name="temperatureUnit" type="int">
+      <default>0</default>
+    </entry>
+    <entry name="windSpeedUnit" type="int">
       <default>0</default>
     </entry>
     <entry name="temperatureFontSize" type="double">
@@ -111,8 +117,12 @@
     <entry name="chartsOrder" type="string">
       <default>["temperature","humidity","windSpeed","uvIndex"]</default>
     </entry>
+    <entry name="combinedCharts" type="string">
+      <default>[]</default>
+    </entry>
 
     <entry name="forecastDayCount" type="int"><default>7</default></entry>
+    <entry name="forecastVisibleDayCount" type="int"><default>0</default></entry>
 
     <entry name="hasRated" type="bool">
       <default>false</default>

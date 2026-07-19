@@ -6,6 +6,7 @@
 // records dépend du nombre de jours demandés (~1 record/jour avec hourly+daily),
 // donc l'intervalle de sécurité est calé comme MET Norway pour rester large.
 
+.import "../ForecastAggregator.js" as Aggregator
 .import "../HttpCacheService.js" as Http
 
 var id = "visualcrossing";
@@ -20,6 +21,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: true,
+        rainAmount: true,
         cloudCover: true
     },
     maxForecastDays: 15,
@@ -62,15 +64,16 @@ function fetch(params, callback) {
         callback(new Error("missing-api-key"), null, null);
         return;
     }
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
-    let unitGroup = isFahrenheit ? "us" : "metric";
     let days = Math.min(params.days || 7, capabilities.maxForecastDays);
 
+    // unitGroup=metric : Celsius + km/h, notre unité canonique interne. La
+    // conversion finale vers l'unité choisie par l'utilisateur se fait en
+    // aval, dans ProviderRegistry.fetchWeather().
     let url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" +
     params.lat + "," + params.lon +
-    "?unitGroup=" + unitGroup +
+    "?unitGroup=metric" +
     "&include=current,hours,days" +
-    "&elements=datetime,datetimeEpoch,temp,feelslike,humidity,windspeed,uvindex,precipprob,cloudcover,icon,tempmax,tempmin,sunrise,sunset" +
+    "&elements=datetime,datetimeEpoch,temp,feelslike,humidity,windspeed,uvindex,precipprob,precip,cloudcover,icon,tempmax,tempmin,sunrise,sunset" +
     "&key=" + encodeURIComponent(params.apiKey) +
     "&contentType=json";
 
@@ -84,13 +87,13 @@ function fetch(params, callback) {
 
         let hourly = {
             temperature_2m: [], relative_humidity_2m: [], apparent_temperature: [],
-            uv_index: [], precipitation_probability: [], cloud_cover: [],
+            uv_index: [], precipitation_probability: [], precipitation: [], cloud_cover: [],
             wind_speed_10m: [], weather_code: []
         };
         let daily = {
             time: [],
             temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
-            precipitation_probability_max: [], uv_index_max: [], sunrise: [], sunset: []
+            precipitation_probability_max: [], precipitation_sum: [], uv_index_max: [], sunrise: [], sunset: []
         };
 
         for (let d = 0; d < daysRaw.length; d++) {
@@ -101,6 +104,7 @@ function fetch(params, callback) {
             daily.temperature_2m_min.push(dy.tempmin);
             daily.weather_code.push(iconToWmo(dy.icon));
             daily.precipitation_probability_max.push(dy.precipprob);
+            daily.precipitation_sum.push(dy.precip);
             daily.uv_index_max.push(dy.uvindex);
             daily.sunrise.push(dy.sunrise || null);
             daily.sunset.push(dy.sunset || null);
@@ -113,6 +117,7 @@ function fetch(params, callback) {
                 hourly.apparent_temperature.push(hr.feelslike);
                 hourly.uv_index.push(hr.uvindex);
                 hourly.precipitation_probability.push(hr.precipprob);
+                hourly.precipitation.push(hr.precip);
                 hourly.cloud_cover.push(hr.cloudcover);
                 hourly.wind_speed_10m.push(hr.windspeed);
                 hourly.weather_code.push(iconToWmo(hr.icon));
@@ -131,6 +136,8 @@ function fetch(params, callback) {
              weather_code: iconToWmo(cur.icon),
              is_day: isDayFromSunTimes(now, cur.sunrise || daily.sunrise[0], cur.sunset || daily.sunset[0])
         };
+
+        daily = Aggregator.fillMissingDailyAggregates(hourly, daily, daysRaw.length);
 
         callback(null, { current: current, hourly: hourly, daily: daily }, {
             provider: id,

@@ -11,6 +11,7 @@
 .import "providers/OpenWeatherMapAdapter.js" as OpenWeatherMap
 .import "providers/VisualCrossingAdapter.js" as VisualCrossing
 .import "providers/PirateWeatherAdapter.js" as PirateWeather
+.import "UnitConverter.js" as UnitConverter
 
 // Ordre de fiabilité utilisé pour la cascade automatique en cas d'échec
 // (réseau, clé absente/invalide, parsing...). Classé par couverture de
@@ -19,23 +20,27 @@
 // chaque adapter, vérification synchrone avant toute requête réseau), donc
 // il glisse automatiquement au suivant sans pénaliser qui n'a pas de clé.
 //
-//   1. openmeteo     : 7/7 détails, 16 jours, sans clé, intervalle 1 min.
-//   2. weatherapi     : 7/7 détails, 14 jours, intervalle 1 min (clé requise,
+//   1. openmeteo     : 8/8 détails, 16 jours, sans clé, intervalle 1 min.
+//   2. weatherapi     : 8/8 détails, 14 jours, intervalle 1 min (clé requise,
 //                       ~1 million d'appels/mois).
-//   3. openweathermap : 7/7 détails, 8 jours, clé requise, 1 000 appels/jour
+//   3. openweathermap : 8/8 détails, 8 jours, clé requise, 1 000 appels/jour
 //                       (One Call API 3.0).
-//   4. visualcrossing : 7/7 détails, 15 jours, clé requise, mais quota en
+//   4. visualcrossing : 8/8 détails, 15 jours, clé requise, mais quota en
 //                       "records" (pas en appels bruts) -> intervalle plus
 //                       prudent (voir l'adapter).
-//   5. pirateweather  : 7/7 détails, mais seulement 7 jours de prévision,
-//                       clé requise. Palier gratuit permanent (~10 000 à
-//                       25 000 appels/mois selon soutien) -> intervalle
-//                       prudent (voir l'adapter), pas de carte bancaire.
-//   6. metnorway      : 6/7 détails (pas de proba de pluie), 9 jours, sans
-//                       clé mais intervalle 10 min (risque de ban IP si trop
-//                       vite).
-//   7. tomorrowio     : 7/7 détails mais seulement 5 jours et quota le plus
-//                       restreint (500 appels/jour) -> dernier recours.
+//   5. pirateweather  : 8/8 détails (mm de précip. approximés depuis
+//                       l'intensité horaire), mais seulement 7 jours de
+//                       prévision, clé requise. Palier gratuit permanent
+//                       (~10 000 à 25 000 appels/mois selon soutien) ->
+//                       intervalle prudent (voir l'adapter), pas de carte
+//                       bancaire.
+//   6. metnorway      : 7/8 détails (pas de proba de pluie, mais mm de
+//                       précip. disponibles), 9 jours, sans clé mais
+//                       intervalle 10 min (risque de ban IP si trop vite).
+//   7. tomorrowio     : 8/8 détails (mm de précip. approximés depuis
+//                       l'intensité horaire) mais seulement 5 jours et
+//                       quota le plus restreint (500 appels/jour) ->
+//                       dernier recours.
 var RELIABILITY_ORDER = ["openmeteo", "weatherapi", "openweathermap", "visualcrossing", "pirateweather", "metnorway", "tomorrowio"];
 
 // Priorité régionale optionnelle : permet de faire remonter certains
@@ -56,7 +61,8 @@ var REGIONAL_PRIORITY = {};
 // seulement UV<->Pluie, pour rester correct si une future API a d'autres trous.
 var FALLBACK_CHAIN = {
     uvIndex: ["rainProbability", "cloudCover"],
-    rainProbability: ["uvIndex", "cloudCover"],
+    rainProbability: ["rainAmount", "uvIndex", "cloudCover"],
+    rainAmount: ["rainProbability", "cloudCover"],
     apparentTemp: ["temperature"],
     cloudCover: ["humidity"]
 };
@@ -194,7 +200,21 @@ function fetchWeather(providerId, params, callback) {
 
         adapter.fetch(attemptParams, function (err, data, meta) {
             if (!err && data) {
-                callback(null, data, meta, currentId !== providerId);
+                // Tous les adaptateurs renvoient désormais leurs données dans l'unité
+                // canonique (°C, km/h) : la conversion vers les unités choisies par
+                // l'utilisateur (température ET vent, indépendantes l'une de l'autre)
+                // se fait ici, une seule fois, quel que soit le provider utilisé.
+                //
+                // IMPORTANT : on convertit une COPIE, jamais `data` directement. Les
+                // adaptateurs passent par HttpCacheService (cache mémoire ~20s par
+                // URL) et, pour la plupart d'entre eux, renvoient l'objet JSON.parse()
+                // brut du cache. Comme l'URL ne dépend plus de l'unité (elle est fixe,
+                // toujours canonique), muter cet objet en place corromprait le cache :
+                // un second appel dans la fenêtre de 20s récupérerait des valeurs déjà
+                // converties, puis les reconvertirait une deuxième fois.
+                let converted = JSON.parse(JSON.stringify(data));
+                UnitConverter.applyDisplayUnits(converted, params.tempUnit, params.windSpeedUnit);
+                callback(null, converted, meta, currentId !== providerId);
                 return;
             }
 

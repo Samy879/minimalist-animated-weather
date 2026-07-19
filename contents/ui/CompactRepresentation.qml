@@ -4,6 +4,7 @@ import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents3
+import "js/UnitConverter.js" as UnitConverter
 
 Item {
     id: iconAndTem
@@ -11,8 +12,19 @@ Item {
     // Toujours fourni explicitement par main.qml (compactRepresentation: CompactRepresentation { weatherData: weatherSource }).
     property var weatherData: null
 
-    Layout.minimumWidth: isVertical ? root.width : initial.implicitWidth
-    Layout.minimumHeight: isVertical ? wrapper_vertical.implicitHeight : root.height
+    // Comme fullRepRef pour FullRepresentation dans main.qml : "expanded" vit
+    // uniquement sur PlasmoidItem (root) en Plasma 6, pas sur l'attached
+    // property Plasmoid — donc pas moyen de l'atteindre depuis ce fichier
+    // séparé sans que main.qml nous le transmette explicitement.
+    property var plasmoidRoot: null
+
+    // Confirmé via main.qml : root n'expose qu'un width (dérivé de
+    // compactRepresentation.implicitWidth — donc circulaire si on l'utilisait
+    // ici) et aucun height du tout. L'idiome standard pour lire la taille
+    // réellement disponible depuis un compactRepresentation est son parent
+    // (le conteneur fourni par le panneau), pas une propriété de root.
+    Layout.minimumWidth: isVertical ? parent.width : initial.implicitWidth
+    Layout.minimumHeight: isVertical ? wrapper_vertical.implicitHeight : parent.height
 
     readonly property bool isVertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
 
@@ -23,13 +35,26 @@ Item {
     property bool reverseOrder: Plasmoid.configuration.reverseOrder
 
     readonly property bool showCondition: Plasmoid.configuration.showConditionPanel || false
+    // "root" n'existe pas dans ce document (un id est local au fichier QML où
+    // il est déclaré, jamais visible depuis un fichier importé séparément —
+    // même en relation parent/enfant à l'exécution). Ces deux-là manquaient
+    // à l'appel, contrairement à toutes les autres valeurs de config
+    // ci-dessus qui suivent déjà l'idiome Plasmoid.configuration.X.
+    property bool preciseTemp: Plasmoid.configuration.preciseTemp
+    property int temperatureUnit: Plasmoid.configuration.temperatureUnit
 
     MouseArea {
         id: panelMouse
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.expanded = !root.expanded
+        // "expanded" vit sur PlasmoidItem (root), pas sur l'attached property
+        // Plasmoid en Plasma 6 : Plasmoid.expanded est un no-op silencieux.
+        // On passe donc par plasmoidRoot, transmis explicitement par main.qml
+        // (compactRepresentation: CompactRepresentation { plasmoidRoot: root }).
+        onClicked: {
+            if (plasmoidRoot) plasmoidRoot.expanded = !plasmoidRoot.expanded
+        }
     }
 
     // Léger retour tactile au clic — cohérent avec les éléments interactifs
@@ -71,12 +96,12 @@ Item {
                 Layout.row: reverseOrder ? 1 : 0
 
                 PlasmaComponents3.Label {
-                    text: root.preciseTemp ? weatherData.currentTemperature : weatherData.currentTemperatureRounded
+                    text: preciseTemp ? weatherData.currentTemperature : weatherData.currentTemperatureRounded
                     font.bold: Plasmoid.configuration.temperaturePanelBold // Mise en gras spécifique température
                     font.pixelSize: fontTemp
                 }
                 PlasmaComponents3.Label {
-                    text: (root.temperatureUnit === 0) ? "°C" : "°F"
+                    text: UnitConverter.temperatureUnitLabel(temperatureUnit)
                     font.bold: Plasmoid.configuration.temperaturePanelBold // Mise en gras spécifique température
                     font.pixelSize: fontTemp
                 }
@@ -115,7 +140,7 @@ Item {
         }
 
         PlasmaComponents3.Label {
-            text: weatherData.currentTemperature + "°"
+            text: weatherData.currentTemperature + UnitConverter.temperatureUnitLabel(temperatureUnit)
             Layout.alignment: Qt.AlignHCenter
             font.pixelSize: fontTemp
             font.bold: Plasmoid.configuration.temperaturePanelBold // Appliqué ici aussi pour la température

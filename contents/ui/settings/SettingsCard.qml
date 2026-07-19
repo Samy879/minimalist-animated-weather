@@ -35,6 +35,49 @@ Item {
         // growing to accommodate it.
         implicitWidth: inner.implicitWidth + Kirigami.Units.largeSpacing * 2
 
+        // implicitWidth above is the card's PREFERRED width (it mirrors
+        // inner.implicitWidth, which QtQuick.Layouts derives from each
+        // child's Layout.preferredWidth — for a SplitSettingsRow that's the
+        // full side-by-side width). Left unchecked, that same value would
+        // also become this card's effective Layout.minimumWidth (Qt falls
+        // back to implicitWidth when Layout.minimumWidth isn't set
+        // explicitly), which meant the card could never actually be
+        // squeezed narrower than "both columns side by side" — so a
+        // SplitSettingsRow's own stacking fallback could never kick in, no
+        // matter how narrow the window got. Setting Layout.minimumWidth
+        // explicitly, from each child's own Layout.minimumWidth (falling
+        // back to implicitWidth for children that don't set one, e.g. a
+        // single-column SettingGroup), lets the card actually shrink down
+        // to what its content can genuinely still fit without clipping.
+        // Only children with an EXPLICIT Layout.minimumWidth (e.g.
+        // SplitSettingsRow, which sets its own based on its two columns'
+        // true natural sizes) contribute a floor here. Falling back to
+        // c.implicitWidth for everything else (the previous behaviour) was
+        // wrong for any child whose implicitWidth is not actually its
+        // minimum — a wrapping Label's implicitWidth is its full one-line
+        // UNWRAPPED width (wrapMode doesn't shrink it), and a Column of
+        // dynamically laid-out rows (e.g. ConfigData's metric lists)
+        // reports its natural single-line-per-row width the same way. Using
+        // either as a hard floor forced the card (and, when several such
+        // cards sit side by side, the whole row) to demand more width than
+        // the window actually had, so the excess — a paragraph's tail, or a
+        // row's trailing arrows/badge — silently overflowed past the page's
+        // ScrollView and got clipped. Falling back to 0 here matches
+        // QtQuick.Layouts' own default (an unset Layout.minimumWidth means
+        // "no floor, shrink/wrap as needed") and leaves it up to children
+        // that genuinely need a floor to say so explicitly, same as
+        // SplitSettingsRow already does.
+        Layout.minimumWidth: {
+            let m = 0;
+            for (let i = 0; i < inner.children.length; i++) {
+                let c = inner.children[i];
+                if (!c || c.visible === false) continue;
+                let cw = (c.Layout && c.Layout.minimumWidth > 0) ? c.Layout.minimumWidth : 0;
+                m = Math.max(m, cw);
+            }
+            return m + Kirigami.Units.largeSpacing * 2;
+        }
+
         // See SettingGroup.qml for why updateWidths() and syncRowWidths() stay
         // as two separate functions (SettingRow.notifyParent() looks up
         // updateWidths() specifically by name on whichever ancestor has it).

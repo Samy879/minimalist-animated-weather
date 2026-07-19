@@ -11,6 +11,19 @@
 // ces fonctions sont invoquées à chaque mise à jour météo).
 var _shortDescriptions = null;
 var _longDescriptions = null;
+var _descriptionsCacheLocale = null;
+
+// Invalide les deux caches ci-dessus si la langue système a changé en
+// cours de session (même logique que DetailsCatalog.js::getCatalog, pour
+// rester cohérent entre les deux seuls caches i18n() du projet).
+function _invalidateIfLocaleChanged() {
+    let currentLocale = Qt.locale().name;
+    if (_descriptionsCacheLocale !== currentLocale) {
+        _shortDescriptions = null;
+        _longDescriptions = null;
+        _descriptionsCacheLocale = currentLocale;
+    }
+}
 
 function _buildShortDescriptions() {
     return {
@@ -79,11 +92,13 @@ function _buildLongDescriptions() {
 }
 
 function weatherShortText(languageCode, code) {
+    _invalidateIfLocaleChanged();
     if (!_shortDescriptions) _shortDescriptions = _buildShortDescriptions();
     return _shortDescriptions[code] || i18n("Unknown");
 }
 
 function weatherLongText(languageCode, code) {
+    _invalidateIfLocaleChanged();
     if (!_longDescriptions) _longDescriptions = _buildLongDescriptions();
     return _longDescriptions[code] || i18n("Unknown");
 }

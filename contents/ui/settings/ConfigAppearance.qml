@@ -32,6 +32,7 @@ Item {
     property alias cfg_showConditionExpanded: showConditionExpandedCheck.checked
     property alias cfg_showLocationExpanded:  showLocationExpandedCheck.checked
     property alias cfg_conditionAlignment:    conditionAlignmentCombo.currentIndex
+    property alias cfg_forecastHoverZoneSize: forecastHoverZoneCombo.currentIndex
     property alias cfg_showAnimations:        showAnimationsCheck.checked
     property alias cfg_hoverDecimals:         hoverDecimalsCheck.checked
     property alias cfg_xAxisPrecision:        xAxisPrecisionCheck.checked
@@ -46,6 +47,7 @@ Item {
     property var cfg_latitudeC: undefined
     property var cfg_longitudeC: undefined
     property var cfg_temperatureUnit: undefined
+    property var cfg_windSpeedUnit: undefined
     property var cfg_updateInterval: undefined
     property var cfg_forecastStartDay: undefined
     property var cfg_refreshTrigger: undefined
@@ -58,7 +60,9 @@ Item {
     property var cfg_providerMaxForecastDays: undefined
     property var cfg_detailsOrder: undefined
     property var cfg_chartsOrder: undefined
+    property var cfg_combinedCharts: undefined
     property var cfg_forecastDayCount: undefined
+    property var cfg_forecastVisibleDayCount: undefined
     property var cfg_hasRated: undefined
     property var cfg_hasStarred: undefined
     property var cfg_shootingStarEffect: undefined
@@ -72,8 +76,10 @@ Item {
     property var cfg_showConditionExpandedDefault: undefined
     property var cfg_showLocationExpandedDefault: undefined
     property var cfg_conditionAlignmentDefault: undefined
+    property var cfg_forecastHoverZoneSizeDefault: undefined
     property var cfg_reverseOrderDefault: undefined
     property var cfg_temperatureUnitDefault: undefined
+    property var cfg_windSpeedUnitDefault: undefined
     property var cfg_temperatureFontSizeDefault: undefined
     property var cfg_conditionFontSizeDefault: undefined
     property var cfg_showTemperaturePanelDefault: undefined
@@ -99,7 +105,9 @@ Item {
     property var cfg_providerMaxForecastDaysDefault: undefined
     property var cfg_detailsOrderDefault: undefined
     property var cfg_chartsOrderDefault: undefined
+    property var cfg_combinedChartsDefault: undefined
     property var cfg_forecastDayCountDefault: undefined
+    property var cfg_forecastVisibleDayCountDefault: undefined
     property var cfg_hasRatedDefault: undefined
     property var cfg_hasStarredDefault: undefined
     property var cfg_shootingStarEffectDefault: undefined
@@ -118,7 +126,8 @@ Item {
         preciseTempCheck.checked = d.preciseTemp;
         showConditionExpandedCheck.checked = d.showConditionExpanded;
         showLocationExpandedCheck.checked = d.showLocationExpanded;
-        conditionAlignmentCombo.currentIndex = (d.conditionAlignment !== undefined) ? d.conditionAlignment : 1;
+        conditionAlignmentCombo.currentIndex = d.conditionAlignment;
+        forecastHoverZoneCombo.currentIndex = d.forecastHoverZoneSize;
         showAnimationsCheck.checked = d.showAnimations;
         hoverDecimalsCheck.checked = d.hoverDecimals;
         xAxisPrecisionCheck.checked = d.xAxisPrecision;
@@ -166,6 +175,11 @@ Item {
                         SettingRow {
                             label: i18n("Show:")
                             contentSpacing: Kirigami.Units.largeSpacing * 1.5
+                            // Three independent checkboxes: fine to drop onto a
+                            // second line on narrow windows instead of forcing
+                            // the window (and everything else on the page) to
+                            // stay wide enough for all three on one line.
+                            allowWrap: true
                             CheckBox { id: showTemperaturePanelCheck; text: i18n("Temperature") }
                             CheckBox { id: showConditionPanelCheck; text: i18n("Condition") }
                             CheckBox { id: reverseCheck; text: i18n("Reverse order") }
@@ -254,41 +268,51 @@ Item {
                         SettingRow {
                             id: expandedConditionRow
                             label: i18n("Condition:")
-                            CheckBox { id: showConditionExpandedCheck }
-                            FieldComboBox {
-                                id: conditionAlignmentCombo
-                                visible: showConditionExpandedCheck.checked
-                                model: [i18n("Left"), i18n("Middle"), i18n("Right")]
-                                currentIndex: 1
-                            }
-                            Item {
-                                implicitWidth: conditionInfoIcon.implicitWidth
-                                implicitHeight: conditionInfoIcon.implicitHeight
-                                InfoIcon {
-                                    id: conditionInfoIcon
-                                    text: i18n("Displays the current weather description (e.g., Sunny, Rainy).")
+
+                            // Groupe protecteur pour éviter la panique de Flow à l'apparition/disparition
+                            RowLayout {
+                                spacing: Kirigami.Units.smallSpacing
+                                CheckBox { id: showConditionExpandedCheck }
+                                FieldComboBox {
+                                    id: conditionAlignmentCombo
+                                    visible: showConditionExpandedCheck.checked
+                                    model: [i18n("Left"), i18n("Middle"), i18n("Right")]
+                                    currentIndex: 1
                                 }
                             }
-                        }
-                        SettingRow {
-                            label: i18n("Animations:");
-                            CheckBox { id: showAnimationsCheck }
-                            InfoIcon { text: i18n("Shows weather animations (sun, clouds, rain, etc.) in the background.") }
-                        }
-                        SettingRow {
-                            label: i18n("Hover decimals:");
-                            CheckBox { id: hoverDecimalsCheck }
-                            InfoIcon { text: i18n("Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers.") }
+
+                            InfoIcon {
+                                text: i18n("Displays the current weather description (e.g., Sunny, Rainy).")
+                            }
                         }
                         SettingRow {
                             label: i18n("Location Text:");
                             CheckBox { id: showLocationExpandedCheck }
                             InfoIcon { text: i18n("Displays the detected location text below the temperature.") }
                         }
+                        SettingRow {
+                            label: i18n("Forecast click zone:")
+                            FieldComboBox {
+                                id: forecastHoverZoneCombo
+                                model: [i18n("Large"), i18n("Medium"), i18n("Small")]
+                                currentIndex: 0
+                            }
+                            InfoIcon { text: i18n("Sets the size of the area you hover or click on a forecast day to open the hourly details. Large: the whole column. Medium: just the day name, icon and min/max temperature. Small: the icon only.") }
+                        }
+                        SettingRow {
+                            label: i18n("Animations:");
+                            CheckBox { id: showAnimationsCheck }
+                            InfoIcon { text: i18n("Shows weather animations (sun, clouds, rain, etc.) in the background.") }
+                        }
                     }
                     rightItem: SettingGroup {
                         id: expandedRightGroup
                         // Suppression des liaisons externalLabelWidth
+                        SettingRow {
+                            label: i18n("Hover decimals:");
+                            CheckBox { id: hoverDecimalsCheck }
+                            InfoIcon { text: i18n("Adds one decimal of precision when hovering over the chart, instead of changing in whole numbers.") }
+                        }
                         SettingRow {
                             label: i18n("X-axis precision:");
                             CheckBox { id: xAxisPrecisionCheck }

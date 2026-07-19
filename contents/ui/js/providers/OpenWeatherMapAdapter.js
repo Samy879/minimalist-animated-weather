@@ -5,6 +5,7 @@
 // Gratuit jusqu'à 1 000 appels/jour (souscription "One Call by Call", carte
 // bancaire requise à l'inscription mais pas de prélèvement sous le seuil).
 
+.import "../ForecastAggregator.js" as Aggregator
 .import "../HttpCacheService.js" as Http
 
 var id = "openweathermap";
@@ -19,6 +20,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: true,
+        rainAmount: true,
         cloudCover: true
     },
     maxForecastDays: 8, // One Call 3.0 : 8 jours de prévision journalière, 48h horaire
@@ -62,13 +64,14 @@ function fetch(params, callback) {
         callback(new Error("missing-api-key"), null, null);
         return;
     }
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
-    let units = isFahrenheit ? "imperial" : "metric";
     let days = Math.min(params.days || 7, capabilities.maxForecastDays);
 
+    // "metric" : Celsius + vent en m/s (converti en km/h ci-dessous, notre
+    // unité canonique). La conversion finale vers l'unité choisie par
+    // l'utilisateur se fait en aval, dans ProviderRegistry.fetchWeather().
     let url = "https://api.openweathermap.org/data/3.0/onecall" +
     "?lat=" + params.lat + "&lon=" + params.lon +
-    "&units=" + units + "&exclude=minutely,alerts" +
+    "&units=metric&exclude=minutely,alerts" +
     "&appid=" + encodeURIComponent(params.apiKey);
 
     Http.get(url, { timeoutMs: 8000, cacheTtlMs: 20000 }, function (err, raw, status) {
@@ -84,7 +87,7 @@ function fetch(params, callback) {
 
         let hourly = {
             temperature_2m: [], relative_humidity_2m: [], apparent_temperature: [],
-            uv_index: [], precipitation_probability: [], cloud_cover: [],
+            uv_index: [], precipitation_probability: [], precipitation: [], cloud_cover: [],
             wind_speed_10m: [], weather_code: []
         };
         for (let h = 0; h < hourlyRaw.length; h++) {
@@ -94,15 +97,17 @@ function fetch(params, callback) {
             hourly.apparent_temperature.push(hr.feels_like);
             hourly.uv_index.push(hr.uvi);
             hourly.precipitation_probability.push((hr.pop !== undefined) ? Math.round(hr.pop * 100) : null);
+            // "rain" est un objet optionnel { "1h": mm } absent des heures sans pluie -> 0 par défaut.
+            hourly.precipitation.push((hr.rain && hr.rain["1h"] !== undefined) ? hr.rain["1h"] : 0);
             hourly.cloud_cover.push(hr.clouds);
-            hourly.wind_speed_10m.push(isFahrenheit ? hr.wind_speed : msToKmh(hr.wind_speed));
+            hourly.wind_speed_10m.push(msToKmh(hr.wind_speed));
             hourly.weather_code.push(codeToWmo(hr.weather && hr.weather[0] ? hr.weather[0].id : null));
         }
 
         let daily = {
             time: [],
-            temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
-            precipitation_probability_max: [], uv_index_max: [], sunrise: [], sunset: []
+             temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
+             precipitation_probability_max: [], precipitation_sum: [], uv_index_max: [], sunrise: [], sunset: []
         };
         for (let d = 0; d < dailyRaw.length; d++) {
             let dy = dailyRaw[d];
@@ -111,6 +116,8 @@ function fetch(params, callback) {
             daily.temperature_2m_min.push(dy.temp ? dy.temp.min : null);
             daily.weather_code.push(codeToWmo(dy.weather && dy.weather[0] ? dy.weather[0].id : null));
             daily.precipitation_probability_max.push((dy.pop !== undefined) ? Math.round(dy.pop * 100) : null);
+            // "rain" est un nombre direct (mm) au niveau journalier, absent si pas de pluie prévue.
+            daily.precipitation_sum.push((dy.rain !== undefined) ? dy.rain : 0);
             daily.uv_index_max.push(dy.uvi);
             daily.sunrise.push(utcSecondsToLocalIso(dy.sunrise, tzOffset));
             daily.sunset.push(utcSecondsToLocalIso(dy.sunset, tzOffset));
@@ -121,12 +128,14 @@ function fetch(params, callback) {
             temperature_2m: cur.temp,
              apparent_temperature: cur.feels_like,
              relative_humidity_2m: cur.humidity,
-             wind_speed_10m: isFahrenheit ? cur.wind_speed : msToKmh(cur.wind_speed),
+             wind_speed_10m: msToKmh(cur.wind_speed),
              uv_index: cur.uvi,
              cloud_cover: cur.clouds,
              weather_code: codeToWmo(cur.weather && cur.weather[0] ? cur.weather[0].id : null),
              is_day: (cur.sunrise && cur.sunset && cur.dt >= cur.sunrise && cur.dt <= cur.sunset) ? 1 : 0
         };
+
+        daily = Aggregator.fillMissingDailyAggregates(hourly, daily, dailyRaw.length);
 
         callback(null, { current: current, hourly: hourly, daily: daily }, {
             provider: id,

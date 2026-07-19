@@ -6,10 +6,24 @@
 // différentes.
 var _cityCache = {}; // "lat,lon,languageCode" -> nom de ville
 
+// Une session Plasma peut rester ouverte des semaines/mois. Comme les
+// positions IP varient peu (déplacements, changements de réseau
+// occasionnels), on borne le cache pour ne jamais accumuler indéfiniment
+// d'entrées en mémoire : au-delà de cette taille, on repart d'un cache vide
+// plutôt que de gérer une éviction LRU complexe pour un gain marginal ici.
+var _CITY_CACHE_MAX_ENTRIES = 50;
+
 function _cacheKey(latitude, longitude, languageCode) {
     let lat = parseFloat(latitude).toFixed(3);
     let lon = parseFloat(longitude).toFixed(3);
     return lat + "," + lon + "," + languageCode;
+}
+
+function _rememberCity(key, value) {
+    if (Object.keys(_cityCache).length >= _CITY_CACHE_MAX_ENTRIES) {
+        _cityCache = {};
+    }
+    _cityCache[key] = value;
 }
 
 function getCityName(latitude, longitude, languageCode, callback) {
@@ -49,7 +63,7 @@ function getCityName(latitude, longitude, languageCode, callback) {
                             fetchCity(false);
                         } else {
                             let result = full || "Unknown";
-                            if (full) _cityCache[key] = result;
+                            if (full) _rememberCity(key, result);
                             callback(result);
                         }
                     } catch (e) {

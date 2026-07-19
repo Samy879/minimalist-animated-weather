@@ -1,5 +1,7 @@
 // DetailsCatalog.js
 
+.import "UnitConverter.js" as UnitConverter
+
 // Nombre max de "Text Details" affichables dans la vue compacte du widget
 // (quand "Condition" / Full View est désactivé dans Appearance). Cette
 // valeur est la seule source de vérité : ConfigData.qml (page de config,
@@ -14,12 +16,19 @@ function getCompactDetailsMaxCount() {
 // depuis des bindings QML réévalués fréquemment (à chaque changement de
 // donnée météo), et reconstruire 7 objets (avec leurs appels i18nc()) à
 // chaque appel n'apporte rien puisque son contenu ne dépend que de la
-// langue de l'interface, laquelle ne change pas en cours de session.
+// langue de l'interface. On garde toutefois une clé de langue pour
+// invalider le cache dans le cas (rare mais possible sans redémarrage du
+// plasmoïde) où l'utilisateur changerait la langue système en cours de
+// session : mieux vaut reconstruire une fois de trop que rester figé dans
+// l'ancienne langue indéfiniment.
 var _catalogCache = null;
+var _catalogCacheLocale = null;
 
 function getCatalog() {
-    if (_catalogCache) return _catalogCache;
+    let currentLocale = Qt.locale().name;
+    if (_catalogCache && _catalogCacheLocale === currentLocale) return _catalogCache;
     _catalogCache = _buildCatalog();
+    _catalogCacheLocale = currentLocale;
     return _catalogCache;
 }
 
@@ -36,10 +45,11 @@ function _buildCatalog() {
             currentField: "temperature_2m",
             hourlyField: "temperature_2m",
             dailyMaxField: "temperature_2m_max",
-            unitFn: function (tempUnit) { return parseInt(tempUnit) === 0 ? "°C" : "°F"; },
+            unitFn: function (temperatureUnit) { return UnitConverter.temperatureUnitLabel(temperatureUnit); },
             chartType: 0,
             color: "#EB9E26",
-            decimals: false
+            decimals: false,
+            textDetailDecimals: 0
         },
         {
             id: "apparentTemp",
@@ -52,10 +62,14 @@ function _buildCatalog() {
             currentField: "apparent_temperature",
             hourlyField: "apparent_temperature",
             dailyMaxField: null,
-            unitFn: function (tempUnit) { return parseInt(tempUnit) === 0 ? "°C" : "°F"; },
+            unitFn: function (temperatureUnit) { return UnitConverter.temperatureUnitLabel(temperatureUnit); },
             chartType: 0,
-            color: "#E0701E",
-            decimals: false
+            // Rose framboise plutôt que l'orange précédent (#E0701E), trop proche de
+            // celui de "temperature" (#EB9E26) : les deux courbes se confondaient,
+            // surtout une fois fusionnées par défaut sur le même graphique.
+            color: "#D6336C",
+            decimals: false,
+            textDetailDecimals: 0
         },
         {
             id: "humidity",
@@ -71,7 +85,8 @@ function _buildCatalog() {
             unitFn: function () { return "%"; },
             chartType: 1,
             color: "#4A90E2",
-            decimals: false
+            decimals: false,
+            textDetailDecimals: 0
         },
         {
             id: "windSpeed",
@@ -84,10 +99,11 @@ function _buildCatalog() {
             currentField: "wind_speed_10m",
             hourlyField: "wind_speed_10m",
             dailyMaxField: null,
-            unitFn: function (tempUnit) { return parseInt(tempUnit) === 0 ? " km/h" : " mph"; },
+            unitFn: function (windSpeedUnit) { return UnitConverter.windSpeedUnitLabel(windSpeedUnit); },
             chartType: 2,
             color: "#4A7FA8",
-            decimals: false
+            decimals: false,
+            textDetailDecimals: 0
         },
         {
             id: "uvIndex",
@@ -103,7 +119,8 @@ function _buildCatalog() {
             unitFn: function () { return ""; },
             chartType: 3,
             color: "#8B2FE6",
-            decimals: false
+            decimals: false,
+            textDetailDecimals: 0
         },
         {
             id: "rainProbability",
@@ -118,8 +135,52 @@ function _buildCatalog() {
             dailyMaxField: "precipitation_probability_max",
             unitFn: function () { return "%"; },
             chartType: 4,
+            // Repris directement du dégradé utilisé pour tracer cette courbe
+            // (paletteFor(4), arrêt à 50%) : l'onglet reflète alors exactement ce
+            // qui est réellement dessiné, au lieu d'une couleur choisie à part qui
+            // pouvait diverger du rendu (ex: onglet vert / courbe bleue).
+            color: "#2980B9",
+            decimals: false,
+            textDetailDecimals: 0,
+            // Groupe d'overlay : permet de combiner cette courbe avec une autre
+            // (ici "rainAmount") sur un seul graphique à 2 axes Y, si l'utilisateur
+            // active ce mode dans les réglages ET sélectionne les deux charts.
+            // "primary" porte l'axe Y gauche (0-100%) quand le groupe est combiné.
+            overlayGroup: "rain",
+            overlayRole: "primary"
+        },
+        {
+            id: "rainAmount",
+            selectable: true,
+            capKey: "rainAmount",
+            tabLabelKey: i18nc("Chart tab label", "Precip."),      // Chart tab
+            labelKey: i18nc("Chart Y axis label", "Precip."),         // Y axis
+            longLabelKey: i18nc("Settings label", "Precipitation Amount"), // Settings
+            bottomRowLabelKey: i18nc("Compact widget bottom row label", "Precip."), // Bottom row (peu d'espace)
+            currentField: null,
+            hourlyField: "precipitation",
+            dailyMaxField: "precipitation_sum",
+            unitFn: function () { return " mm"; },
+            chartType: 6,
+            // Repris directement du dégradé utilisé pour tracer cette courbe
+            // (paletteFor(6), arrêt à 50%) : reste bleu, cohérent avec le tracé
+            // réel — un onglet vert alors que la courbe est bleue était l'exemple
+            // même de l'incohérence à éviter.
             color: "#2E86C1",
-            decimals: false
+            // Utilisé UNIQUEMENT par le graphique (secondaryDecimals dans
+            // FullRepresentation.qml, pour la précision de cette courbe une fois
+            // fusionnée avec "rainProbability") : une pluie fine (0.2-0.4mm) doit
+            // rester visible plutôt que d'être arrondie à 0mm.
+            decimals: true,
+            // Text Details : pour l'instant arrondi à l'entier comme les autres
+            // détails (voir formatTextDetailValue ci-dessous), volontairement
+            // indépendant de "decimals" ci-dessus qui ne concerne que le
+            // graphique. Passer à 1 pour afficher "0.3 mm" au lieu de "0 mm"
+            // dans les Text Details le jour où on veut ce niveau de précision.
+            textDetailDecimals: 0,
+            // Rôle "secondary" : porte l'axe Y droit quand combiné avec "rainProbability".
+            overlayGroup: "rain",
+            overlayRole: "secondary"
         },
         {
             id: "cloudCover",
@@ -134,8 +195,11 @@ function _buildCatalog() {
             dailyMaxField: "cloud_cover_mean",
             unitFn: function () { return "%"; },
             chartType: 5,
-            color: "#7F8C8D",
-            decimals: false
+            // Légèrement éclairci par rapport au gris précédent (#7F8C8D), qui
+            // paraissait trop sombre pour un onglet/légende.
+            color: "#929D9E",
+            decimals: false,
+            textDetailDecimals: 0
         }
     ];
 }
@@ -172,4 +236,21 @@ function readHourlySeries(detailId, weatherData, dayIndex) {
     if (!series || dayIndex < 0) return [];
     let start = dayIndex * 24;
     return series.slice(start, start + 24);
+}
+
+// Formate une valeur brute pour l'affichage en "Text Detail" (bloc du haut,
+// rangée du bas), en fonction du nombre de décimales défini par le détail
+// (cat.textDetailDecimals, par défaut 0 = entier). C'est la seule source de
+// vérité pour ce formatage : WeatherData.qml::formatValue() et
+// FullRepresentation.qml::buildDetailEntries() l'appellent tous les deux
+// plutôt que d'arrondir chacun de leur côté, afin qu'ils ne puissent jamais
+// diverger — même logique que getCompactDetailsMaxCount() ci-dessus.
+//
+// Indépendant de cat.decimals, qui ne pilote que la précision du graphique
+// (voir secondaryDecimals dans FullRepresentation.qml / LineChart.qml).
+function formatTextDetailValue(detailId, raw) {
+    if (raw === null || raw === undefined || isNaN(raw)) return null;
+    let def = findDetail(detailId);
+    let decimals = (def && typeof def.textDetailDecimals === "number") ? def.textDetailDecimals : 0;
+    return raw.toFixed(decimals);
 }

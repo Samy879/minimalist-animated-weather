@@ -31,6 +31,9 @@ Item {
             if (!useIp) {
                 sourcePage.blankIfUnset(latitudeField);
                 sourcePage.blankIfUnset(longitudeField);
+            } else {
+                sourcePage.restoreIfBlank(latitudeField);
+                sourcePage.restoreIfBlank(longitudeField);
             }
         }
     }
@@ -40,6 +43,7 @@ Item {
     property alias cfg_latitudeC: latitudeField.text
     property alias cfg_longitudeC: longitudeField.text
     property alias cfg_temperatureUnit: temperatureCombo.currentIndex
+    property alias cfg_windSpeedUnit: windSpeedCombo.currentIndex
     property alias cfg_updateInterval: intervalSpin.value
     property alias cfg_weatherProvider: providerCombo.providerId
     property alias cfg_apiKeyWeatherApi: weatherApiKeyField.text
@@ -47,12 +51,13 @@ Item {
     property alias cfg_apiKeyOpenWeatherMap: openWeatherMapKeyField.text
     property alias cfg_apiKeyVisualCrossing: visualCrossingKeyField.text
     property alias cfg_apiKeyPirateWeather: pirateWeatherKeyField.text
+
     // --- Alias muets : évite les "does not have a property called cfg_x" ---
-    // (KDE tente d'initialiser TOUTES les clés de main.xml sur CHAQUE page de config)
-    // Propriétés cfg_ non utilisées par cette page :
     property var cfg_showConditionPanel: undefined
     property var cfg_showConditionExpanded: undefined
+    property var cfg_showLocationExpanded: undefined
     property var cfg_conditionAlignment: undefined
+    property var cfg_forecastHoverZoneSize: undefined
     property var cfg_reverseOrder: undefined
     property var cfg_temperatureFontSize: undefined
     property var cfg_conditionFontSize: undefined
@@ -71,22 +76,25 @@ Item {
     property var cfg_providerMaxForecastDays: undefined
     property var cfg_detailsOrder: undefined
     property var cfg_chartsOrder: undefined
+    property var cfg_combinedCharts: undefined
     property var cfg_forecastDayCount: undefined
+    property var cfg_forecastVisibleDayCount: undefined
     property var cfg_hasRated: undefined
     property var cfg_hasStarred: undefined
     property var cfg_shootingStarEffect: undefined
     property var cfg_rainbowEffect: undefined
-    // Contreparties "Default" (générées par KConfigXT), jamais utilisées par nos pages :
+    // Contreparties "Default"
     property var cfg_useCoordinatesIpDefault: undefined
     property var cfg_latitudeCDefault: undefined
     property var cfg_longitudeCDefault: undefined
-    property var cfg_showLocationExpanded: undefined
     property var cfg_showConditionPanelDefault: undefined
-    property var cfg_showLocationExpandedDefault: undefined
     property var cfg_showConditionExpandedDefault: undefined
+    property var cfg_showLocationExpandedDefault: undefined
     property var cfg_conditionAlignmentDefault: undefined
+    property var cfg_forecastHoverZoneSizeDefault: undefined
     property var cfg_reverseOrderDefault: undefined
     property var cfg_temperatureUnitDefault: undefined
+    property var cfg_windSpeedUnitDefault: undefined
     property var cfg_temperatureFontSizeDefault: undefined
     property var cfg_conditionFontSizeDefault: undefined
     property var cfg_showTemperaturePanelDefault: undefined
@@ -112,7 +120,9 @@ Item {
     property var cfg_providerMaxForecastDaysDefault: undefined
     property var cfg_detailsOrderDefault: undefined
     property var cfg_chartsOrderDefault: undefined
+    property var cfg_combinedChartsDefault: undefined
     property var cfg_forecastDayCountDefault: undefined
+    property var cfg_forecastVisibleDayCountDefault: undefined
     property var cfg_hasRatedDefault: undefined
     property var cfg_hasStarredDefault: undefined
     property var cfg_shootingStarEffectDefault: undefined
@@ -219,8 +229,6 @@ Item {
         coordinatesLookupDebounce.restart();
     }
 
-    // Remplace automatiquement les virgules par des points pendant la saisie
-    // (permet de taper "48,8566" et d'obtenir "48.8566" sans erreur de parsing).
     function sanitizeDecimalInput(field) {
         if (field.text.indexOf(",") === -1) return;
         let cursor = field.cursorPosition;
@@ -228,22 +236,23 @@ Item {
         field.cursorPosition = Math.min(cursor, field.text.length);
     }
 
-    // "0" est utilisé comme valeur sentinelle pour "coordonnée jamais renseignée".
-    // On la vide visuellement pour laisser apparaître le placeholder (Latitude/Longitude)
-    // au lieu d'afficher un "0" qui ressemble à une vraie valeur saisie.
     function blankIfUnset(field) {
         if (field.text.trim() === "0") field.text = "";
     }
 
+    // Symmetric counterpart to blankIfUnset: when switching back to IP mode,
+    // a field left blank by blankIfUnset() must be put back to "0" — otherwise
+    // cfg_latitudeC/cfg_longitudeC stay permanently different from the saved
+    // "0" default, and toggling useCoordinatesIp off then back on leaves the
+    // page marked as needing a save even though nothing meaningful changed.
+    // A field the user actually typed real coordinates into is never blank,
+    // so this only ever touches the untouched-default case.
+    function restoreIfBlank(field) {
+        if (field.text.trim() === "") field.text = "0";
+    }
+
     property var cachedIpCoords: null
 
-    // Récupère la position via IP une seule fois et la met en cache, pour servir
-    // de repli à probeCoords() sans dépendre d'un appel synchrone à GeoCoordinates
-    // (qui est asynchrone). Ne touche à aucune propriété cfg_* : purement local.
-    //
-    // NB : ce cache sert AUSSI à alimenter directement la détection de ville en
-    // mode Automatique (voir onCompleted), pour éviter un second appel réseau
-    // redondant à GeoCoordinates.getCoordinates() via refreshDetectedCity().
     function primeIpCoordsCache() {
         sourcePage.detectingCity = locationModeHolder.useIp;
         sourcePage.detectCityError = false;
@@ -261,10 +270,6 @@ Item {
         });
     }
 
-    // Coordonnées utilisées pour la validation de clé API : celles saisies
-    // manuellement si présentes, sinon la position détectée par IP, sinon
-    // Paris en tout dernier recours (si la géoloc IP n'a pas encore répondu
-    // ou a échoué).
     function probeCoords() {
         let hasLat = latitudeField.text && latitudeField.text !== "0";
         let hasLon = longitudeField.text && longitudeField.text !== "0";
@@ -317,7 +322,6 @@ Item {
             }
 
             rememberKeyResult(providerId, key, "ok", i18n("Valid"), i18n("API key validated."));
-            // On autorise l'écriture de la configuration globale si une validation réussit manuellement
             applyProviderLimits(caps, result.maxForecastDays, true);
         });
     }
@@ -333,7 +337,6 @@ Item {
         }
     }
 
-    // Le verrou du bouton Apply Fantôme est géré par saveToConfig
     function applyProviderLimits(caps, detectedMaxDays, saveToConfig = true) {
         let maxDays = detectedMaxDays || caps.maxForecastDays || 7;
 
@@ -375,7 +378,6 @@ Item {
         sourcePage.refreshDetectedCity();
         temperatureCombo.currentIndex = d.temperatureUnit;
         intervalSpin.value = d.updateInterval;
-
         providerCombo.providerId = d.weatherProvider;
         providerCombo.currentIndex = Math.max(0, providerCombo.providerIds.indexOf(d.weatherProvider));
 
@@ -395,21 +397,7 @@ Item {
 
     Component.onCompleted: Qt.callLater(function () {
         sourcePage.pageReady = true;
-        // Initialisation : on lit les limites mais on refuse formellement de les inscrire dans la config (bouton Apply fantôme tué !)
         sourcePage.onProviderSwitched(providerCombo.providerId, false);
-        // NB : on ne fait PLUS de blankIfUnset() ici. latitudeField.text est un alias
-        // direct vers cfg_latitudeC : le muter au chargement de la page (même pour un
-        // simple "0" -> "") modifie réellement la config et déclenche le prompt
-        // "voulez-vous sauvegarder ?" alors que l'utilisateur n'a rien fait. Le blanking
-        // reste géré uniquement dans onUseIpChanged (vraie action utilisateur) et
-        // restoreDefaults() (action explicite).
-        //
-        // En mode Automatique, primeIpCoordsCache() se charge à la fois de peupler
-        // le cache ET de résoudre la ville détectée (un seul appel à GeoCoordinates,
-        // au lieu de deux appels réseau parallèles auparavant). En mode Manuel, on
-        // garde refreshDetectedCity() pour résoudre la ville à partir des coordonnées
-        // saisies, tandis que primeIpCoordsCache() se contente d'alimenter le cache
-        // de repli utilisé par probeCoords() pour la validation de clé API.
         sourcePage.primeIpCoordsCache();
         if (!locationModeHolder.useIp) {
             sourcePage.refreshDetectedCity();
@@ -424,14 +412,6 @@ Item {
 
         ColumnLayout {
             id: contentColumn
-            // Math.max(contentMaxWidth, implicitWidth): normally implicitWidth
-            // (the true minimum needed by the widest card/row below, once
-            // SettingsCard propagates it) stays under contentMaxWidth, so
-            // this is a no-op and nothing changes for languages that already
-            // fit. It only kicks in when a translation makes some row's
-            // natural width exceed the usual cap — in that case the column
-            // grows just enough to fit it, still capped by the actual
-            // available scroll width so it can never overflow the window.
             readonly property real effectiveWidth: Math.min(scrollView.availableWidth - Kirigami.Units.gridUnit * 2, Math.max(sourcePage.contentMaxWidth, contentColumn.implicitWidth))
             width: effectiveWidth
             x: Math.max(Kirigami.Units.gridUnit, (scrollView.availableWidth - effectiveWidth) / 2)
@@ -449,28 +429,13 @@ Item {
                     SettingGroup {
                         id: locationGroup
                         Layout.fillWidth: false
-                        // Fixe la largeur du groupe à celle du mode Manuel (le plus large), en
-                        // permanence, plutôt que de la laisser dépendre des lignes visibles.
-                        // Sans ça, Qt Quick Layouts exclut la ligne "Coordinates:" du calcul de
-                        // largeur du ColumnLayout quand elle est invisible (mode Automatique), ce
-                        // qui rétrécit le groupe et décale tout le bloc "Location:" horizontalement
-                        // (le groupe est recentré via les Item{fillWidth:true} ci-dessous).
-                        // effectiveLabelWidth est déjà stable (RowWidthSync compte toutes les
-                        // lignes, visibles ou non) ; seule la largeur du groupe lui-même bougeait.
                         Layout.preferredWidth: locationGroup.effectiveLabelWidth + Kirigami.Units.largeSpacing
                         + (sourcePage.coordinateFieldWidth * 2 + Kirigami.Units.smallSpacing)
-                        // --- Ligne 1 : mode de détection (toujours visible) ---
-                        // SettingRow autonome. L'alignement horizontal avec la ligne "Coordonnées"
-                        // est garanti par locationGroup.Layout.preferredWidth ci-dessus (fixe, peu
-                        // importe le mode) combiné à la colonne de labels partagée de SettingGroup.
+
                         SettingRow {
                             label: i18n("Location:")
                             Item {
                                 id: locationModeContainer
-                                // Se dimensionne sur le contenu réel du combo (voir
-                                // FieldComboBox.qml) plutôt qu'une fraction fixe de
-                                // inputWidth, pour ne pas tronquer "Automatic/Manual"
-                                // une fois traduits dans une langue plus verbeuse.
                                 Layout.preferredWidth: locationModeCombo.implicitWidth
                                 Layout.preferredHeight: sourcePage.spinBoxHeight
 
@@ -515,18 +480,9 @@ Item {
                             }
                         }
 
-                        // --- Ligne 2 : coordonnées manuelles (seulement en mode "Manual") ---
-                        // SettingRow avec son propre sous-titre "Coordinates:", visible uniquement
-                        // en mode manuel. "Location:" ne se retrouve donc plus centré verticalement
-                        // entre les deux blocs, et l'alignement horizontal suit le même mécanisme
-                        // que la ligne "Location:" ci-dessus (colonne de labels de SettingGroup).
                         SettingRow {
                             id: coordinatesRow
                             label: i18n("Coordinates:")
-                            // Toggle normal : la largeur du groupe est désormais fixée explicitement
-                            // sur locationGroup (voir plus haut), donc cette ligne peut redevenir
-                            // visible/invisible normalement sans affecter ni la largeur ni la hauteur
-                            // du groupe en dehors de ce qu'elle occupe elle-même.
                             visible: !locationModeHolder.useIp
 
                             Item {
@@ -596,7 +552,7 @@ Item {
                             label: i18n("Provider:")
                             Item {
                                 id: providerFieldContainer
-                                Layout.preferredWidth: sourcePage.inputWidth
+                                Layout.preferredWidth: Math.max(sourcePage.inputWidth, providerCombo.width + Kirigami.Units.smallSpacing + providerTrailingRow.implicitWidth)
                                 Layout.preferredHeight: sourcePage.spinBoxHeight
 
                                 FieldComboBox {
@@ -630,6 +586,7 @@ Item {
                                 }
 
                                 RowLayout {
+                                    id: providerTrailingRow
                                     anchors.left: providerCombo.right; anchors.leftMargin: Kirigami.Units.smallSpacing; anchors.verticalCenter: parent.verticalCenter; spacing: Kirigami.Units.smallSpacing
                                     Rectangle {
                                         visible: providerCombo.isRecommended; radius: height / 2; color: Qt.rgba(Kirigami.Theme.highlightColor.r, Kirigami.Theme.highlightColor.g, Kirigami.Theme.highlightColor.b, 0.18)
@@ -703,42 +660,63 @@ Item {
 
             SettingsCard {
                 id: updatesCard
-                RowLayout {
+
+                Item {
                     Layout.fillWidth: true
-                    Item { Layout.fillWidth: true }
+                    implicitHeight: refreshTopGroup.implicitHeight
                     SettingGroup {
-                        id: updatesGroup
-                        Layout.fillWidth: false
-                        SettingRow {
-                            label: i18n("System units:")
-                            FieldComboBox { id: temperatureCombo; model: [i18n("Metric  ·  °C, km/h"), i18n("Imperial  ·  °F, mph")] }
-                        }
+                        id: refreshTopGroup
+                        anchors.centerIn: parent; width: Math.min(implicitWidth, parent.width - Kirigami.Units.largeSpacing)
                         SettingRow {
                             label: i18n("Refresh every:")
-                            SpinBox {
-                                id: intervalSpin
-                                editable: true; Keys.onReturnPressed: (event) => { event.accepted = true; sourcePage.forceActiveFocus(); }; Keys.onEnterPressed: (event) => { event.accepted = true; sourcePage.forceActiveFocus(); }
-                                Layout.preferredWidth: sourcePage.numericFieldWidth; Layout.preferredHeight: sourcePage.spinBoxHeight
-                                from: sourcePage.safeIntervalFor(providerCombo.providerId); to: 360; stepSize: 5
-                                textFromValue: (value, locale) => value + " min"; valueFromText: (text, locale) => parseInt(text)
-                                onValueModified: sourcePage.checkIntervalWarning()
-                                Component.onCompleted: { if (contentItem && typeof contentItem.horizontalAlignment !== "undefined") { contentItem.horizontalAlignment = Text.AlignHCenter; } }
-                                Connections {
-                                    target: intervalSpin.contentItem; ignoreUnknownSignals: true
-                                    function onTextEdited() {
-                                        let parsed = intervalSpin.valueFromText(intervalSpin.contentItem.text, intervalSpin.locale);
-                                        if (!isNaN(parsed)) {
-                                            let clamped = Math.max(intervalSpin.from, Math.min(intervalSpin.to, parsed));
-                                            if (intervalSpin.value !== clamped) intervalSpin.value = clamped;
+                            RowLayout {
+                                id: refreshControlsBlock
+                                spacing: Kirigami.Units.smallSpacing
+                                SpinBox {
+                                    id: intervalSpin
+                                    Layout.alignment: Qt.AlignVCenter
+                                    editable: true; Keys.onReturnPressed: (event) => { event.accepted = true; sourcePage.forceActiveFocus(); }; Keys.onEnterPressed: (event) => { event.accepted = true; sourcePage.forceActiveFocus(); }
+                                    Layout.preferredWidth: sourcePage.numericFieldWidth; Layout.preferredHeight: sourcePage.spinBoxHeight
+                                    from: sourcePage.safeIntervalFor(providerCombo.providerId); to: 360; stepSize: 5
+                                    textFromValue: (value, locale) => value + " min"; valueFromText: (text, locale) => parseInt(text)
+                                    onValueModified: sourcePage.checkIntervalWarning()
+                                    Component.onCompleted: { if (contentItem && typeof contentItem.horizontalAlignment !== "undefined") { contentItem.horizontalAlignment = Text.AlignHCenter; } }
+                                    Connections {
+                                        target: intervalSpin.contentItem; ignoreUnknownSignals: true
+                                        function onTextEdited() {
+                                            let parsed = intervalSpin.valueFromText(intervalSpin.contentItem.text, intervalSpin.locale);
+                                            if (!isNaN(parsed)) {
+                                                let clamped = Math.max(intervalSpin.from, Math.min(intervalSpin.to, parsed));
+                                                if (intervalSpin.value !== clamped) intervalSpin.value = clamped;
+                                            }
                                         }
                                     }
                                 }
+                                Button { id: forceRefreshButton; Layout.alignment: Qt.AlignVCenter; icon.name: "view-refresh"; text: i18n("Force refresh"); onClicked: cfg_refreshTrigger++ }
                             }
-                            Button { id: forceRefreshButton; icon.name: "view-refresh"; text: i18n("Force refresh"); onClicked: cfg_refreshTrigger++ }
                         }
                     }
-                    Item { Layout.fillWidth: true }
                 }
+
+                Kirigami.Separator { Layout.fillWidth: true; opacity: 0.35 }
+
+                SplitSettingsRow {
+                    leftItem: SettingGroup {
+                        id: temperatureUnitGroup
+                        SettingRow {
+                            label: i18n("Temperature:")
+                            FieldComboBox { id: temperatureCombo; model: [i18n("Celsius (°C)"), i18n("Fahrenheit (°F)"), i18n("Kelvin (K)")] }
+                        }
+                    }
+                    rightItem: SettingGroup {
+                        id: windSpeedUnitGroup
+                        SettingRow {
+                            label: i18n("Wind speed:")
+                            FieldComboBox { id: windSpeedCombo; model: [i18n("km/h"), i18n("mph"), i18n("m/s")] }
+                        }
+                    }
+                }
+
                 Kirigami.InlineMessage { id: intervalMessage; Layout.fillWidth: true; visible: false; type: Kirigami.MessageType.Warning }
             }
 

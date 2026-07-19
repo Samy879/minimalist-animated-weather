@@ -15,6 +15,7 @@ var capabilities = {
         windSpeed: true,
         uvIndex: true,
         rainProbability: true,
+        rainAmount: true,
         cloudCover: true
     },
     maxForecastDays: 14,
@@ -61,7 +62,6 @@ function fetch(params, callback) {
         callback(new Error("missing-api-key"), null, null);
         return;
     }
-    let isFahrenheit = (params.tempUnit === "1" || params.tempUnit === 1);
     let days = Math.min(params.days || 7, capabilities.maxForecastDays);
 
     let url = "https://api.weatherapi.com/v1/forecast.json?key=" + encodeURIComponent(params.apiKey) +
@@ -79,13 +79,13 @@ function fetch(params, callback) {
 
         let hourly = {
             temperature_2m: [], relative_humidity_2m: [], apparent_temperature: [],
-            uv_index: [], precipitation_probability: [], cloud_cover: [],
+            uv_index: [], precipitation_probability: [], precipitation: [], cloud_cover: [],
             wind_speed_10m: [], weather_code: []
         };
         let daily = {
             time: [],
             temperature_2m_max: [], temperature_2m_min: [], weather_code: [],
-            precipitation_probability_max: [], uv_index_max: [], sunrise: [], sunset: []
+            precipitation_probability_max: [], precipitation_sum: [], uv_index_max: [], sunrise: [], sunset: []
         };
 
         for (let d = 0; d < fdays.length; d++) {
@@ -93,10 +93,11 @@ function fetch(params, callback) {
 
             daily.time.push(fd.date);
 
-            daily.temperature_2m_max.push(isFahrenheit ? fd.day.maxtemp_f : fd.day.maxtemp_c);
-            daily.temperature_2m_min.push(isFahrenheit ? fd.day.mintemp_f : fd.day.mintemp_c);
+            daily.temperature_2m_max.push(fd.day.maxtemp_c);
+            daily.temperature_2m_min.push(fd.day.mintemp_c);
             daily.weather_code.push(codeToWmo(fd.day.condition ? fd.day.condition.code : null));
             daily.precipitation_probability_max.push(fd.day.daily_chance_of_rain);
+            daily.precipitation_sum.push(fd.day.totalprecip_mm);
             daily.uv_index_max.push(fd.day.uv);
             daily.sunrise.push(astroToLocalIso(fd.date, fd.astro ? fd.astro.sunrise : null));
             daily.sunset.push(astroToLocalIso(fd.date, fd.astro ? fd.astro.sunset : null));
@@ -104,28 +105,31 @@ function fetch(params, callback) {
             let hours = fd.hour || [];
             for (let h = 0; h < hours.length; h++) {
                 let hr = hours[h];
-                hourly.temperature_2m.push(isFahrenheit ? hr.temp_f : hr.temp_c);
+                hourly.temperature_2m.push(hr.temp_c);
                 hourly.relative_humidity_2m.push(hr.humidity);
-                hourly.apparent_temperature.push(isFahrenheit ? hr.feelslike_f : hr.feelslike_c);
+                hourly.apparent_temperature.push(hr.feelslike_c);
                 hourly.uv_index.push(hr.uv);
                 hourly.precipitation_probability.push(hr.chance_of_rain);
+                hourly.precipitation.push(hr.precip_mm);
                 hourly.cloud_cover.push(hr.cloud);
-                hourly.wind_speed_10m.push(isFahrenheit ? hr.wind_mph : hr.wind_kph);
+                hourly.wind_speed_10m.push(hr.wind_kph);
                 hourly.weather_code.push(codeToWmo(hr.condition ? hr.condition.code : null));
             }
         }
 
         let cur = raw.current;
         let current = {
-            temperature_2m: isFahrenheit ? cur.temp_f : cur.temp_c,
-             apparent_temperature: isFahrenheit ? cur.feelslike_f : cur.feelslike_c,
+            temperature_2m: cur.temp_c,
+             apparent_temperature: cur.feelslike_c,
              relative_humidity_2m: cur.humidity,
-             wind_speed_10m: isFahrenheit ? cur.wind_mph : cur.wind_kph,
+             wind_speed_10m: cur.wind_kph,
              uv_index: cur.uv,
              cloud_cover: cur.cloud,
              weather_code: codeToWmo(cur.condition ? cur.condition.code : null),
              is_day: cur.is_day
         };
+
+        daily = Aggregator.fillMissingDailyAggregates(hourly, daily, fdays.length);
 
         callback(null, { current: current, hourly: hourly, daily: daily }, {
             provider: id,

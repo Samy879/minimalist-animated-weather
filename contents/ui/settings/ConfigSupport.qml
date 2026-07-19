@@ -23,15 +23,11 @@ Item {
     property bool hasRated: false
     property bool hasStarred: false
 
-    // Largeur de contenu réellement nécessaire pour "Rate"/"Star" (traduits),
-    // calculée à partir du texte le plus long des deux boutons + la place de
-    // l'icône cœur, pour que les deux boutons restent identiques et que le
-    // texte ne soit jamais recouvert par le cœur.
     readonly property real supportButtonContentWidth: Math.max(rateLabel.implicitWidth, starLabel.implicitWidth)
     + Kirigami.Units.iconSizes.small
-    + Kirigami.Units.largeSpacing   // marge droite de l'icône
-    + Kirigami.Units.smallSpacing   // marge entre texte et icône
-    + Kirigami.Units.largeSpacing   // paddings gauche/droite du bouton
+    + Kirigami.Units.largeSpacing
+    + Kirigami.Units.smallSpacing
+    + Kirigami.Units.largeSpacing
     readonly property real supportButtonWidth: Math.min(
         Math.max(supportButtonContentWidth, Kirigami.Units.gridUnit * 4.4),
                                                         Kirigami.Units.gridUnit * 9)
@@ -42,15 +38,16 @@ Item {
 
     property bool cfg_shootingStarEffect: false
     property bool cfg_rainbowEffect: false
+
     // --- Alias muets : évite les "does not have a property called cfg_x" ---
-    // (KDE tente d'initialiser TOUTES les clés de main.xml sur CHAQUE page de config)
-    // Propriétés cfg_ non utilisées par cette page :
     property var cfg_useCoordinatesIp: undefined
     property var cfg_latitudeC: undefined
     property var cfg_longitudeC: undefined
     property var cfg_showConditionPanel: undefined
     property var cfg_showConditionExpanded: undefined
+    property var cfg_showLocationExpanded: undefined
     property var cfg_conditionAlignment: undefined
+    property var cfg_forecastHoverZoneSize: undefined
     property var cfg_reverseOrder: undefined
     property var cfg_temperatureUnit: undefined
     property var cfg_temperatureFontSize: undefined
@@ -62,7 +59,7 @@ Item {
     property var cfg_forecastStartDay: undefined
     property var cfg_temperaturePanelBold: undefined
     property var cfg_conditionPanelBold: undefined
-    property bool cfg_showAnimations: false // Utilisée pour griser les effets débloqués ci-dessous
+    property bool cfg_showAnimations: false
     property var cfg_refreshTrigger: undefined
     property var cfg_borderRadius: undefined
     property var cfg_backgroundOpacity: undefined
@@ -78,18 +75,21 @@ Item {
     property var cfg_providerMaxForecastDays: undefined
     property var cfg_detailsOrder: undefined
     property var cfg_chartsOrder: undefined
+    property var cfg_combinedCharts: undefined
     property var cfg_forecastDayCount: undefined
+    property var cfg_forecastVisibleDayCount: undefined
+    property var cfg_windSpeedUnit: undefined
     property var cfg_hasRated: undefined
     property var cfg_hasStarred: undefined
-    // Contreparties "Default" (générées par KConfigXT), jamais utilisées par nos pages :
+    // Contreparties "Default"
     property var cfg_useCoordinatesIpDefault: undefined
     property var cfg_latitudeCDefault: undefined
     property var cfg_longitudeCDefault: undefined
-    property var cfg_showLocationExpanded: undefined
     property var cfg_showConditionPanelDefault: undefined
-    property var cfg_showLocationExpandedDefault: undefined
     property var cfg_showConditionExpandedDefault: undefined
+    property var cfg_showLocationExpandedDefault: undefined
     property var cfg_conditionAlignmentDefault: undefined
+    property var cfg_forecastHoverZoneSizeDefault: undefined
     property var cfg_reverseOrderDefault: undefined
     property var cfg_temperatureUnitDefault: undefined
     property var cfg_temperatureFontSizeDefault: undefined
@@ -117,7 +117,10 @@ Item {
     property var cfg_providerMaxForecastDaysDefault: undefined
     property var cfg_detailsOrderDefault: undefined
     property var cfg_chartsOrderDefault: undefined
+    property var cfg_combinedChartsDefault: undefined
     property var cfg_forecastDayCountDefault: undefined
+    property var cfg_forecastVisibleDayCountDefault: undefined
+    property var cfg_windSpeedUnitDefault: undefined
     property var cfg_hasRatedDefault: undefined
     property var cfg_hasStarredDefault: undefined
     property var cfg_shootingStarEffectDefault: undefined
@@ -154,6 +157,48 @@ Item {
             return h.length === 1 ? "0" + h : h;
         }
         return "#" + toHex(c.r) + toHex(c.g) + toHex(c.b);
+    }
+
+    // Extrait puis formate la date d'un commentaire renvoyé par l'API du store KDE.
+    // Champ confirmé : "comment_created_at", format "YYYY-MM-DD HH:MM:SS" (heure du serveur,
+    // pas de fuseau horaire explicite dans la réponse). On garde quelques clés de repli au cas
+    // où le backend évoluerait. Retourne "" si rien n'est exploitable, auquel cas la date ne
+    // sera simplement pas affichée (visible: false côté délégué).
+    function formatReviewDate(c) {
+        if (!c) return "";
+        var raw = c.comment_created_at !== undefined ? c.comment_created_at
+        : c.date !== undefined ? c.date
+        : c.comment_date !== undefined ? c.comment_date
+        : c.created_at !== undefined ? c.created_at
+        : c.created !== undefined ? c.created
+        : c.timestamp !== undefined ? c.timestamp
+        : c.time !== undefined ? c.time
+        : undefined;
+        if (raw === undefined || raw === null || raw === "") return "";
+
+        var d;
+        if (typeof raw === "number") {
+            // Heuristique : un timestamp en secondes tient sur 10 chiffres, en millisecondes sur 13.
+            d = new Date(raw < 1e12 ? raw * 1000 : raw);
+        } else {
+            var s = String(raw).trim();
+            // Format confirmé de l'API : "YYYY-MM-DD HH:MM:SS". On le parse à la main plutôt que
+            // de le passer tel quel à `new Date()`, car ce format avec espace (au lieu du "T" ISO)
+            // n'est pas fiable selon les moteurs JS/QML (accepté par certains, rejeté par d'autres).
+            var m = s.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);
+            if (m) {
+                d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10),
+                             parseInt(m[4], 10), parseInt(m[5], 10), parseInt(m[6], 10));
+            } else if (/^\d+$/.test(s)) {
+                var n = parseInt(s, 10);
+                d = new Date(n < 1e12 ? n * 1000 : n);
+            } else {
+                d = new Date(s);
+            }
+        }
+
+        if (isNaN(d.getTime())) return "";
+        return d.toLocaleDateString(Qt.locale(), Locale.ShortFormat);
     }
 
     property var stargazers: []
@@ -197,7 +242,6 @@ Item {
         listReq.setRequestHeader("Accept", "application/vnd.github+json");
         listReq.setRequestHeader("Cache-Control", "no-cache");
         listReq.send();
-
         let countReq = new XMLHttpRequest();
         countReq.onreadystatechange = function() {
             if (countReq.readyState !== XMLHttpRequest.DONE || countReq.status !== 200) return;
@@ -235,7 +279,8 @@ Item {
                                       let r = parseFloat(c.rating);
                                       return (!isNaN(r) && r > 0) ? r : -1;
                                   })(),
-                                  text: c.comment_text_raw
+                                  text: c.comment_text_raw,
+                                  date: supportPage.formatReviewDate(c)
                         });
                     }
                     supportPage.storeReviews = list;
@@ -253,7 +298,6 @@ Item {
     function fetchDownloadCount() {
         supportPage.downloadsLoading = true;
         supportPage.downloadsError = false;
-
         let req = new XMLHttpRequest();
         req.onreadystatechange = function() {
             if (req.readyState !== XMLHttpRequest.DONE) return;
@@ -285,7 +329,6 @@ Item {
 
     function handleSupportClick(type, url) {
         let alreadyUnlocked = supportPage.hasRated && supportPage.hasStarred;
-
         if (supportPage.firstUnlockedType === "") {
             supportPage.firstUnlockedType = type;
         }
@@ -302,7 +345,6 @@ Item {
         redirectTimer.url = url;
 
         let justUnlocked = !alreadyUnlocked && supportPage.hasRated && supportPage.hasStarred;
-
         if (justUnlocked) {
             celebrationOverlay.play(i18n("Thank you for your support!"), i18n("Every star and review helps the project grow."));
             redirectTimer.interval = celebrationOverlay.totalDuration;
@@ -372,7 +414,6 @@ Item {
         let end = target.selectionEnd;
         let marker = kind === "bold" ? "**" : (kind === "italic" ? "*" : "~~");
         let mLen = marker.length;
-
         if (start === end) {
             target.insert(start, marker + marker);
             target.cursorPosition = start + mLen;
@@ -420,7 +461,6 @@ Item {
         let start = target.selectionStart;
         let end = target.selectionEnd;
         let prefix = type === "bullet" ? "- " : "1. ";
-
         if (start === end) {
             let text = target.text;
             let before = text.substring(0, start);
@@ -454,7 +494,6 @@ Item {
         linkDialog.pendingTarget = target;
         linkDialog.pendingStart = start;
         linkDialog.pendingEnd = end;
-
         if (selectedText.length > 0 && urlPattern.test(selectedText)) {
             linkDialog.prefillText = selectedText;
             linkDialog.prefillUrl = selectedText;
@@ -502,14 +541,6 @@ Item {
 
         ColumnLayout {
             id: contentColumn
-            // Math.max(contentMaxWidth, implicitWidth): normally implicitWidth
-            // (the true minimum needed by the widest card/row below, once
-            // SettingsCard propagates it) stays under contentMaxWidth, so
-            // this is a no-op and nothing changes for languages that already
-            // fit. It only kicks in when a translation makes some row's
-            // natural width exceed the usual cap — in that case the column
-            // grows just enough to fit it, still capped by the actual
-            // available scroll width so it can never overflow the window.
             readonly property real effectiveWidth: Math.min(scrollView.availableWidth - Kirigami.Units.gridUnit * 2, Math.max(supportPage.contentMaxWidth, contentColumn.implicitWidth))
             width: effectiveWidth
             x: Math.max(Kirigami.Units.gridUnit, (scrollView.availableWidth - effectiveWidth) / 2)
@@ -543,13 +574,6 @@ Item {
                         font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.35
                         wrapMode: Text.WordWrap
                         Layout.fillWidth: true
-                        // Without this, this Label's own unwrapped one-line
-                        // width (its implicitWidth, which wrapMode does NOT
-                        // shrink) would feed into contentColumn's computed
-                        // implicitWidth and inflate the whole page's width —
-                        // defeating the wrap entirely. Layout.preferredWidth: 1
-                        // tells the layout "use fillWidth for my real size,
-                        // don't use my natural size as a sizing hint".
                         Layout.preferredWidth: 1
                     }
 
@@ -567,11 +591,6 @@ Item {
 
             SectionHeader {
                 text: i18n("Support the Project")
-                // Pas "isFirst" : ce header n'est pas le tout premier élément de la page
-                // (le bloc coeur + texte d'intro le précède), contrairement à "Panel Bar"
-                // dans ConfigAppearance.qml par exemple. isFirst supprimait une marge haute
-                // supplémentaire, ce qui rendait l'écart avec le texte d'intro plus petit
-                // qu'entre les autres sous-sections (ex: Community Love).
             }
 
             SettingsCard {
@@ -639,7 +658,6 @@ Item {
 
                         contentItem: Item {
                             anchors.fill: parent
-
                             Label {
                                 id: rateLabel
                                 text: i18n("Rate")
@@ -762,7 +780,6 @@ Item {
 
                         contentItem: Item {
                             anchors.fill: parent
-
                             Label {
                                 id: starLabel
                                 text: i18n("Star")
@@ -790,7 +807,7 @@ Item {
                                 anchors.rightMargin: Kirigami.Units.largeSpacing
 
                                 source: supportPage.hasStarred ? "emblem-checked" : "emblem-favorite"
-                                color: supportPage.hasStarred ? Kirigami.Theme.positiveTextColor : "#e25c8a"
+                                color: supportPage.hasStarred ? Kirigami.Theme.positiveTextColor : "#e3a01b"
 
                                 SequentialAnimation {
                                     running: !supportPage.hasStarred
@@ -1239,62 +1256,43 @@ Item {
                         }
                     }
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 0
+                    // FIX: Utilisation de SplitSettingsRow au lieu du bricolage RowLayout+Separator+Item(clip:true)
+                    // Ce composant superpose les éléments verticalement automatiquement quand il n'y a plus de place !
+                    SplitSettingsRow {
+                        separatorOpacity: (supportPage.hasStarred && supportPage.hasRated) ? 0.3 : 0
+                        Behavior on separatorOpacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
 
-                        Item {
-                            Layout.fillWidth: true
-                            Layout.preferredWidth: 1
-                            implicitHeight: leftEffectLoader.implicitHeight
-                            clip: true
+                        leftItem: Loader {
+                            id: leftEffectLoader
+                            sourceComponent: supportPage.leftEffectType === "rate" ? shootingStarEffectComponent : rainbowEffectComponent
 
-                            Loader {
-                                id: leftEffectLoader
-                                anchors.centerIn: parent
-                                sourceComponent: supportPage.leftEffectType === "rate" ? shootingStarEffectComponent : rainbowEffectComponent
+                            readonly property bool slotUnlocked: supportPage.leftEffectType === "rate" ? supportPage.hasRated : supportPage.hasStarred
 
-                                readonly property bool slotUnlocked: supportPage.leftEffectType === "rate" ? supportPage.hasRated : supportPage.hasStarred
+                            opacity: slotUnlocked ? 1 : 0
+                            scale: slotUnlocked ? 1 : 0.85
+                            visible: opacity > 0.01
 
-                                opacity: slotUnlocked ? 1 : 0
-                                scale: slotUnlocked ? 1 : 0.85
-                                visible: opacity > 0.01
-
-                                transform: Translate {
-                                    x: leftEffectLoader.slotUnlocked ? 0 : -Kirigami.Units.gridUnit * 1.2
-                                    Behavior on x { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
-                                }
-
-                                Behavior on opacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
-                                Behavior on scale   { NumberAnimation { duration: 450; easing.type: Easing.OutBack } }
+                            transform: Translate {
+                                x: leftEffectLoader.slotUnlocked ? 0 : -Kirigami.Units.gridUnit * 1.2
+                                Behavior on x { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
                             }
-                        }
 
-                        Kirigami.Separator {
-                            Layout.fillHeight: true
-                            opacity: (supportPage.hasStarred && supportPage.hasRated) ? 0.3 : 0
                             Behavior on opacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
+                            Behavior on scale   { NumberAnimation { duration: 450; easing.type: Easing.OutBack } }
                         }
 
-                        Item {
-                            Layout.fillWidth: true
-                            Layout.preferredWidth: 1
-                            implicitHeight: rightEffectLoader.implicitHeight
+                        rightItem: Loader {
+                            id: rightEffectLoader
+                            sourceComponent: supportPage.rightEffectType === "rate" ? shootingStarEffectComponent : rainbowEffectComponent
 
-                            Loader {
-                                id: rightEffectLoader
-                                anchors.centerIn: parent
-                                sourceComponent: supportPage.rightEffectType === "rate" ? shootingStarEffectComponent : rainbowEffectComponent
+                            readonly property bool slotUnlocked: supportPage.rightEffectType === "rate" ? supportPage.hasRated : supportPage.hasStarred
 
-                                readonly property bool slotUnlocked: supportPage.rightEffectType === "rate" ? supportPage.hasRated : supportPage.hasStarred
+                            opacity: slotUnlocked ? 1 : 0
+                            scale: slotUnlocked ? 1 : 0.85
+                            visible: opacity > 0.01
 
-                                opacity: slotUnlocked ? 1 : 0
-                                scale: slotUnlocked ? 1 : 0.85
-                                visible: opacity > 0.01
-
-                                Behavior on opacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
-                                Behavior on scale   { NumberAnimation { duration: 450; easing.type: Easing.OutBack } }
-                            }
+                            Behavior on opacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
+                            Behavior on scale   { NumberAnimation { duration: 450; easing.type: Easing.OutBack } }
                         }
                     }
                 }
@@ -1583,25 +1581,41 @@ Item {
                         Layout.fillWidth: true
                         spacing: Kirigami.Units.smallSpacing
 
-                        Label {
-                            text: modelData.username
-                            font.bold: true
+                        RowLayout {
+                            spacing: Kirigami.Units.smallSpacing * 1.5
+
+                            Label {
+                                text: modelData.username
+                                font.bold: true
+                            }
+
+                            // Note du commentaire, affichée juste à droite du pseudo, comme le ferait
+                            // un badge de score sur un réseau social.
+                            Label {
+                                visible: modelData.rating > 0
+                                text: modelData.rating + i18n("/10")
+                                font.bold: true
+                                font.pointSize: Kirigami.Theme.defaultFont.pointSize * 0.95
+                                color: Kirigami.Theme.highlightColor
+                            }
+
+                            Label {
+                                visible: modelData.rating <= 0
+                                text: i18n("Not rated")
+                                opacity: 0.5
+                                font.italic: true
+                                font.pointSize: Kirigami.Theme.defaultFont.pointSize * 0.95
+                            }
                         }
 
                         Item { Layout.fillWidth: true }
 
+                        // Date de publication, alignée à droite (là où était la note auparavant).
                         Label {
-                            visible: modelData.rating > 0
-                            text: modelData.rating + i18n("/10")
-                            font.bold: true
-                            color: Kirigami.Theme.highlightColor
-                        }
-
-                        Label {
-                            visible: modelData.rating <= 0
-                            text: i18n("Not rated")
+                            visible: !!modelData.date
+                            text: modelData.date
                             opacity: 0.5
-                            font.italic: true
+                            font.pointSize: Kirigami.Theme.defaultFont.pointSize * 0.85
                         }
                     }
 
