@@ -78,6 +78,21 @@ Item {
     Component.onCompleted: {
         if (leftItem) leftItem.parent = root;
         if (rightItem) rightItem.parent = root;
+        // FIX du "saut" visible sur les icônes d'info / cases à cocher des lignes
+        // hébergées ici (ex. forecast range) : leftItem/rightItem ont leur `width`
+        // pinné sur leur PROPRE implicitWidth (Binding plus bas) — donc leurs enfants
+        // (les SettingRow, via leur Flow interne) se dimensionnent une première fois
+        // AVANT que cette largeur en boucle n'ait fini de se stabiliser, puis une
+        // deuxième fois une fois réglée. Cette deuxième passe, si elle a lieu APRÈS le
+        // premier rendu à l'écran, produit le petit saut observé. forceLayout() est
+        // l'API officielle de ColumnLayout pour résoudre ça de façon synchrone,
+        // immédiatement après la construction — donc avant que quoi que ce soit ne
+        // soit peint — au lieu de laisser cette deuxième passe se produire plus tard,
+        // de façon visible, une fois la page déjà affichée.
+        Qt.callLater(function () {
+            if (leftItem && leftItem.forceLayout) leftItem.forceLayout();
+            if (rightItem && rightItem.forceLayout) rightItem.forceLayout();
+        });
     }
 
     readonly property real leftNaturalWidth: (leftItem && leftItem.visible) ? leftItem.implicitWidth : 0

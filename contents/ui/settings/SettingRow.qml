@@ -46,7 +46,31 @@ RowLayout {
 
     property var _trailingIcon: null
 
-    default property alias content: contentRow.data
+    // For the overwhelmingly common allowWrap:false case, children are
+    // declared straight onto rowContainer below, parented synchronously at
+    // construction time — identical to v0, with no extra tick before their
+    // real size is known. That matters here specifically because rows
+    // hosted inside SplitSettingsRow (e.g. every forecast-range row) or
+    // sharing an icon column via SettingGroup have their surrounding layout
+    // (leftItem/rightItem centering, the shared iconAreaWidth) driven
+    // directly off this row's implicitWidth/naturalPreIconWidth. An extra
+    // reparenting hop before those settle is exactly what used to cause
+    // both the horizontal "settles after a jitter" flash in
+    // SplitSettingsRow and a stale, too-wide iconAreaWidth locking in
+    // before every row had reported its real content width.
+    //
+    // allowWrap:true rows (a handful of checkbox groups, never hosted in a
+    // width-critical layout like SplitSettingsRow) are the one case that
+    // still needs a real Flow instead of a RowLayout, and for those the
+    // extra hop is harmless: their default alias below is retargeted onto
+    // rowContainer at Component.onCompleted, and — for allowWrap rows
+    // only — the children are moved on to flowContainer there instead.
+    default property alias content: rowContainer.data
+
+        // The positioner actually responsible for laying out this row's
+        // content. allowWrap is fixed at creation (no call site toggles it
+        // afterwards).
+        readonly property Item contentRow: root.allowWrap ? flowContainer : rowContainer
 
         Layout.fillWidth: true
         spacing: Kirigami.Units.largeSpacing
@@ -64,12 +88,31 @@ RowLayout {
         // child is widest, since anything wider than that can safely drop
         // to the next line instead of forcing the row (and everything
         // above it, up to the page's window) to stay that wide.
+        // A child's actual on-screen width is its own Layout.preferredWidth
+        // when explicitly set — several content children here (e.g. every
+        // SpinBox in a shared column, via Layout.preferredWidth:
+        // dataPage.inputWidth * 0.4) pin one specifically so every sibling
+        // in that column renders the same width regardless of its own
+        // text. Raw implicitWidth doesn't capture that: it's the child's
+        // OWN natural/intrinsic width from its current content (e.g. a
+        // SpinBox's implicitWidth grows or shrinks with the text it
+        // currently shows, "7" vs "Auto"), which can differ between rows
+        // even when their actual rendered width is pinned identical by
+        // Layout.preferredWidth. Feeding raw implicitWidth into the
+        // icon-column math below fed that per-row difference straight
+        // through, giving two rows a different "content width before the
+        // icon" even though what was on screen was identical — which is
+        // exactly what pushed one row's icon to the right of the other's.
+        function _childEffectiveWidth(c) {
+            if (c && c.Layout && c.Layout.preferredWidth > 0) return c.Layout.preferredWidth;
+            return c ? c.implicitWidth : 0;
+        }
         readonly property real _contentMinWidth: !root.allowWrap ? contentRow.implicitWidth : root._widestContentChild()
         function _widestContentChild() {
             let m = 0;
             for (let i = 0; i < contentRow.children.length; i++) {
                 let c = contentRow.children[i];
-                if (c && c.visible !== false) m = Math.max(m, c.implicitWidth);
+                if (c && c.visible !== false) m = Math.max(m, root._childEffectiveWidth(c));
             }
             return m;
         }
@@ -210,7 +253,14 @@ RowLayout {
 
         // Measures "everything before the icon" directly from the visible
         // children, ignoring contentRow.implicitWidth entirely (see the
-        // naturalPreIconWidth comment above for why).
+        // naturalPreIconWidth comment above for why). Uses each child's
+        // effective (actually rendered) width via _childEffectiveWidth,
+        // not raw implicitWidth — see that function's comment for why:
+        // in short, a child's own implicitWidth can vary with its current
+        // content (e.g. a SpinBox showing "7" vs "Auto") independently of
+        // what's actually on screen once Layout.preferredWidth pins it,
+        // and using implicitWidth here fed that phantom difference
+        // straight into the icon's position.
         function _computeNaturalPreIconWidth(icon) {
             if (!icon) return 0;
             let sum = 0;
@@ -219,7 +269,7 @@ RowLayout {
                 let c = contentRow.children[i];
                 if (c === icon) continue;
                 if (c.visible === false) continue;
-                sum += c.implicitWidth;
+                sum += root._childEffectiveWidth(c);
                 visibleCount++;
             }
             // One gap between each visible item, plus one more before the icon.
@@ -239,11 +289,13 @@ RowLayout {
             root._trailingIcon.Layout.leftMargin = extra > 0 ? extra : 0;
         }
 
-        // contentRow is a Flow, not a RowLayout — a plain QtQuick positioner
-        // that has no idea what the QtQuick.Layouts attached properties
-        // (Layout.preferredWidth/Height) mean. It sizes children from their
-        // own real width/height only. Every content child across the config
-        // pages was written assuming a RowLayout parent though: several are
+        // For allowWrap rows, contentRow is a Flow, not a RowLayout — a
+        // plain QtQuick positioner that has no idea what the
+        // QtQuick.Layouts attached properties (Layout.preferredWidth/
+        // Height) mean. It sizes children from their own real width/height
+        // only. Every content child across the config pages was written
+        // assuming a RowLayout parent though (which is what non-wrap rows
+        // actually get now, so they need none of this): several are
         // plain Items that set ONLY Layout.preferredWidth/Height (relying on
         // the old RowLayout to turn that into an actual size), e.g. the
         // Location-mode combo container or the API key field container in
@@ -259,6 +311,10 @@ RowLayout {
         // a translation switch). This restores exactly the sizing contract
         // RowLayout used to provide, without touching every page.
         function _syncFlowChildSizes() {
+            // RowLayout (the !allowWrap branch) already understands
+            // Layout.preferredWidth/Height natively; this mirroring hack
+            // is only needed to compensate for Flow not understanding them.
+            if (!root.allowWrap) return;
             for (let i = 0; i < contentRow.children.length; i++) {
                 let child = contentRow.children[i];
                 if (!child || !child.Layout) continue;
@@ -271,39 +327,45 @@ RowLayout {
             }
         }
 
-        // Flow (a plain positioner, not a Layout) always top-aligns the
-        // children of a row instead of centering them on the row's height —
-        // it has no equivalent of RowLayout's Layout.alignment: AlignVCenter.
-        // With mixed-height siblings (e.g. a small InfoIcon next to a taller
-        // SpinBox/ComboBox/CheckBox), that means the shorter item stays
-        // pinned to the top instead of being centered, which reads as the
-        // icon being "raised" relative to the label and the control next to
-        // it. This corrects it by re-centering every child after each Flow
-        // layout pass, the same reactive way _syncFlowChildSizes already
-        // corrects width: Flow owns x/y outright and will silently discard
-        // any binding placed on them, so instead of fighting it once we
-        // reapply a plain value every time something that can change the
-        // row's height fires (children added/removed, a child's own height
-        // changing, or the row's height itself changing).
+        // Historically this corrected Flow's lack of vertical centering
+        // for allowWrap:false rows (Flow always top-aligns; RowLayout
+        // doesn't). That correction ran a frame after Flow's own layout
+        // pass (via Qt.callLater below), which is exactly what produced
+        // the visible "icon starts high, then snaps down" flash: two
+        // separate rendered frames instead of one.
         //
-        // Only handled for the single-line case (allowWrap: false, which is
-        // every pre-existing row): with one Flow row, that row's own top is
-        // always y=0, so a child's centered position is simply
-        // (rowHeight - childHeight) / 2, with no ambiguity about which row
-        // it belongs to. allowWrap rows are documented as groups of
-        // same-weight items (e.g. several checkboxes), where this raised-icon
-        // symptom doesn't occur, so multi-row centering isn't needed here.
+        // Now that allowWrap:false rows use a real RowLayout (see
+        // contentRow above), that RowLayout centers its children natively,
+        // in the same pass as its own layout — no JS, no second frame, no
+        // flash. allowWrap:true rows still use Flow, but per the original
+        // comment below they never needed this correction either (they're
+        // groups of same-weight items, e.g. checkboxes, where the
+        // raised-icon symptom doesn't occur). So this is intentionally a
+        // no-op for both branches now; kept (rather than deleted) only so
+        // forceRelayout() and Flow's onHeightChanged below still have a
+        // safe, documented target to call.
         function _centerFlowChildren() {
-            if (root.allowWrap) return;
-            let h = contentRow.height;
-            for (let i = 0; i < contentRow.children.length; i++) {
-                let c = contentRow.children[i];
-                if (!c || c.visible === false) continue;
-                c.y = (h - c.height) / 2;
-            }
+            return;
         }
 
-        Component.onCompleted: { root._syncFlowChildSizes(); root._refreshPreIconWidth(); root._centerFlowChildren(); root._watchChildVisibility(); }
+        Component.onCompleted: {
+            // Only allowWrap rows need to move: their children were
+            // declared onto rowContainer by the default alias above (like
+            // every row), but actually belong on flowContainer. The
+            // overwhelmingly common allowWrap:false case needs no move at
+            // all — its children are already exactly where they belong,
+            // parented there since construction, same as v0.
+            if (root.allowWrap) {
+                let kids = rowContainer.children.slice();
+                for (let i = 0; i < kids.length; i++) {
+                    kids[i].parent = flowContainer;
+                }
+            }
+            root._syncFlowChildSizes();
+            root._refreshPreIconWidth();
+            root._centerFlowChildren();
+            root._watchChildVisibility();
+        }
 
         // A single, non-layout Label (not a nested RowLayout) with an explicit
         // Layout.preferredWidth, capped with Layout.maximumWidth at that same
@@ -329,18 +391,38 @@ RowLayout {
             opacity: 0.85
         }
 
-        // Flow instead of RowLayout: when allowWrap is false (the default,
-        // and every pre-existing row), Flow given Layout.fillWidth: false
-        // is sized to its own implicit (natural, single-line) width by its
-        // RowLayout parent — identical to the previous RowLayout's
-        // behaviour, so nothing changes for those rows. When allowWrap is
-        // true, Layout.fillWidth: true instead hands it the row's actual
-        // available width, and Flow reflows children onto additional lines
-        // once they no longer fit on one — instead of RowLayout's old
-        // behaviour of always demanding its full natural width regardless
-        // of what's actually available.
+        // The !allowWrap case (the default, and every pre-existing row,
+        // including all the forecast-range rows): a real RowLayout, so
+        // vertical centering of mixed-height children (e.g. a small
+        // InfoIcon next to a taller SpinBox) is handled natively by the
+        // Layouts engine in the same pass as everything else — identical
+        // to the old v0 behaviour, and with no JS correction there's
+        // nothing that can render one frame late (the "icon starts high,
+        // then snaps down" flash this whole rewrite exists to fix).
+        //
+        // Also doubles as the parking spot for allowWrap:true rows' children
+        // between construction and Component.onCompleted's move to
+        // flowContainer (see above) — hence visible: false for that case,
+        // which keeps it (and them) out of any layout computation in the
+        // meantime, exactly like a dedicated neutral holder would.
+        RowLayout {
+            id: rowContainer
+            visible: !root.allowWrap
+            Layout.fillWidth: false
+            spacing: root.contentSpacing
+            onChildrenChanged: { Qt.callLater(root._refreshPreIconWidth); root._watchChildVisibility(); }
+        }
+
+        // The allowWrap:true case (e.g. a handful of checkboxes): Flow,
+        // given Layout.fillWidth: true so it gets the row's actual
+        // available width and can wrap children onto additional lines
+        // once they no longer fit on one. Flow tops-aligns instead of
+        // centering, but per _centerFlowChildren's comment above that was
+        // never an issue for this same-weight-items use case, so it's
+        // left uncorrected exactly as before.
         Flow {
-            id: contentRow
+            id: flowContainer
+            visible: root.allowWrap
             Layout.fillWidth: root.allowWrap
             spacing: root.contentSpacing
             onChildrenChanged: { root._syncFlowChildSizes(); Qt.callLater(root._refreshPreIconWidth); Qt.callLater(root._centerFlowChildren); root._watchChildVisibility(); }

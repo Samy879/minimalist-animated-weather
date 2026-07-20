@@ -414,13 +414,13 @@ Item {
     // Math.max). Réduire encore popupEdgeMargin ne réduira PLUS le bord haut (qui restera
     // bloqué à 0) alors que le bord bas continuera de rétrécir — pour resserrer encore les
     // deux à l'identique, réduire aussi popupHeaderTopTrim en parallèle, du même montant.
-    readonly property real popupHeaderTopTrim: Kirigami.Units.gridUnit * 0.15
+    readonly property real popupHeaderTopTrim: Kirigami.Units.gridUnit * 0.3
 
     // Espace entre le header et la liste des jours (forecastSection.topMargin) ET
     // entre la liste des jours et les text details (forecastSection.bottomMargin) :
     // même valeur de base des deux côtés, appliquée directement (aucune compensation
     // soustraite) → égalité garantie par construction, pas par coïncidence.
-    readonly property real popupSectionGap: Kirigami.Units.gridUnit * 0.55
+    readonly property real popupSectionGap: Kirigami.Units.gridUnit * 0.35
 
     // Mesure sur rendu réel (2 captures successives, comparaison pixel des 4 jonctions) :
     // même avec popupSectionGap strictement identique des deux côtés de forecastSection,
@@ -500,6 +500,7 @@ Item {
         font.bold: true
     }
     readonly property real forecastArrowIconOffset: (dayLabelFontMetrics.height - forecastTempRowFontMetrics.height) / 2
+    - (isDesktopMode ? 0 : Kirigami.Units.smallSpacing * 1.36)
 
     // NOTE : l'ancien système de "compensation par FontMetrics" (qui retranchait la
     // demi-différence de hauteur de police entre deux polices à chaque jonction) a été retiré.
@@ -548,7 +549,24 @@ Item {
     // seulement si l'espace restant pour forecastSection tomberait sous
     // forecastMinPopupHeight, calculatedHeight (dérivé de classicContent.implicitHeight
     // ci-dessous) grandit alors automatiquement du reliquat non absorbable.
-    readonly property real locationRowExtraHeight: locationRow.visible ? Math.max(0, locationRow.implicitHeight + locationRow.Layout.topMargin) : 0
+    // FIX bug de hauteur du popup : ne JAMAIS lire `someItem.visible` pour calculer une
+    // taille quand someItem est un descendant de classicContent. En Qt Quick, LIRE
+    // `.visible` depuis QML renvoie la visibilité EFFECTIVE (en cascade depuis les
+    // parents), pas seulement le flag local de l'item — donc dès que classicContent
+    // devient invisible (opacity atteint 0, vue graphique affichée), TOUS ses
+    // descendants, y compris locationRow, se mettent à répondre `.visible === false`,
+    // MÊME SI leur propre binding `visible: ...` évalue à true. C'est confirmé
+    // empiriquement via l'overlay de debug (headerSection.visible et
+    // locationRow.parent.visible passent à false alors qu'aucun des deux n'a de
+    // binding "visible:" explicite qui l'expliquerait — seule la cascade depuis
+    // classicContent.visible=false explique ça). Du coup locationRowExtraHeight
+    // retombait à 0 pendant la vue graphique, forecastSection regagnait de la hauteur
+    // (93.6 -> 95.4), et calculatedHeight suivait : c'était la cause réelle du popup
+    // qui "grandit" à l'ouverture des graphiques.
+    // On recalcule donc la MÊME condition brute que locationRow.visible, indépendamment
+    // de toute cascade de visibilité parent.
+    readonly property bool locationRowShouldShow: !!(Plasmoid.configuration.showLocationExpanded && weatherData && weatherData.city)
+    readonly property real locationRowExtraHeight: locationRowShouldShow ? Math.max(0, locationRow.implicitHeight + locationRow.Layout.topMargin) : 0
     readonly property real forecastMinPopupHeight: Kirigami.Units.gridUnit * 5.2
 
     readonly property int calculatedHeight: {
@@ -735,13 +753,82 @@ Item {
         }
     }
 
+    // ============================================================
+    // === DEBUG (désactivé, laissé en commentaire au cas où) ===
+    // Bug identifié et corrigé : voir locationRowShouldShow / locationRowExtraHeight
+    // et headerSection.Layout.preferredHeight plus haut dans le fichier.
+    /*
+     *    Rectangle {
+     *        z: 9999
+     *        anchors.top: parent.top
+     *        anchors.right: parent.right
+     *        color: "black"
+     *        opacity: 0.75
+     *        width: debugCol.implicitWidth + 12
+     *        height: debugCol.implicitHeight + 12
+     *        visible: true
+     *        Column {
+     *            id: debugCol
+     *            anchors.centerIn: parent
+     *            Text { color: "yellow"; font.pixelSize: 10; font.bold: true; text: "BUILD: v3-anchors-fix" }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "rootH: " + rootItem.height }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "calcH: " + rootItem.calculatedHeight }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "classicH: " + classicContent.implicitHeight.toFixed(3) }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "classicVis: " + classicContent.visible }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "dayDetH: " + dayDetailView.implicitHeight.toFixed(3) }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "fcW/H: " + forecastSection.width.toFixed(1) + "/" + forecastSection.height.toFixed(1) }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "fcPrefH: " + forecastSection.Layout.preferredHeight.toFixed(3) }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "locRowExtraH: " + rootItem.locationRowExtraHeight.toFixed(3) }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "locRow vis/implH: " + locationRow.visible + "/" + locationRow.implicitHeight.toFixed(3) }
+     *            Text { color: "yellow"; font.pixelSize: 10; text: "cfg.showLocExp: " + Plasmoid.configuration.showLocationExpanded }
+     *            Text { color: "yellow"; font.pixelSize: 10; text: "weatherData city: '" + (weatherData ? weatherData.city : "NULL") + "'" }
+     *            Text { color: "yellow"; font.pixelSize: 10; text: "weatherData isBusy: " + (weatherData ? weatherData.isBusy : "NULL") }
+     *            Text { color: "orange"; font.pixelSize: 10; font.bold: true; text: "manualCalc: " + !!(Plasmoid.configuration.showLocationExpanded && weatherData && weatherData.city) + " vs locVis: " + locationRow.visible }
+     *            Text { color: "orange"; font.pixelSize: 10; text: "locRow.parent.vis: " + locationRow.parent.visible + " headerSec.vis: " + headerSection.visible }
+     *            Text { color: "yellow"; font.pixelSize: 10; text: "selDay: " + rootItem.selectedDayIndex }
+     *            Text { color: "lime"; font.pixelSize: 10; text: "isDesktop: " + rootItem.isDesktopMode }
+}
+}
+*/
+
     Item {
         id: infoLayout
         anchors { fill: parent; margins: rootItem.desktopContentInset }
+        // classicContent et dayDetailView se superposent tous les deux (anchors.fill) et se
+        // croisent via un fondu enchaîné de 180ms (opacity) — pendant ce court instant, les
+        // deux sont "visible: true" en même temps. Sans clip ici, un éventuel débordement
+        // transitoire de l'un des deux (même de quelques px) reste visible et peut amener le
+        // dialogue popup de Plasma à ajuster sa taille dessus, avant de revenir à la normale
+        // une fois la transition terminée — d'où l'impression que le popup "grandit
+        // légèrement" à l'ouverture des graphiques puis "redescend" à la fermeture.
+        clip: true
 
         ColumnLayout {
             id: classicContent
-            anchors.fill: parent
+            // FIX boucle circulaire : anchors.fill (gauche+droite+haut+BAS) forçait la
+            // hauteur RÉELLE de classicContent à suivre infoLayout.height, lui-même dérivé
+            // de rootItem.height = calculatedHeight = classicContent.implicitHeight. En
+            // théorie implicitHeight (bottom-up) est indépendant de la hauteur assignée,
+            // mais en pratique un léger désync d'une frame entre rootItem.height et
+            // calculatedHeight (observé : rootH=225 vs calcH=224) suffit à donner à
+            // classicContent une hauteur réelle légèrement différente de son propre besoin,
+            // ce qui comprime/détend forecastSection (qui a une petite marge de compression
+            // entre forecastMinPopupHeight et sa preferredHeight) — et cette variation se
+            // répercute dans le calcul suivant de calculatedHeight. Une vraie boucle,
+            // confirmée par le debug overlay (classicH: 224.000 en vue classique vs
+            // 226.000 en vue graphique, alors que rien dans classicContent ne dépend de
+            // selectedDayIndex). En ancrant seulement gauche/droite/haut (pas bas), la
+            // hauteur réelle de classicContent redevient purement son implicitHeight
+            // naturel, sans jamais être contrainte par rootItem.height : plus de boucle.
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            // Bureau : on garde l'ancrage bas, nécessaire à forecastSection.Layout.fillHeight
+            // pour s'étirer avec les poignées de redimensionnement (pas de boucle possible
+            // ici, calculatedHeight en mode Bureau est une constante fixe, pas dérivée de
+            // classicContent.implicitHeight). Popup : anchors.bottom délibérément absent
+            // (voir note plus haut) pour casser la boucle circulaire.
+            anchors.bottom: rootItem.isDesktopMode ? parent.bottom : undefined
             spacing: 0
 
             opacity: rootItem.selectedDayIndex === -1 ? 1 : 0
@@ -803,7 +890,7 @@ Item {
                 // recalcul à chaque fois que la hauteur d'un des enfants change (donc aussi
                 // quand conditionLabel passe de 1 à 2 lignes), garantissant que la place
                 // réservée est toujours suffisante.
-                Layout.preferredHeight: Math.max(tempContainer.implicitHeight, conditionLabel.visible ? conditionLabel.implicitHeight : 0, rightSideContainer.visible ? rightSideContainer.implicitHeight : 0)
+                Layout.preferredHeight: Math.max(tempContainer.implicitHeight, root.showConditionExpanded ? conditionLabel.implicitHeight : 0, (!root.showConditionExpanded && anyDetailEnabled) ? rightSideContainer.implicitHeight : 0)
 
                 Item { Layout.fillWidth: true; visible: !rootItem.isDesktopMode && !(conditionLabel.visible || rightSideContainer.visible) }
 
@@ -844,7 +931,12 @@ Item {
                         // marge négative (au lieu de positive) pour resserrer la ligne contre la
                         // température. locationRowExtraHeight (hauteur ajoutée par cette ligne,
                         // utilisée pour ajuster le popup et forecastSection) suit automatiquement.
-                        Layout.topMargin: -Kirigami.Units.smallSpacing * 0.3
+                        // En mode Panel (popup), on la remonte un peu plus pour la centrer entre
+                        // la température et la ligne des jours (Lun./Mar./...) en dessous. En
+                        // mode Bureau on garde la valeur d'origine (l'espacement y est différent).
+                        Layout.topMargin: rootItem.isDesktopMode
+                        ? -Kirigami.Units.smallSpacing * 0.3
+                        : -Kirigami.Units.smallSpacing * 1.1
 
                         Kirigami.Icon {
                             source: "mark-location"
@@ -863,6 +955,20 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
+
+                    // === DEBUG (désactivé, laissé en commentaire au cas où) ===
+                    /*
+                     *                    Text {
+                     *                        Layout.preferredHeight: implicitHeight
+                     *                        color: "cyan"
+                     *                        font.pixelSize: 9
+                     *                        font.bold: true
+                     *                        text: "cfg:" + Plasmoid.configuration.showLocationExpanded
+                     *                            + " wd:" + !!weatherData
+                     *                            + " city:'" + (weatherData ? weatherData.city : "??") + "'"
+                     *                            + " => locVis:" + locationRow.visible
+                }
+                */
                 }
 
                 PlasmaComponents3.Label {
@@ -993,15 +1099,18 @@ Item {
                 id: forecastSection
                 Layout.fillWidth: true
                 Layout.fillHeight: rootItem.isDesktopMode
-                // Hauteur restaurée à 6.0 gridUnit, la valeur d'origine de v0 (au lieu du
-                // 5.6 d'une étape intermédiaire, qui ne visait qu'à compenser un ajustement
-                // de marges ponctuel — pas à s'aligner sur v0). Le contenu (Mer./Jeu./Ven.)
-                // est de toute façon centré verticalement dans cette boîte (voir
-                // contentColumn plus bas) : cette hauteur fixe fournit l'essentiel de la
-                // respiration visuelle autour de la liste de jours.
+                // Bureau : 6.0 gridUnit, inchangé (confirmé "nickel" par l'utilisateur).
+                // Popup : ERREUR CORRIGÉE — le commentaire précédent affirmait que 6.0 gridUnit
+                // était "la valeur d'origine de v0", ce qui était FAUX : v0 utilise 5.0 gridUnit
+                // (vérifié directement dans FullRepresentationv0.qml). Cette confusion, cumulée
+                // aux marges de respiration ajoutées ailleurs (popupSectionGap, popupEdgeMargin...)
+                // pendant les réglages de centrage, faisait que le popup était sensiblement plus
+                // haut que v0 — pas seulement à cause de la ligne "lieu". Ramené à 5.3 gridUnit :
+                // proche de la vraie valeur v0 (5.0) tout en gardant un peu de marge au-dessus du
+                // plancher anti-clipping (forecastMinPopupHeight, 5.2) pour ne pas re-couper "Dim."
                 Layout.preferredHeight: rootItem.isDesktopMode
                 ? Kirigami.Units.gridUnit * 6.0
-                : Math.max(rootItem.forecastMinPopupHeight, Kirigami.Units.gridUnit * 6.0 - rootItem.locationRowExtraHeight)
+                : Math.max(rootItem.forecastMinPopupHeight, Kirigami.Units.gridUnit * 5.3 - rootItem.locationRowExtraHeight)
                 // Filet de sécurité dans les DEUX modes : sans ça, quand headerSection grandit
                 // (ex. ligne "lieu" activée), forecastSection (sans minimum propre) pouvait être
                 // écrasée sous la hauteur dont son contenu a besoin — jusqu'à clipper (clip: true)
@@ -1028,7 +1137,12 @@ Item {
                 // espace minimum entre le header et la liste des jours même si un futur réglage
                 // remet par erreur headerSection.bottomMargin à une valeur négative (voir la note
                 // sur desktopHeaderBottomTrim, désormais à 0, plus haut dans le fichier).
+                // Popup, sans la ligne "lieu" : le header se termine plus haut (pas de ligne
+                // "Toulouse" en dessous de la température), donc popupSectionGap seul laissait
+                // la liste des jours trop proche/trop haute. On ajoute un petit supplément
+                // uniquement dans ce cas précis (localisation désactivée, mode Panel).
                 Layout.topMargin: (rootItem.isDesktopMode ? Kirigami.Units.smallSpacing * rootItem.desktopVerticalBreathing : rootItem.popupSectionGap) + (rootItem.isDesktopMode ? rootItem.desktopHeaderSafetyPadding : 0)
+                + (!rootItem.isDesktopMode && !rootItem.locationRowShouldShow ? Kirigami.Units.smallSpacing * 0.9 : 0)
                 // Popup : popupSectionGap moins popupForecastBottomTrim (voir la note sur cette
                 // propriété plus haut dans le fichier) — rapproche la bande de text details de la
                 // liste des jours, pour égaliser avec l'espace "header → liste des jours" déjà
