@@ -103,6 +103,7 @@ Planned improvements for future releases:
 - [x] Add support for multiple weather API providers.
 - [ ] Complete and refine the existing translations to improve their naturalness and ensure they fit well within the available space.
 - [ ] Add a contributors banner in the plasmoid settings ("Support & Community" tab)
+- [ ] Maybe lower the "Text Details" line just a tiny bit in panel mode.
 
 Additional ideas and community suggestions are always welcome.
 
