@@ -264,6 +264,7 @@ Item {
                 SplitSettingsRow {
                     leftItem: SettingGroup {
                         id: expandedLeftGroup
+                        alignIcons: false
                         // Suppression des liaisons externalLabelWidth
                         SettingRow {
                             id: expandedConditionRow

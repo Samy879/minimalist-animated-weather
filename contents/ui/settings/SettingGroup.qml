@@ -17,6 +17,16 @@ ColumnLayout {
     // within this one group.
     property real externalIconAreaWidth: -1
 
+    // When false, the shared icon-column alignment is skipped for this
+    // group: each row's InfoIcon simply sits right after its own content
+    // (iconAreaWidth forced back to 0) instead of lining up with the
+    // widest row in the group. Label alignment (effectiveLabelWidth) is
+    // untouched either way. Useful for groups whose rows have very
+    // different content widths (e.g. a checkbox+combo row next to
+    // checkbox-only rows), where a shared icon column ends up dragging
+    // every icon far away from its own row's control.
+    property bool alignIcons: true
+
     property real _internalMaxLabelWidth: 0
     property real _internalMaxContentWidth: 0
     property real _internalMaxIconAreaWidth: 0
@@ -41,6 +51,19 @@ ColumnLayout {
     function syncRowWidths() {
         group.updateWidths();
         RowWidthSync.bindLabelWidths(group.children, function () { return group.effectiveLabelWidth; }, function () { return group.effectiveIconAreaWidth; });
+
+        // Overriding with a plain literal (instead of Qt.binding(...)) below
+        // replaces whatever binding bindLabelWidths just installed on
+        // iconAreaWidth, so each icon falls back to sitting immediately
+        // after its own row's content, with no shared column at all.
+        if (!group.alignIcons) {
+            for (let i = 0; i < group.children.length; i++) {
+                let c = group.children[i];
+                if (c && typeof c.iconAreaWidth !== "undefined") {
+                    c.iconAreaWidth = 0;
+                }
+            }
+        }
     }
 
     // Synchronous on purpose — see SettingsCard.qml for the full explanation.
