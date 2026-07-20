@@ -101,7 +101,7 @@ Planned improvements for future releases:
 - [ ] Improve the appearance of weather condition descriptions.
 - [x] Improve chart readability.
 - [x] Add support for multiple weather API providers.
-- [ ] Improve translation quality further (word length and naturalness)
+- [ ] Complete and refine the existing translations to improve their naturalness and ensure they fit well within the available space.
 - [ ] Add a contributors banner in the plasmoid settings ("Support & Community" tab)
 
 Additional ideas and community suggestions are always welcome.
@@ -118,7 +118,8 @@ Additional ideas and community suggestions are always welcome.
 
 * [Nicolas-Gth](https://github.com/Nicolas-Gth) — Essential bug fixes and improvements.
 * [Lintech-1](https://github.com/Lintech-1) — Russian localization.
-* [DanGM96](https://github.com/DanGM96) — Implemented automated releases via GitHub Actions. 
+* [DanGM96](https://github.com/DanGM96) — Implemented automated releases via GitHub Actions and added Brazilian Portuguese (pt-BR) localization.
+* [AzimJaved](https://github.com/AzimJaved) — Added the optional location display in the widget.
 
 ### Current Maintainer
 
