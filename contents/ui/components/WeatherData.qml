@@ -187,6 +187,7 @@ Item {
       lat: latitude,
       lon: longitude,
       tempUnit: root.temperatureUnit,
+      windSpeedUnit: root.windSpeedUnit,
       days: forecastDaysRequested,
       apiKey: apiKeyForProvider(weatherProvider),
       countryCode: root.countryCode,
@@ -259,6 +260,7 @@ Item {
   }
 
   onTemperatureUnitChanged: if (componentReady) updateWeather()
+  onWindSpeedUnitChanged: if (componentReady) updateWeather()
   onUseCoordinatesIpChanged: if (componentReady) updateWeather()
   onLatitudeCChanged: if (componentReady && !isAutoLoc) updateWeather()
   onLongitudeCChanged: if (componentReady && !isAutoLoc) updateWeather()
