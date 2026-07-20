@@ -13,6 +13,7 @@ Item {
   property string latitudeC: Plasmoid.configuration.latitudeC
   property string longitudeC: Plasmoid.configuration.longitudeC
   property string temperatureUnit: Plasmoid.configuration.temperatureUnit
+  property string windSpeedUnit: Plasmoid.configuration.windSpeedUnit
   property int updateInterval: Plasmoid.configuration.updateInterval || 15
 
   property string weatherProvider: Plasmoid.configuration.weatherProvider || "openmeteo"
@@ -125,7 +126,8 @@ Item {
 
   function detailUnit(detailId) {
     let cat = Catalog.findDetail(detailId);
-    return cat ? cat.unitFn(root.temperatureUnit) : "";
+    if (!cat) return "";
+    return cat.unitFn(detailId === "windSpeed" ? root.windSpeedUnit : root.temperatureUnit);
   }
 
   function detailSupported(detailId) {
