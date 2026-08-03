@@ -105,6 +105,7 @@ Planned improvements for future releases:
 - [ ] Add a contributors banner in the plasmoid settings ("Support & Community" tab)
 - [ ] Maybe lower the "Text Details" line just a tiny bit in panel mode.
 - [ ] Improve the positioning of the navigation arrows in desktop mode.
+- [ ] Horizontally align the detail text line.
 
 Additional ideas and community suggestions are always welcome.
 
