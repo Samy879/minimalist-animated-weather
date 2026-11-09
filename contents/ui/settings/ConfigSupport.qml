@@ -159,11 +159,6 @@ Item {
         return "#" + toHex(c.r) + toHex(c.g) + toHex(c.b);
     }
 
-    // Extrait puis formate la date d'un commentaire renvoyé par l'API du store KDE.
-    // Champ confirmé : "comment_created_at", format "YYYY-MM-DD HH:MM:SS" (heure du serveur,
-    // pas de fuseau horaire explicite dans la réponse). On garde quelques clés de repli au cas
-    // où le backend évoluerait. Retourne "" si rien n'est exploitable, auquel cas la date ne
-    // sera simplement pas affichée (visible: false côté délégué).
     function formatReviewDate(c) {
         if (!c) return "";
         var raw = c.comment_created_at !== undefined ? c.comment_created_at
@@ -178,13 +173,9 @@ Item {
 
         var d;
         if (typeof raw === "number") {
-            // Heuristique : un timestamp en secondes tient sur 10 chiffres, en millisecondes sur 13.
             d = new Date(raw < 1e12 ? raw * 1000 : raw);
         } else {
             var s = String(raw).trim();
-            // Format confirmé de l'API : "YYYY-MM-DD HH:MM:SS". On le parse à la main plutôt que
-            // de le passer tel quel à `new Date()`, car ce format avec espace (au lieu du "T" ISO)
-            // n'est pas fiable selon les moteurs JS/QML (accepté par certains, rejeté par d'autres).
             var m = s.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);
             if (m) {
                 d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10),
@@ -242,6 +233,7 @@ Item {
         listReq.setRequestHeader("Accept", "application/vnd.github+json");
         listReq.setRequestHeader("Cache-Control", "no-cache");
         listReq.send();
+
         let countReq = new XMLHttpRequest();
         countReq.onreadystatechange = function() {
             if (countReq.readyState !== XMLHttpRequest.DONE || countReq.status !== 200) return;
@@ -291,7 +283,7 @@ Item {
                 supportPage.reviewsError = true;
             }
         };
-        req.open("GET", "https://store.kde.org/products/comments/list?p=2356087");
+        req.open("GET", "https://raw.githubusercontent.com/Samy879/minimalist-animated-weather/data/reviews.json?_=" + Date.now());
         req.send();
     }
 
@@ -305,12 +297,7 @@ Item {
             if (req.status === 200) {
                 try {
                     let data = JSON.parse(req.responseText);
-                    let files = (data && data.files) || [];
-                    let total = 0;
-                    for (let i = 0; i < files.length; i++) {
-                        total += files[i].downloaded_count_uk || 0;
-                    }
-                    supportPage.downloadsCount = total;
+                    supportPage.downloadsCount = parseInt(data.message, 10);
                 } catch (e) {
                     supportPage.downloadsError = true;
                 }
@@ -318,7 +305,7 @@ Item {
                 supportPage.downloadsError = true;
             }
         };
-        req.open("GET", "https://store.kde.org/p/2356087/loadFiles");
+        req.open("GET", "https://raw.githubusercontent.com/Samy879/minimalist-animated-weather/data/downloads-badge.json?_=" + Date.now());
         req.send();
     }
 
@@ -1256,8 +1243,6 @@ Item {
                         }
                     }
 
-                    // FIX: Utilisation de SplitSettingsRow au lieu du bricolage RowLayout+Separator+Item(clip:true)
-                    // Ce composant superpose les éléments verticalement automatiquement quand il n'y a plus de place !
                     SplitSettingsRow {
                         separatorOpacity: (supportPage.hasStarred && supportPage.hasRated) ? 0.3 : 0
                         Behavior on separatorOpacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
@@ -1589,8 +1574,6 @@ Item {
                                 font.bold: true
                             }
 
-                            // Note du commentaire, affichée juste à droite du pseudo, comme le ferait
-                            // un badge de score sur un réseau social.
                             Label {
                                 visible: modelData.rating > 0
                                 text: modelData.rating + i18n("/10")
@@ -1610,7 +1593,6 @@ Item {
 
                         Item { Layout.fillWidth: true }
 
-                        // Date de publication, alignée à droite (là où était la note auparavant).
                         Label {
                             visible: !!modelData.date
                             text: modelData.date
