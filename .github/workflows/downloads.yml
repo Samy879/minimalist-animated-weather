@@ -1,4 +1,4 @@
-name: Update KDE Store Downloads Badge and History
+name: Fetch KDE Store Data (Downloads & Reviews)
 
 on:
   schedule:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-badge:
-    runs-on: ubuntu-latest
+  update-data:
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -27,9 +27,9 @@ jobs:
           playwright install chromium --with-deps
           sudo apt-get install -y xvfb
 
-      - name: Fetch downloads, generate JSON and update History
+      - name: Fetch data from KDE Store via Playwright
         run: |
-          cat << 'EOF' > fetch_downloads.py
+          cat << 'EOF' > fetch_store_data.py
           import json
           import sys
           from playwright.sync_api import sync_playwright
@@ -42,13 +42,25 @@ jobs:
                       viewport={"width": 1280, "height": 720}
                   )
                   page = context.new_page()
+                  
                   try:
                       page.goto("https://store.kde.org/p/2356087/loadFiles")
                       page.wait_for_function("() => document.body.innerText.includes('downloaded_count_uk')", timeout=20000)
-                      content = page.locator("body").inner_text()
-                      data = json.loads(content)
-                      total = sum(int(f.get("downloaded_count_uk", 0)) for f in data.get("files", []))
-                      print(total)
+                      content_dl = page.locator("body").inner_text()
+                      data_dl = json.loads(content_dl)
+                      total = sum(int(f.get("downloaded_count_uk", 0)) for f in data_dl.get("files", []))
+                      
+                      with open("downloads_total.txt", "w") as f:
+                          f.write(str(total))
+                          
+                      page.goto("https://store.kde.org/products/comments/list?p=2356087")
+                      page.wait_for_function("() => document.body.innerText.includes('comment_text_raw') || document.body.innerText === '[]'", timeout=20000)
+                      content_reviews = page.locator("body").inner_text()
+                      
+                      json.loads(content_reviews)
+                      with open("reviews.json", "w") as f:
+                          f.write(content_reviews)
+
                   except Exception as e:
                       print(f"Erreur Playwright : {e}", file=sys.stderr)
                       sys.exit(1)
@@ -59,21 +71,19 @@ jobs:
               main()
           EOF
 
-          TOTAL=$(xvfb-run python fetch_downloads.py)
+          xvfb-run python fetch_store_data.py
           
-          echo "Total des téléchargements récupéré : $TOTAL"
-
+          TOTAL=$(cat downloads_total.txt)
+          
           echo "{\"schemaVersion\": 1, \"label\": \"Downloads\", \"message\": \"$TOTAL\", \"color\": \"blue\"}" > downloads-badge.json
 
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-
           if [ ! -f downloads-history.csv ]; then
             echo "timestamp,downloads" > downloads-history.csv
           fi
-
           echo "$TIMESTAMP,$TOTAL" >> downloads-history.csv
 
-          rm fetch_downloads.py
+          rm fetch_store_data.py downloads_total.txt
 
       - name: Commit and push changes
         run: |
@@ -82,6 +92,7 @@ jobs:
           
           git add downloads-badge.json
           git add downloads-history.csv
+          git add reviews.json
           
-          git commit -m "chore: update downloads badge and history" || exit 0
+          git commit -m "chore: update downloads badge, history and reviews" || exit 0
           git push origin HEAD:data
