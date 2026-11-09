@@ -2,8 +2,8 @@ name: Update KDE Store Downloads Badge and History
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs every hour
-  workflow_dispatch:    # Allows manual trigger
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   update-badge:
@@ -15,35 +15,73 @@ jobs:
         with:
           ref: data
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies (Playwright & Xvfb)
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium --with-deps
+          sudo apt-get install -y xvfb
+
       - name: Fetch downloads, generate JSON and update History
         run: |
-          # Fetch total downloads from KDE Store
-          TOTAL=$(curl -s 'https://store.kde.org/p/2356087/loadFiles' | jq '[.files[].downloaded_count_uk // 0] | add')
+          cat << 'EOF' > fetch_downloads.py
+          import json
+          import sys
+          from playwright.sync_api import sync_playwright
 
-          # 1. Generate the JSON file for Shields.io at the root (overwrites each time)
+          def main():
+              with sync_playwright() as p:
+                  browser = p.chromium.launch(headless=False)
+                  context = browser.new_context(
+                      user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0",
+                      viewport={"width": 1280, "height": 720}
+                  )
+                  page = context.new_page()
+                  try:
+                      page.goto("https://store.kde.org/p/2356087/loadFiles")
+                      page.wait_for_function("() => document.body.innerText.includes('downloaded_count_uk')", timeout=20000)
+                      content = page.locator("body").inner_text()
+                      data = json.loads(content)
+                      total = sum(int(f.get("downloaded_count_uk", 0)) for f in data.get("files", []))
+                      print(total)
+                  except Exception as e:
+                      print(f"Erreur Playwright : {e}", file=sys.stderr)
+                      sys.exit(1)
+                  finally:
+                      browser.close()
+
+          if __name__ == "__main__":
+              main()
+          EOF
+
+          TOTAL=$(xvfb-run python fetch_downloads.py)
+          
+          echo "Total des téléchargements récupéré : $TOTAL"
+
           echo "{\"schemaVersion\": 1, \"label\": \"Downloads\", \"message\": \"$TOTAL\", \"color\": \"blue\"}" > downloads-badge.json
 
-          # 2. Accumulate data for the curve (CSV format: timestamp, total)
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ") # Standard UTC timestamp
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          # Add header if the CSV file doesn't exist yet at the root
           if [ ! -f downloads-history.csv ]; then
             echo "timestamp,downloads" > downloads-history.csv
           fi
 
-          # Append the new data to the CSV
           echo "$TIMESTAMP,$TOTAL" >> downloads-history.csv
+
+          rm fetch_downloads.py
 
       - name: Commit and push changes
         run: |
-          # Setup Git bot user
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Stage both the badge file and the history file from the root
+          
           git add downloads-badge.json
           git add downloads-history.csv
-
-          # Commit only if files have changed, then push to 'data'
+          
           git commit -m "chore: update downloads badge and history" || exit 0
           git push origin HEAD:data
